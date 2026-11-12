@@ -208,3 +208,25 @@ Batch 13 now 36 total GBP rows, 35 active (17 New, 18 Used), one inactive. Cumul
 | 13 | 36 | 35 | 17 | 18 | 1 |
 
 Inactive rows: BuzzFlyer DEVO-10 no stock; NEEWER KM19 seller away; Sony E35 price conflict; PowerDolphin Wizard package unverified. Used observations remain reference-only. No master/schema/valuation logic changes. TEST and Stripe untouched.
+
+
+## 12 November 2026 — second Batch 13 retailer recheck and final totals
+
+Five additional Batch 13 records added: ECM-B10 CameraWorld £159 new; FE85 GM II LCE £1,799 new and Park £1,799 new; FE12-24 GM CameraWorld £2,548 new and £2,548 open-box. Batch 13 now 41 total rows, 40 active (21 New, 19 Used), one inactive.
+
+Cumulative Batches 04–13: 204 GBP rows, 200 active (108 UK New, 92 UK Used), 4 inactive.
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 16 | 16 | 6 | 10 | 0 |
+| 10 | 24 | 24 | 12 | 12 | 0 |
+| 11 | 22 | 22 | 8 | 14 | 0 |
+| 12 | 25 | 24 | 16 | 8 | 1 |
+| 13 | 41 | 40 | 21 | 19 | 1 |
+
+Inactive rows remain BuzzFlyer DEVO-10 no stock, NEEWER KM19 seller away, Sony E35 price conflict and PowerDolphin Wizard package unverified. Used evidence remains reference-only. No schema/valuation logic changes. TEST and Stripe untouched.

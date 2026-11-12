@@ -194,3 +194,23 @@ Direct LIVE read-back confirms Batches 04–13 now contain **204 total GBP evide
 | 13 | 41 | 40 | 21 | 19 | 1 |
 
 Batch 13 now has 41 total rows, 40 active (21 New, 19 Used), one inactive. All 204 rows use GBP. UK Used remains reference-only. No schema or valuation function changed. TEST and Stripe remain untouched.
+
+
+## 12 November 2026 — current LIVE evidence totals after Batch 09 follow-up
+
+LIVE source_record_key reconciliation now confirms 208 total rows across Batches 04–13, 204 active (111 UK New, 93 UK Used), four inactive; all 208 GBP. Batch 09 now has 20 active rows (9 UK New, 11 UK Used), after four more direct-source observations.
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 20 | 20 | 9 | 11 | 0 |
+| 10 | 24 | 24 | 12 | 12 | 0 |
+| 11 | 22 | 22 | 8 | 14 | 0 |
+| 12 | 25 | 24 | 16 | 8 | 1 |
+| 13 | 41 | 40 | 21 | 19 | 1 |
+
+Four inactive rows: BuzzFlyer DEVO-10 no stock, NEEWER KM19 seller away, one Batch 12 and one Batch 13. UK Used remains reference-only. Valuation selects latest active GBP uk_new by observed_at/created_at and does not filter availability; sold-out/backorder UK New may still affect valuation. No-stock/seller-away inactive. This supersedes the previous 204 total / Batch 09 16 row snapshot. No schema or valuation change; TEST and Stripe untouched.

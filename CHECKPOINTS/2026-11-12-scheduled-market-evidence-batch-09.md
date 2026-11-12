@@ -400,3 +400,16 @@ Previously imported observations were reopened and refreshed:
 Batch 09 now has **20 active GBP rows: 9 UK New and 11 UK Used**. Four new rows were added to the previously confirmed 16. UK Used records remain comparison-only and do not affect automatic valuation. Existing source caveats remain: RM-BR300 is not the H suffix; PowerDolphin batteries are third-party replacements; HVR-Z5E is PAL and not HVR-Z5U NTSC; NP-FV70A suffix/capacity requires exact match; Shure SM81 cable package details need confirmation; Sony HDC-1500 channel contents are not enumerated; HDC-3000 identity unresolved; Skydio X2E has only foreign USD evidence; NXLK-IP50Y only has JPY list price. Do not convert foreign currency or promote suffix/package mismatches.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.
+
+
+## 9. Sony HDC-1500 package verification — 12 November 2026
+
+The seller's full eBay description was retrieved and resolves the prior package uncertainty. One channel includes:
+- 1x Sony HDC-1500 fibre camera head
+- 1x Sony HDCU-1500 half-rack CCU with extra HDSDI option output board
+- 1x tripod plate
+- 1x Sony RCP-920 RCP with Ethernet option
+
+Lenses, RCP750/1500 and HDVF viewfinders are extra-cost items; no lens or viewfinder is included in the channel price. Direct eBay page currently shows £8,010 or Best Offer (previously £8,900), used, full working order, 10 available, UK business seller N.I. Broadcast Ltd with 100% positive feedback. No returns accepted. The displayed £200 Parcelforce Global Priority quote is for the non-UK destination; the seller says UK shipping is available but the domestic quote must be requested. [Listing](https://www.ebay.co.uk/itm/198054902757) · [Full seller description](https://itm.ebaydesc.com/itmdesc/198054902757?category=3319&cspheader=1&descgauge=1&domain=ebay.com&excSoj=1&excTrk=1&ittenable=false&lang=en&lsite=3&oneClk=2&secureDesc=1&seller=n.i_broadcast&t=1710364074000&ver=1)
+
+Imported as active UK Used evidence against the existing HDC-1500 Standard Package master and read back successfully. Batch 09 now has 21 active GBP rows: 9 UK New and 12 UK Used. UK Used remains reference-only and excluded from automatic valuation. Cumulative Batches 04–13 now contain 234 GBP observations: 230 active (126 UK New, 104 UK Used), four inactive.

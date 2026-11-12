@@ -164,3 +164,25 @@ Cumulative Batches 04–13: 162 GBP rows, 160 active (86 UK New, 74 UK Used), 2 
 | 13 | 12 | 12 | 7 | 5 | 0 |
 
 Used evidence remains reference-only. Preserve the FZ1000 II zoom lever fault, Df loose grips and remote awaiting-stock status. No master/schema/valuation logic changes. TEST and Stripe untouched.
+
+
+## 12 November 2026 — Batch 12 RED VERIFY follow-up and cumulative totals
+
+Batch 12 received thirteen additional GBP observations: HVR-HD1000E eBay £312.70 with four used batteries and bag; Sony E35 F1.8 Cotswold £269 and CameraWorld £319; Sony PXW-FS5 Wex £493 Good/clean sensor and £425 Well Used/sensor dust; Sony FE100 Macro GM Camix £1,208, LCE £1,399, Campkins £1,399, Wilkinson £1,399; Sony FE50 F1.4 GM Sony UK £1,499, LCE £1,499, CameraWorld £1,499 new and £1,425 open-box. Sony UK E35 £225 price-conflict observation was made inactive after ambiguous sale/original price contexts. Batch 12 now 25 total GBP rows, 24 active (16 New, 8 Used), one inactive.
+
+Cumulative Batches 04–13: 175 GBP rows, 172 active (94 UK New, 78 UK Used), 3 inactive: BuzzFlyer DEVO-10 no stock; NEEWER KM19 seller away; Sony UK E35 price conflict.
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 16 | 16 | 6 | 10 | 0 |
+| 10 | 24 | 24 | 12 | 12 | 0 |
+| 11 | 22 | 22 | 8 | 14 | 0 |
+| 12 | 25 | 24 | 16 | 8 | 1 |
+| 13 | 12 | 12 | 7 | 5 | 0 |
+
+Used evidence remains reference-only. Do not use price-conflict row or seller-away/no-stock rows as active valuation sources. No schema/valuation logic changes. TEST and Stripe untouched.

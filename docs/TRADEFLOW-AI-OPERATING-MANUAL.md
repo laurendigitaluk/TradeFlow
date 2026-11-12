@@ -6339,3 +6339,10 @@ Current Batches 01–13: 263 observations, 259 active (141 UK New, 118 UK Used),
 A duplicate audit found two exact same-source Batch 13 captures (Wex ECM-B10 and Sony UK FE 12-24mm F2.8 GM). Earlier copies were deactivated, not deleted; later follow-up rows remain active. Use the inactive rows only for audit and do not double-count them in market evidence. IDs and retained rows are in the Batch 13 checkpoint.
 
 Current Batches 01–13: 263 total observations, 257 active (139 UK New, 118 UK Used), six inactive. Batch 13: 50 total, 48 active (27 new, 21 used), two inactive. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Batch 13 duplicate reconciliation
+
+Earlier duplicate Sony FE 12-24mm F2.8 GM and Sony ECM-B10 source rows were deactivated and retained for audit; later exact same-source rows remain active. Other retailer offers are independent. Batch 13 is now 50 total, 48 active (27 UK New, 21 UK Used), two inactive duplicates.
+
+Current Batches 01–13: 263 observations, 257 active (139 UK New, 118 UK Used), six inactive. Global shared_market_evidence: 4,805 total, 4,747 active, 58 inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.

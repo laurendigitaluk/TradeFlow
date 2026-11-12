@@ -174,3 +174,23 @@ Direct LIVE read-back confirms Batches 04–13 now contain **199 total GBP evide
 | 13 | 36 | 35 | 17 | 18 | 1 |
 
 Batch 13 follow-up added 24 rows and deactivated one package-unverified new listing. Used observations remain reference-only. No schema or valuation function changed. TEST and Stripe remain untouched.
+
+
+## 12 November 2026 — final LIVE reconciliation after second Batch 13 follow-up
+
+Direct LIVE read-back confirms Batches 04–13 now contain **204 total GBP evidence rows, 200 active and 4 inactive**. Active evidence comprises **108 UK New and 92 UK Used**. Inactive rows: BuzzFlyer DEVO-10 Notify Me/no stock (Batch 07); NEEWER KM19 eBay seller away (Batch 08); Sony UK E 35mm F1.8 price conflict (Batch 12); PowerDolphin Wizard new eBay package unverified (Batch 13).
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 16 | 16 | 6 | 10 | 0 |
+| 10 | 24 | 24 | 12 | 12 | 0 |
+| 11 | 22 | 22 | 8 | 14 | 0 |
+| 12 | 25 | 24 | 16 | 8 | 1 |
+| 13 | 41 | 40 | 21 | 19 | 1 |
+
+Batch 13 now has 41 total rows, 40 active (21 New, 19 Used), one inactive. All 204 rows use GBP. UK Used remains reference-only. No schema or valuation function changed. TEST and Stripe remain untouched.

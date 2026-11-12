@@ -85,7 +85,7 @@ Price handling:
 - Observed price: No reliable current UK GBP price confirmed. Ubuy indexed result showed GBP 2,469 ex VAT, but opened page is out of stock and has no live price. Less-established UK-facing seller shows £1,110.89. Exact eBay U-model listing displays USD $930; eBay also shows an approximate GBP conversion, which is not used as a GBP price.
 - Condition: eBay exact U model used; other UK price lead presented as new/retail.
 - Availability: Ubuy out of stock; usamarafiquephotography page has Add to Cart; eBay US listing available when crawled.
-- Visible note: RED VERIFY — exact U model is NTSC. UK HVR-Z5E listings are PAL variants and must not be treated as exact matches. £1,110.89 seller has not been independently verified. Ubuy imports from USA and currently shows out of stock; indexed GBP amount is not a live offer. The exact eBay listing is a US seller in Los Angeles and displays USD $930 (eBay's approximate GBP display is not recorded as a GBP price).
+- Visible note: RED VERIFY — exact U model is NTSC. UK HVR-Z5E listings are PAL variants and must not be treated as exact matches. £1,110.89 seller has not been independently verified. Ubuy imports from USA and currently shows out of stock; indexed GBP amount is not a live offer. Exact eBay listing is used, seller in Los Angeles, and displays USD $930; eBay's approximate GBP display is not recorded as a GBP price. The HVR-Z5E eBay page is Good used condition but does not expose a live price in the opened page.
 - Source pages:
   - [Ubuy UK — exact HVR-Z5U, currently out of stock; prior indexed price GBP 2,469 ex VAT](https://www.u-buy.co.uk/product/8JOVNVI2-sony-hvr-z5u-high-definition-handheld-professional-camcorder)
   - [usamarafiquephotography — exact HVR-Z5U, £1,110.89, accessories listed; seller needs verification](https://usamarafiquephotography.co.uk/product/sony-hvr-z5u-camcorder-1080p-1-12-mp-20x-optical-zoom-mini-dv-hdv)
@@ -100,7 +100,7 @@ Price handling:
 - Observed price: £299.00 Argos direct page; £329.00–£329.99 Carmarthen/Camera Centre; £379.00 Currys/Jessops/Maplin.
 - Condition: New standard camera, black/blue variants.
 - Availability: Carmarthen Cameras shows 1 in stock; Camera Centre UK shows in stock; Currys delivery/stock check; Maplin stock wording inconsistent.
-- Visible note: RED VERIFY — Argos direct page opened and shows £299, but postcode stock check is required. Jessops direct page shows £379 despite its £299 Shopping card. HDEW £235 Shopping lead was not independently verified. Confirm colour and checkout price.
+- Visible note: RED VERIFY — Argos direct page opened and shows £299, but postcode stock check is required. Jessops direct page shows £379 despite its £299 Shopping card. Camera Centre UK page returned 403, so its £329 in-stock search lead needs seller confirmation. HDEW £235 Shopping lead was not independently verified. Confirm colour and checkout price.
 - Source pages:
   - [Carmarthen Cameras — blue, £329.99, 1 in stock](https://carmarthencameras.com/products/pentax-wg-90-waterproof-tough-compact-camera-blue)
   - [Camera Centre UK — black, £329.00, page reports in stock](https://www.cameracentreuk.com/pentax-wg-90-waterproof-digital-compact-camera-black)
@@ -141,7 +141,7 @@ Price handling:
 - Observed price: £559.00 Peter Rogers; £799.00 Bristol/Clifton; £855.00 CameraWorld. eBay Japan listing displays £234.82.
 - Condition: New retailer listings; used near-mint Japan eBay listing.
 - Availability: Peter Rogers in stock; Bristol available to order; Clifton awaiting stock 5–7 days; CameraWorld awaiting stock with stale expected date.
-- Visible note: RED VERIFY — same SKU 21790 across UK retailers. Bristol confirms lens hood, front/rear caps and flexible pouch. Peter Rogers price reduced from £799 with £9.99 delivery. Japan eBay listing near mint, seller in Kanagawa; shipping/import costs vary.
+- Visible note: RED VERIFY — same SKU 21790 across UK retailers. Bristol confirms lens hood, front/rear caps and flexible pouch. Peter Rogers search result shows £559 reduced from £799, but its direct page timed out; verify price and stock. Japan eBay page opened and confirms £234.82, near-mint condition, business seller in Kanagawa; shipping/import costs vary.
 - Source pages:
   - [Bristol Cameras — £799 inc VAT, available to order, SKU 21790, package contents specified](https://www.bristolcameras.co.uk/product/pentax-55mm-f1-4-smc-da-sdm-lens)
   - [Peter Rogers — £559, in stock, SKU 21790](https://shop.peterrogers-photo.co.uk/pentax-55mm-f1-4-smc-da-sdm/)
@@ -201,7 +201,7 @@ Price handling:
 - Observed price: Used UK offers £126 MPB, £149.99 LCE, £141.12 and £169.99 eBay; new UK-facing leads £399–£449; Norwich Cameras £207 from HK seller.
 - Condition: Used Excellent/Good and new retail leads.
 - Availability: MPB 30 available when crawled; LCE used in store; eBay offers active; several new retailer pages show order/backorder or stock-on-way.
-- Visible note: RED VERIFY — standard lens only; check caps and any bundled camera kit. Norwich Cameras seller Futronix HK/no VAT. Shopping eBay card £145.02 differed from direct eBay pages; treat as a lead. MPB direct page timed out, but search listing showed £126 and 30 Excellent-condition units.
+- Visible note: RED VERIFY — standard lens only; check caps and any bundled camera kit. Norwich Cameras seller Futronix HK/no VAT. LCE direct page confirms £149.99, Excellent condition, in store, caps included, no hood/box and 6-month guarantee. Shopping eBay card £145.02 differed from direct eBay pages; the £169.99 eBay page did not expose price text, so treat it as a search lead. MPB direct page timed out, but search listing showed £126 and 30 Excellent-condition units.
 - Source pages:
   - [MPB used — from £126, 30 available, Excellent](https://www.mpb.com/en-uk/product/sony-fe-28-60mm-f-4-5-6)
   - [LCE used — £149.99, Excellent, Nottingham](https://www.lcegroup.co.uk/Used/Sony-FE-28-60mm-F4-5.6_500639.html)
@@ -272,7 +272,7 @@ Price handling:
 - Observed price: £8,900.00 or Best Offer for a used camera channel; another multi-channel package is price on application.
 - Condition: Used.
 - Availability: eBay UK N.I. Broadcast listing showed 10 available; KitPlus listing is price on application.
-- Visible note: RED VERIFY — eBay title says fibre HD camera channel, 1080i/720p, but opened listing does not clearly enumerate whether CCU, RCP, viewfinder, fibre cable or other parts are included. Do not treat £8,900 as a bare camera-head price until seller confirms one channel's contents. KitPlus listing is a larger 6-camera package: five HDC-1500 heads plus one HDC-1500R, six HDCU-1500 CCUs, six RCP-920 panels and six HDVF-730W viewfinders.
+- Visible note: RED VERIFY — eBay page confirms the used HDC-1500 fibre HD camera-channel listing and 10 available; £8,900 is from the search listing. The page does not clearly enumerate whether CCU, RCP, viewfinder, fibre cable or other parts are included. Do not treat this as a bare camera-head price until seller confirms one channel's contents. KitPlus search listing describes a larger 6-camera package: five HDC-1500 heads plus one HDC-1500R, six HDCU-1500 CCUs, six RCP-920 panels and six HDVF-730W viewfinders; direct KitPlus page returned 403 and price is on application.
 - Source pages:
   - [eBay UK — HDC-1500 fibre HD camera channel, £8,900, used, 10 available, N.I. Broadcast](https://www.ebay.co.uk/itm/198054902757)
   - [KitPlus — HDC-1500 multi-camera system package, price on application](https://kitplus.com/for-sale/cameras-and-accessories-1/sony/hdc-1500/44848)
@@ -297,7 +297,7 @@ Price handling:
 - Observed price: £999.00 Clifton Cameras; £1,099.00 Park Cameras; eBay Japan seller displays £616.17.
 - Condition: New retailer offers and used Japan marketplace offer.
 - Availability: Clifton awaiting stock; Park page asks user to select options/check availability; eBay listing active when crawled.
-- Visible note: RED VERIFY — confirm black/silver finish and exact HD FA 31mm version. eBay seller camera_kyoto_japan is in Kyoto, Japan; shipping/import charges vary. Do not treat Japan offer as UK-local seller price.
+- Visible note: RED VERIFY — confirm black/silver finish and exact HD FA 31mm version. Clifton and Park product pages opened, but current price/availability text was not extractable from the page body; £999/£1,099 are search-result leads. eBay page title identifies the Silver version from Japan; direct page opened but did not expose the £616.17 search-card price. Verify seller, shipping/import and exact finish.
 - Source pages:
   - [Clifton Cameras — black, £999, awaiting stock](https://www.cliftoncameras.co.uk/pentax-hd-pentax-fa-31mm-f18-limited-lens/lens-colour/black)
   - [Park Cameras — black, £1,099, availability requires selection/check](https://www.parkcameras.com/shop/hd-pentax-fa-31mm-f18-limited-lens-black_5241030e)

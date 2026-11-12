@@ -322,3 +322,10 @@ Latest Batches 01–13: 261 total, 257 active (140 UK New, 117 UK Used), four in
 Added exact Sony RM-BR300 N.I. Broadcast £499 used source against separate RM-BR300 master, not RM-BR300H. Evidence row 48d36782-0c1b-42ff-8fd0-938e73779c31. Batch 13 now 50 active (29 new, 21 used).
 
 Latest Batches 01–13: 262 total, 258 active (140 UK New, 118 UK Used), four inactive. Global LIVE shared_market_evidence: 4,804 total, 4,748 active, 56 inactive. This supersedes prior 261/257 snapshot. UK Used remains reference-only; TEST and Stripe untouched.
+
+
+## 12 November 2026 — HDC-3100 and latest count correction
+
+Added exact Visual Impact Sony HDC-3100 camera-head offer £25,066.80 inc VAT, Available to Order, matched to HDC-3100 Standard master. Evidence row 52a8170b-9521-41f0-9f64-6d172408377e; no CCU, lens or viewfinder included. Batch 10 now 31 total, 30 active (15 new, 15 used), one inactive.
+
+Latest Batches 01–13: 263 total, 259 active (141 UK New, 118 UK Used), four inactive. Global LIVE shared_market_evidence: 4,805 total, 4,749 active, 56 inactive. This supersedes 262/258 snapshot. UK Used remains reference-only; TEST and Stripe untouched.

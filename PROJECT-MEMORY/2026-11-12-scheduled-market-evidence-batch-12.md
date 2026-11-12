@@ -64,3 +64,12 @@ No master products, evidence, valuation logic, schema, TEST or Stripe data were 
 ## 12 November 2026 — Batch 12 RED VERIFY follow-up
 
 Thirteen new GBP observations imported/read back: HVR-HD1000E eBay £312.70 (4 used batteries + shoulder bag); Sony E 35mm F1.8 OSS Cotswold £269 and CameraWorld £319; Sony PXW-FS5 Wex £493 Good/clean sensor and £425 Well Used/sensor dust; Sony FE 100mm F2.8 Macro GM OSS Camix £1,208, LCE £1,399, Campkins £1,399, Wilkinson £1,399; Sony FE 50mm F1.4 GM Sony UK £1,499, LCE £1,499, CameraWorld £1,499 new and £1,425 open-box. Existing Sony UK E35 £225 was deactivated as price_conflict after same page exposed £225 sale context and £325 original/product-page price with no clear checkout selection. HXR-MC2500E eBay £789.99 refreshed with current free-delivery/seller detail. Batch 12 now 25 total GBP rows, 24 active (16 UK New, 8 UK Used), one inactive.
+
+
+## 12 November 2026 — Batch 12 additional RED VERIFY follow-up
+
+Two further records were imported and read back: Sony NEX-FS100 / eBay UK £768.08 used, private UK seller in Luton, no returns, package accessories unspecified; Z CAM ExAscend CFast Reader / ProAV £51.60 inc VAT (£43 ex), exact single-slot 10Gbps reader, backorder around four weeks.
+
+Rechecked and resolved: Walkera Vitus Starlight £544.91 is the exact product; page title/model both identify Starlight and Vitus 320 is the underlying aircraft platform, with case, 8 props, 3 batteries and DEVO F8S remote. Camix Sony FE 50mm F1.4 GM £1,032 inc VAT is reconfirmed direct, in stock, new, warranty/delivery and box contents listed.
+
+Batch 12 now has 27 total GBP rows, 26 active (17 UK New, 9 UK Used), one inactive Sony UK E35 £225 price-conflict row. Used references remain excluded from automatic valuation. No master/schema/valuation changes; TEST and Stripe untouched.

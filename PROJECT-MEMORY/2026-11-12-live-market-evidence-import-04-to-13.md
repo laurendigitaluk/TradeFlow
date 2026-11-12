@@ -254,3 +254,23 @@ LIVE source_record_key reconciliation confirms 218 total GBP rows across Batches
 | 13 | 41 | 40 | 21 | 19 | 1 |
 
 Four inactive rows: BuzzFlyer DEVO-10 no stock, NEEWER KM19 seller away, and one each in Batches 12 and 13. UK Used remains reference-only. Valuation selects latest active GBP uk_new by observed_at/created_at and does not filter availability; sold-out/backorder UK New can affect valuation. No-stock/seller-away inactive. This supersedes the prior 211 total/207 active snapshot. No schema/valuation change; TEST and Stripe untouched.
+
+
+## 12 November 2026 — current LIVE evidence totals after Batch 12 follow-up
+
+LIVE source_record_key reconciliation confirms 220 total GBP rows across Batches 04–13, 216 active (112 UK New, 104 UK Used), four inactive. Batch 12 now has 27 total, 26 active (17 UK New, 9 UK Used), one inactive Sony UK E35 £225 price-conflict row.
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 20 | 20 | 9 | 11 | 0 |
+| 10 | 27 | 27 | 12 | 15 | 0 |
+| 11 | 29 | 29 | 8 | 21 | 0 |
+| 12 | 27 | 26 | 17 | 9 | 1 |
+| 13 | 41 | 40 | 21 | 19 | 1 |
+
+Four inactive rows: BuzzFlyer DEVO-10 no stock, NEEWER KM19 seller away, Sony UK E35 price-conflict, and one Batch 13 row. UK Used remains reference-only. Valuation selects latest active GBP uk_new by observed_at/created_at and does not filter availability; sold-out/backorder UK New can affect valuation. No-stock/seller-away inactive. This supersedes the prior 218 total/214 active snapshot. No schema/valuation change; TEST and Stripe untouched.

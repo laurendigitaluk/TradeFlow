@@ -61,3 +61,10 @@ The Batch 05 checkpoint records the following key uncertainties: Casio EX-ZR5100
 ## Next scheduled run
 
 Read this file and CHECKPOINTS/2026-11-12-scheduled-market-evidence-batch-05.md first. Exclude all 20 Batch 05 IDs and all earlier scheduled checkpoint IDs. Re-read LIVE queue candidates and manual AI research prompts; exclude products they cover. Select the next 20 active LIVE masters with no active shared evidence using dynamic anti-joins and no fixed OFFSET. Recheck evidence, queue and prompt status immediately before research. Continue manufacturer/UK-retailer/marketplace/Google Shopping searches and click through to product pages. Preserve uncertain links with RED VERIFY and no invented/converted prices. Check owner auth before staging; if auth.uid() is null or owner check false, do not write to the queue and create the next checkpoint plus project-memory file. Do not touch TEST, Stripe, master products, schema or valuation logic.
+
+
+## 12 November 2026 — Batch 05 RED VERIFY follow-up
+
+Nine further exact source observations were imported into LIVE and read back: RØDE Wireless GO Gen 3 — Disc DJ Store £179, Jessops £179, Wex £159 (blue, limited stock), Westend DJ £179.99; Sony FE 24-70mm F2.8 GM II — LCE £1,699 and CameraWorld £1,813; Sony SRG-300H — eBay current listing £567.55 and ended listing £491.34 including £16.34 Buyer Protection (not a confirmed completed sale); Nikon Nikkor-H Auto 50mm f/2 — eBay £71.05, seller in Basingstoke. Exact links, conditions, seller and availability notes are in the paired checkpoint.
+
+Batch 05 now has 18 active GBP rows (10 UK New, 8 UK Used). Nine follow-up rows were added with idempotent source keys. Used evidence remains reference-only and is not selected by LIVE calculate_buying_item_valuation(uuid,uuid). The PPP Cameras £60 lens price remains RED VERIFY because the product page displays GBP while its terms still state prices are in EUR. The LCE Nikon D5000 £49.99 listing remains RED VERIFY because the reopened page did not expose current price/stock. No master data, schema, valuation logic, TEST or Stripe changes.

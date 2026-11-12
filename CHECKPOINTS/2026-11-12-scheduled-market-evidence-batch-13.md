@@ -384,3 +384,13 @@ One additional RED VERIFY lead was resolved and imported:
 - Shure SM81 / SM81-LC, Stage Supply product code 4736, £405.00 inc VAT (£337.50 ex VAT), 8 available online, further supplier stock in 1–3 weeks, 2-year manufacturer warranty. [Retailer listing](https://stagesupply.co.uk/product/shure-sm81-cardioid-condenser-instrument-microphone/). Shure's official page confirms SKU SM81-LC and £439 RRP; its user guide confirms the supplied clip, attenuator lock, bag and windscreen. LC means no XLR cable is supplied. [Manufacturer](https://www.shure.com/en-GB/products/microphones/sm81) · [User guide](https://www.shure.com/en-US/docs/guide/SM81). Imported against the existing SM81 master and read back successfully.
 
 Cumulative Batches 04–13 now contain **235 GBP observations: 231 active (127 UK New, 104 UK Used) and four inactive retained for audit**. Batch 09 now contains 22 active rows (10 UK New, 12 UK Used). UK Used remains excluded from automatic valuation. The valuation function, schema, TEST and Stripe were not changed.
+
+
+## Cumulative LIVE evidence update — 12 November 2026 (Batch 09 continuation)
+
+One further UK Used observation was resolved and imported:
+- Sony HXC-D70 Standard camera channel, N.I. Broadcast Ltd product code 9509, £4,000, stock level 3. Each channel includes HXC-D70 camera head, HXCU-D70 CCU, approx. 25m multicore cable, modified DVF-L700 7-inch Full HD monitor/viewfinder and RM-B150 remote RCP. RCP cable, tripod plate and lenses are optional extras. [Source](https://www.nibroadcast.com/1x-sony-hxc-d70-hdsdi-high-definition-multicore-camera-channel-with-cable-rcp-ccu-etc..html). Imported against the existing HXC-D70 Standard master and read back successfully; UK Used reference-only.
+
+The Sony HDC-3000 exact model remains unresolved after a fresh Sony UK support-catalogue check. Do not substitute HDC-3500, HDC-3200, HSC-300 or CCU prices.
+
+Cumulative Batches 04–13 now contain **236 GBP observations: 232 active (127 UK New, 105 UK Used) and four inactive retained for audit**. Batch 09 now contains 23 active rows (10 UK New, 13 UK Used). UK Used remains excluded from automatic valuation. The valuation function, schema, TEST and Stripe were not changed.

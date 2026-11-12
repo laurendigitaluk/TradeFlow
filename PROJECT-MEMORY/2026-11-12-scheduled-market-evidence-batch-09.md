@@ -370,3 +370,10 @@ Per instruction, no direct table write, claims impersonation, RLS bypass or unau
 ## 6. Next scheduled run
 
 Read this checkpoint and PROJECT-MEMORY/2026-11-12-scheduled-market-evidence-batch-09.md first. Exclude all 20 product IDs above, all IDs in scheduled checkpoints 02–08, all outstanding LIVE queue candidates and outstanding manual AI prompts. Recheck evidence and queue status immediately before selecting and researching the next 20. Use dynamic anti-joins, no SQL OFFSET. Attempt queue staging only through the supported authenticated platform-owner RPC if auth.uid() is non-null and the owner check passes; otherwise create the next checkpoint and project-memory file.
+
+
+## 12 November 2026 — Batch 09 RED VERIFY follow-up
+
+Five additional direct-source observations imported/read back: Currys PENTAX WG-90 £299 new (category listing with Add to Basket, third-party delivery; direct product page price differs); eBay UK Sony FE 28-60mm £141.12 used Good (exact MPN/EAN); MPB Sony FE 35mm GM from £819 used Like New (28 units, aggregate range); Park Cameras Sony FE 35mm GM £839 used Good and £939 used Excellent. Existing Argos WG-90 £299, Peter Rogers Pentax DA*55 £559, Wex Sony FE35 used £728/£829/£835, LCE Sony FE28-60 £149.99, Harrison Nikon MB-N12 £329, Andertons Shure SM81 £381 and DigiBroadcast RED Gemini £7,200 were rechecked and timestamps/notes refreshed.
+
+Batch 09 now has 16 active GBP rows: 6 UK New and 10 UK Used. Used remains reference-only. Shure cable/package detail and RED bundle contents remain important comparison caveats. Other suffix, currency, stock and package mismatch leads remain RED VERIFY. No master data, schema, valuation logic, TEST or Stripe changes.

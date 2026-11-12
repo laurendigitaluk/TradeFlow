@@ -37,3 +37,10 @@
 
 ## Next action
 Implement and use a secure authenticated import path that accepts checkpoint source records, preserves all findings (including RED VERIFY and non-GBP/no-price leads), performs idempotent duplicate detection, and stages candidates for human review. Do not bypass RLS or write as postgres without authenticated owner context.
+
+
+## 12 November 2026 — Four Batch 03 exact-source imports
+
+LIVE read-back confirmed four new rows: Sony Alpha A7C Body Only £799 new (E-Infinity UK; import tax included); Parrot ANAFI Work £1,040 ex VAT new (Sunbelt Sales exact SKU PF728100AA; complete Work package contents); AKASO Brave 4 With SD Bundle £147.22 new (Desertcart, duties/taxes included, 64GB U3 card plus two batteries/accessory kit); Sony Alpha SLT-A68 Body Only £279 used (MPB SKU 4297151; Good, 5,410 shutter, slight smoke odour and accessory exclusions preserved). Exact source URLs, package notes and evidence IDs are in CHECKPOINTS/2026-11-12-scheduled-market-evidence-batch-03.md.
+
+Batch 03 now four active rows (3 UK New, 1 UK Used). Cumulative Batches 03–13: 246 total, 243 active (133 UK New, 110 UK Used), three inactive. Remaining model/package/currency RED VERIFY leads are retained and not forced into wrong masters. No master/schema/valuation change; TEST and Stripe untouched.

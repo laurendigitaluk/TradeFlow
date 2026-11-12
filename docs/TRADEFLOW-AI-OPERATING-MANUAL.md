@@ -6155,3 +6155,10 @@ Batch 08 now has 17 GBP rows: 16 active (13 UK New, 3 UK Used) and one inactive.
 Resolved the HDC-1500 RED VERIFY package question by opening the seller's full eBay description. The N.I. Broadcast Ltd listing is £8,010 or Best Offer, 10 available, used, full working order. Each channel includes one Sony HDC-1500 fibre camera head, one HDCU-1500 half-rack CCU with extra HDSDI output board, one tripod plate and one RCP-920 RCP with Ethernet option. Lenses and viewfinders are extra-cost items. UK domestic shipping quote is not confirmed; the £200 displayed eBay quote was for the non-UK destination and is not part of the UK item price. Source: https://www.ebay.co.uk/itm/198054902757. Imported as UK Used against the HDC-1500 Standard Package; read-back verified. Keep it reference-only, excluded from automatic valuation.
 
 Batch 09 now has 21 active GBP rows (9 UK New, 12 UK Used). Cumulative Batches 04–13: 234 GBP rows, 230 active (126 UK New, 104 UK Used), four inactive. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Batch 09 Shure SM81 package verified
+
+Resolved the SM81/SM81-LC package ambiguity against Shure's official UK product page and user guide. The catalogue SM81 master maps to manufacturer SKU SM81-LC. LC means supplied without an XLR cable; it does not indicate a different microphone. Shure confirms the SM81 supplied accessories (microphone clip/swivel adapter, attenuator lock, carrying bag and windscreen). Stage Supply lists the exact SM81-LC at £405 inc VAT (£337.50 ex VAT), eight available online, additional supplier stock in 1–3 weeks and a two-year manufacturer warranty. Source: https://stagesupply.co.uk/product/shure-sm81-cardioid-condenser-instrument-microphone/. Imported and read back as UK New against the existing SM81 master.
+
+Batch 09 now has 22 GBP rows: 22 active (10 UK New, 12 UK Used), none inactive. Cumulative Batches 04–13: 235 GBP rows, 231 active (127 UK New, 104 UK Used), four inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.

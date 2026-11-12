@@ -1,3 +1,11 @@
+## 12 November 2026 — Batch 10 LIVE evidence follow-up and totals
+
+Batch 10 gained twelve observations: Sony LMD-A240 used Visual Impact £1,560 and eBay/N.I. Broadcast £1,150; Shure MV7+ SCAN £259 new; Sony SRG-A40 white Currys Business £3,635.98 and TopAV £5,054.39 new; Sony VG-C3EM used Wex £69 and Harrison £70; Sony FE PZ 28-135 new CameraWorld £1,960 and used MPB Good £814; Sony PDW-U1 used eBay £208.70 with PSU and Snet Technologies £1,459.95 with warranty; Shure MoveMic Two Receiver Kit official Shure UK £311.40. Batch 10 totals 24 active GBP rows (12 UK New, 12 UK Used). ProAV LMD-A240 £3,030 was rechecked and marked backorder due contradictory stock wording. Shure MoveMic Two pair £258.30 (receiver sold separately) is distinct from receiver kit £311.40.
+
+Cumulative Batches 04–13: 150 GBP rows, 148 active (81 UK New, 67 UK Used), 2 inactive. Batch totals/active: 04 18/18; 05 18/18; 06 12/12; 07 14/13; 08 14/13; 09 16/16; 10 24/24; 11 10/10; 12 12/12; 13 12/12. Inactive are BuzzFlyer DEVO-10 no stock and NEEWER KM19 seller away. Used evidence remains reference-only. The latest active GBP uk_new observation continues to be the automatic shared-market reference. No valuation function/schema change. TEST and Stripe untouched.
+
+---
+
 ## 12 November 2026 — Batch 09 follow-up and cumulative LIVE evidence
 
 Batch 09 follow-up added five direct-source observations: Currys PENTAX WG-90 £299 new (category listing; product-page price differs, confirm checkout); eBay Sony FE 28-60mm £141.12 used Good; MPB Sony FE 35mm GM from £819 used Like New; Park Cameras Sony FE 35mm GM £839 used Good and £939 used Excellent. Existing Argos/Peter Rogers/Wex/LCE/Harrison/Andertons/DigiBroadcast rows were rechecked and refreshed. Batch 09 now has 16 active GBP rows: 6 UK New, 10 UK Used. Keep used evidence reference-only and preserve package caveats for Shure SM81 and RED Gemini accessory bundle.

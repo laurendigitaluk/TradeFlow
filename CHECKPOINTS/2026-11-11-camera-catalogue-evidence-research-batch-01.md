@@ -27,3 +27,17 @@ Scope: first 10 active Cameras products with at least one missing new/used evide
 
 ## Next batch
 Continue with the next 10 active LIVE Cameras products with missing `uk_new` or `uk_used` evidence, using the current database counts and skipping these ten unless better/new source pages are found.
+
+
+## Verified imports and refreshed availability — 12 November 2026
+
+Five direct UK evidence records were imported into LIVE and read back:
+- Pentax 17 new, Hargreaves Photo £499, available now, EAN 027075310063.
+- Pentax 17 used, MPB SKU 4112513 £389 Like New (lens cap, manual, strap, original packaging, 12-month warranty).
+- Pentax 17 used, MPB SKU 4266074 £354 Excellent (lens cap, 12-month warranty).
+- Blackmagic Pocket Cinema Camera 6K G2 body-only new, RCB Logic £1,666.80 inc VAT, MPN CINECAMPOCHDEF6K2, one in stock.
+- Blackmagic Pocket Cinema Camera 6K G2 body-only new, Jigsaw24 £1,890 inc VAT, available to order, manufacturer code CINECAMPOCHDEF6K2 / GTIN 9338716007824.
+
+Batch 01 now has 5 active records (3 UK New, 2 UK Used). Evidence IDs/source keys are in LIVE shared_market_evidence with batch01-followup prefixes.
+
+Other leads rechecked and not imported: MPB's official current page for Micro Studio Camera 4K G2 is out of stock despite stale aggregator/mirror £764 references; MPB's official Cinema Camera 6K L Fit page is currently out of stock; MPB's PYXIS 6K L Fit page is currently out of stock; the CameraWorld Pocket Cinema Camera 6K source remained snippet-only; PYXIS 12K PL CVP open-box stock is EU-warehouse and ex VAT; no direct UK new offer for Aaton 35III 2 Perf or Blackmagic Cinema Camera (non-6K) was confirmed. Do not reactivate stale/out-of-stock pages.

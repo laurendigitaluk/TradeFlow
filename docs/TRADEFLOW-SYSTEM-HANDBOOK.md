@@ -5732,3 +5732,8 @@ Two exact duplicate source captures were found in Batch 13 and deactivated while
 Two duplicate captures were deactivated in Batch 13 and retained for audit: earlier Sony FE 12-24mm F2.8 GM Sony UK row 0c023277-93cd-47bb-8677-4f005693e738, with later same-source row fa2cbd78-e707-481c-be3f-e46aa3cf18d5 retained; earlier Sony ECM-B10 Wex row 9d7a7b65-8a2a-4a28-90b7-2a1c64e38564, with later same-source row f9bb53b9-c1a1-4983-b0bd-77bdb4f6ccba retained. Independent retailer offers remain active. Batch 13 now 50 total, 48 active (27 new, 21 used), two inactive duplicates.
 
 Latest Batches 01–13: 263 rows, 257 active (139 UK New, 118 UK Used), six inactive. Global LIVE shared_market_evidence: 4,805 total, 4,747 active, 58 inactive. No TEST, Stripe, schema or valuation changes.
+
+
+## 12 November 2026 — Manual AI queue Kobra 4 evidence import
+
+An outstanding Anycubic Kobra 4 queue candidate was matched to existing LIVE master Kobra 4 / Standard Printer c673eabf-716d-4ca9-b6eb-9acba6e593a3. Official UK Anycubic variant selector distinguishes standalone Kobra 4 £159 from Kobra 4 Combo (4 colours) £259; the standard price is GBP including VAT and the standalone model is estimated to ship within 24 hours. Imported active UK New evidence row ae7a2f85-ff95-4c22-8bf0-b856ed46142c. Source https://uk.anycubic3d.com/products/kobra-4-3d-printer. The queue candidate remains `needs_research` pending the authenticated owner status workflow; do not mutate queue state directly or bypass RLS. This is a shared_market_evidence import, not a manual report submission.

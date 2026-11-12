@@ -6395,3 +6395,14 @@ Current Batches 01–13: 267 total, 260 active (141 UK New, 119 UK Used), seven 
 UHC-8300 and HDC-3200 Visual Impact offers are camera-head-only observations, not complete systems. UHC-8300 £396,117.94 inc VAT excludes the separate UHCU-8300 CCU; HDC-3200/DF £37,651.84 inc VAT includes the dual-filter camera-head variant, while HDCU-3500/3100 CCU or HDCE adaptor are separate. Lens/viewfinder are not listed as included. Existing evidence rows were clarified in place; see Batch 12 checkpoint.
 
 MKS-R3210 still has no exact UK GBP offer. eBay's £61.75 listing is BKS-R3210, not MKS-R3210; do not cross-match. No master or valuation changes.
+
+
+## 12 November 2026 — Queue reconciliation, package discipline and source availability
+
+When reconciling manual AI research queue entries, check `shared_market_evidence` by exact master, source URL, price and package before inserting anything. Seven of ten current queue candidates already had matching LIVE evidence rows; these were reconciled without duplicate inserts. Do not clear queue statuses or imply owner approval unless the established owner-review workflow actually completes. Full mapping and outstanding items are in `CHECKPOINTS/2026-11-12-manual-research-queue-reconciliation.md`.
+
+Package controls from this pass: Kobra 3 Max V2 Standard (£379), 4-Color Combo (£519) and separate ACE 2 Pro Combo (£499) are distinct variants; Kobra 3 Max V2 All-in-One Bundle £641 includes extra camera, printhead assembly, adhesive and filament and is not a base combo. Kobra S1 ACE 2 Pro 4-Color Combo pages currently show £409 and £449 on two separate official URLs; retain source URL and price separately, and deactivate stale duplicate snapshots of the same URL. Bambu A1 Standard current UK offers include 3D Prima £215 inc VAT and Additive-X £189 inc VAT.
+
+PS5 Digital Edition 825GB official UK RRP £519.99 is currently out of stock; store that availability explicitly. Do not map the Argos £559.99 two-controller bundle to the standard one-controller package. Leave the older Amazon listing unresolved without a current GBP price/model confirmation.
+
+Batches 01–13: 268 observations, 261 active (142 UK New, 119 UK Used), seven inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.

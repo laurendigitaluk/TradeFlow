@@ -78,3 +78,12 @@ The existing hourly automation remains enabled and its saved prompt already cont
 4. Select the next 20 eligible active LIVE master products dynamically without SQL OFFSET.
 5. Recheck active evidence and queue/prompt status immediately before researching.
 6. Attempt staging only through the authenticated platform-owner RPC if owner auth passes; otherwise create Batch 09 checkpoint and project-memory files.
+
+
+## 12 November 2026 — Batch 08 RED VERIFY follow-up
+
+Six further records were imported and read back: Hubsan H501A X4 Air Pro / Elite Models £209.99 sold out; Hubsan H501M X4 / Elite Models £139.99 sold out; Hubsan ZINO Pro / Elite Models £389.99 supplier stock; NEEWER NL660 2-pack / Gumtree £75 used, battery pack not included; GoPro HERO6 Black / UsedLens MPB Excellent £119; NEEWER KM19 / eBay £47.94 new, seller away until 19 Nov, stored inactive.
+
+Updated existing observations: Nikon COOLPIX P7700 MPB is now one Good unit at £229 (replacing the stale £239/£294 range); Very HOVERAir X1 PROMAX Standard is confirmed at £609 sale (£639 regular), charger not included, in stock with 3–5 day delivery. The NEEWER KM19 eBay row is inactive until seller returns; the official NEEWER £39.99 row remains active.
+
+Batch 08 now has 14 total GBP rows: 13 active (10 UK New, 3 UK Used) and one inactive UK New seller-away row. Official Hubsan /eur prices for MINI and ZINO MINI PRO remain RED VERIFY because the UK delivery region is not confirmed. Other unresolved suffix, package and accessory bundles remain in the checkpoint. No master, schema, valuation logic, TEST or Stripe changes.

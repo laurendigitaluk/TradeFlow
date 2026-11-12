@@ -79,3 +79,10 @@ The PowerDolphin Wizard new £1,449 eBay row was deactivated because the seller'
 ## 12 November 2026 — second Batch 13 retailer recheck
 
 Five more exact GBP records added/read back: ECM-B10 CameraWorld £159 new in stock; FE85 GM II LCE £1,799 new in stock and Park £1,799 new in stock (both £200 cashback after claim); FE12-24 GM CameraWorld £2,548 new, two available, and £2,548 open-box unique item. Batch 13 now 41 total rows, 40 active (21 new, 19 used), one inactive package-unverified PowerDolphin Wizard new row.
+
+
+## 12 November 2026 — Batch 13 further RED VERIFY follow-up
+
+Six further UK New records imported/read back: Wex Sony ECM-B10 £175 limited stock; Sony Centre Direct FE85 GM II £1,799; Sony UK FE12-24 GM £2,645; Sony Centre Direct FE12-24 GM £2,645; HOVERAir UK official AQUA Standard £1,129; Park Cameras AQUA Standard £1,129 in stock. Exact SKU/package details are in the checkpoint.
+
+Corrected BuzzFlyer Walkera Furious F320 £369 row from uk_used to uk_new because it is a new retail offer, condition new, sold out. No price/status changes. Batch 13 now 47 total GBP rows, 46 active (28 UK New, 18 UK Used), one inactive package-unverified PowerDolphin Wizard new row. Remaining exact-source/package uncertainty is preserved as RED VERIFY. No master/schema/valuation changes; TEST and Stripe untouched.

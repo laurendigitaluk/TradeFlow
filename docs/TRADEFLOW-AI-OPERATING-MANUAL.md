@@ -6239,3 +6239,12 @@ Current Batches 04–13: 241 observations, 238 active (130 UK New, 108 UK Used),
 Do not discard useful evidence when a search result is the wrong catalogue model. The prior HXR-V1E lead's item specifics identified HVR-Z1E, which has its own LIVE Standard Package master. Two exact N.I. Broadcast offers were imported against that master: £250 used product code 6946 without battery/charger, and £250 used product code 6944 with battery/charger. Both were tested and in stock. Evidence IDs and source URLs are in the Batch 13 checkpoint. UK Used remains reference-only and accessory differences must remain visible.
 
 Current Batches 04–13: 243 observations, 240 active (130 UK New, 110 UK Used), three inactive. Batch 13: 49 active (29 new, 20 used). TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Batch 03 imports and HXR-MC2500E model matching
+
+Batch 03 now has four LIVE verified source rows: Sony Alpha A7C Body Only £799 new; Parrot ANAFI Work £1,040 ex VAT new; AKASO Brave 4 With SD Bundle £147.22 new; Sony Alpha SLT-A68 Body Only £279 used. All are read back against exact existing master/package records. Preserve the ANAFI ex-VAT basis and Brave 4 extra-accessory bundle notes. The A68 used row retains smoke odour, shutter count and accessory exclusions. Full source links/IDs are in the Batch 03 checkpoint.
+
+A previous HXR-MC2500E £789.99 used observation was incorrectly attached to the non-E HXR-MC2500 master. The exact HXR-MC2500E / Standard master already exists; the existing row was reassigned to it after verifying current eBay item specifics. Evidence row a92bb4e6-7fb1-436f-bb26-19f4795ed61f; no duplicate or price change. Full details are in the Batch 12 checkpoint.
+
+Current Batches 03–13: 246 observations, 243 active (133 UK New, 110 UK Used), three inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.

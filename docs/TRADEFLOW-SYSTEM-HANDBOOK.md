@@ -1,3 +1,25 @@
+## 12 November 2026 — Batch 11 additional evidence and cumulative totals
+
+Batch 11 gained seven UK Used observations: Nikon P900 Harrison £420 and Wex £449; Nikon F2AS Data Grays bundle £6,500 (MF-10 plus MD-2/MB-1 and DS-12); Panasonic Leica 50-200 Park £929 and MPB £1,009; Panasonic DMC-GM5 MPB £624; Pentax SMC FA 100mm macro eBay £234.89 with £49.99 postage. Batch 11 now has 29 active GBP rows (8 UK New, 21 UK Used).
+
+Cumulative batches 04–13 now contain 218 GBP rows, 214 active (111 UK New, 103 UK Used), four inactive. Per-batch total/active/new/used/inactive:
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 20 | 20 | 9 | 11 | 0 |
+| 10 | 27 | 27 | 12 | 15 | 0 |
+| 11 | 29 | 29 | 8 | 21 | 0 |
+| 12 | 25 | 24 | 16 | 8 | 1 |
+| 13 | 41 | 40 | 21 | 19 | 1 |
+
+This supersedes the previous 211/207 cumulative snapshot. UK Used remains reference-only. LIVE valuation selects latest active GBP uk_new by observed_at/created_at and does not filter availability. No schema/valuation function changes. TEST and Stripe untouched.
+
+---
+
 ## 12 November 2026 — Batch 10 additional evidence and cumulative totals
 
 Batch 10 gained three more LIVE observations: Potensic T18 eBay UK £62.58 used; Tamron SP 15-30mm G2 Nikon fit MPB £624 Like New and £569 Excellent. The Tamron catalogue master does not specify mount; both prices are Nikon F fit only and remain used-market references. Batch 10 now has 27 active GBP rows (12 UK New, 15 UK Used).

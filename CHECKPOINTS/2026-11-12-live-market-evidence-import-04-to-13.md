@@ -73,3 +73,29 @@ Posted to existing platform_ai_agent_messages thread tradeflow-research:
 3. Keep non-GBP, no-price and unresolved package leads in research references; do not fabricate a GBP amount.
 4. Continue read-back verification and dashboard progress notifications.
 5. Update the existing System Handbook and AI Operating Manual once their actual repository paths are located. The previously expected paths docs/GEARCASHOUT-SYSTEM-HANDBOOK.md and docs/GEARCASHOUT-AI-OPERATING-MANUAL.md returned 404 on production and were not recreated under guessed paths.
+
+
+## 12 November 2026 — LIVE database reconciliation after RED VERIFY follow-ups
+
+The initial scheduled import pass inserted 107 GBP rows. Follow-up reviews of Batches 04–07 have inserted 20 additional evidence rows. Current direct LIVE database read-back shows **127 total rows, 126 active rows, one inactive row; all 127 are GBP**. The one inactive row is BuzzFlyer UK DEVO-10 + RX1002 (£149.95) because the current page says Notify Me and no stock; it remains stored for audit but is excluded from active evidence.
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 8 | 8 | 7 | 1 | 0 |
+| 09 | 11 | 11 | 5 | 6 | 0 |
+| 10 | 12 | 12 | 7 | 5 | 0 |
+| 11 | 10 | 10 | 3 | 7 | 0 |
+| 12 | 12 | 12 | 8 | 4 | 0 |
+| 13 | 12 | 12 | 7 | 5 | 0 |
+
+Totals: **127 total rows; 126 active (72 UK New, 54 UK Used); 1 inactive**. The original 107 total was correct, but the earlier per-batch breakdown in the summary message had Batches 10–12 misallocated. The actual LIVE database counts are Batch 10 = 12, Batch 11 = 10, Batch 12 = 12. All counts above are from source_record_key prefixes and direct LIVE read-back.
+
+Follow-up additions: Batch 04 +4, Batch 05 +9, Batch 06 +3, Batch 07 +4 = 20 additional rows. Existing price/status corrections are documented in each batch checkpoint. Batches 08–13 have not yet received the RED VERIFY follow-up pass in this continuation; their initial verified rows remain unchanged.
+
+The LIVE valuation function selects the latest active GBP uk_new observation by observed_at then created_at; it does not filter availability. UK Used is not selected. Sold-out/backorder UK New rows remain active with their explicit availability and notes, consistent with the current evidence policy; a Notify Me/no-stock row was made inactive. No valuation function or schema change was made.
+
+The actual documentation paths have now been located and updated on production: docs/TRADEFLOW-SYSTEM-HANDBOOK.md and docs/TRADEFLOW-AI-OPERATING-MANUAL.md. Dashboard progress notifications are posted in platform_ai_agent_messages on thread tradeflow-research. TEST and Stripe remain untouched.

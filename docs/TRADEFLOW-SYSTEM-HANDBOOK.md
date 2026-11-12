@@ -1,3 +1,13 @@
+## 12 November 2026 — LIVE market evidence follow-up (Batch 05)
+
+Batch 05 received nine additional direct-source observations in LIVE public.shared_market_evidence: four UK New RØDE Wireless GO Gen 3 listings (Disc DJ £179, Jessops £179, Wex £159 blue/limited stock, Westend DJ £179.99); two UK New Sony FE 24-70mm F2.8 GM II listings (LCE £1,699 and CameraWorld £1,813); two UK Used Sony SRG-300H eBay observations (£567.55 current, £491.34 ended including buyer-protection fee); and one UK Used Nikon Nikkor-H Auto 50mm f/2 eBay observation (£71.05). Batch 05 now has 18 active GBP rows: 10 uk_new and 8 uk_used.
+
+As in Batch 04, live calculate_buying_item_valuation(uuid,uuid) uses GBP uk_new evidence only for the shared-market fallback. uk_used evidence is comparison/reference only. Ended eBay asking-price observations must be marked ended, not sold, unless a completed-sale status is visible. Preserve buyer-protection fees and item price separately in notes; do not present the fee-inclusive amount as a confirmed sale price. Keep terms/checkout currency conflicts, unverified current stock and package mismatches as RED VERIFY, not active exact UK evidence.
+
+The Batch 05 checkpoint and project-memory file hold exact source URLs and verification notes. The dashboard status is posted to platform_ai_agent_messages on thread tradeflow-research. TEST and Stripe remain untouched.
+
+---
+
 ## 12 November 2026 — LIVE shared market evidence follow-up (Batch 04)
 
 The 12 November Batch 04 RED VERIFY follow-up added four exact UK GBP used-market records to public.shared_market_evidence using an idempotent migration and read-back verification: Olympus VF-4 via MPB (£146, Good); Nikon AF-S DX Nikkor 18-200mm VR II via eBay/Fivercam (£170.10, used) and London Camera Exchange (£149.99, Good); and RØDE Wireless GO II dual-channel via eBay/DR Beauties (£99.99, Grade B, out of stock). Batch 04 now has 18 active rows: 8 uk_new and 10 uk_used, all GBP.

@@ -359,3 +359,23 @@ Per instruction, no direct table write, claims impersonation, RLS bypass or unau
 ## 6. Next scheduled run
 
 Read this checkpoint and PROJECT-MEMORY/2026-11-12-scheduled-market-evidence-batch-09.md first. Exclude all 20 product IDs above, all IDs in scheduled checkpoints 02–08, all outstanding LIVE queue candidates and outstanding manual AI prompts. Recheck evidence and queue status immediately before selecting and researching the next 20. Use dynamic anti-joins, no SQL OFFSET. Attempt queue staging only through the supported authenticated platform-owner RPC if auth.uid() is non-null and the owner check passes; otherwise create the next checkpoint and project-memory file.
+
+## 7. RED VERIFY follow-up — 12 November 2026
+
+Direct source pages were reopened and compared with existing LIVE evidence. Five additional source observations were imported and read back:
+
+| Master product | Source | Price | Evidence / status |
+|---|---|---:|---|
+| PENTAX WG-90 | Currys | £299.00 | New; Currys category listing shows Add to Basket and approved third-party delivery estimated 2–3 working days; collection unavailable. The direct black product page still showed £379, so confirm checkout price. [Source](https://www.currys.co.uk/cameras/compact-and-bridge-cameras/compact-and-bridge-cameras/compact-cameras?start=0&sz=60) |
+| Sony FE 28-60mm F4-5.6 | eBay UK — tomisimpern | £141.12 | Used, Good; active listing, private seller in Wokingham, 100% positive; no returns, delivery varies. Exact MPN SEL2860.ALL / EAN 4548736121300. [Source](https://www.ebay.co.uk/itm/336807491138) |
+| Sony FE 35mm F1.4 GM | MPB UK | £819.00 | Used, Like New minimum; MPB page shows 28 units from £819–£919, 12-month warranty; aggregate minimum rather than a single unit. [Source](https://www.mpb.com/en-uk/product/sony-fe-35mm-f14-gm) |
+| Sony FE 35mm F1.4 GM | Park Cameras | £839.00 | Used, Good; SKU UP-PS0115-SE00241, add to basket, 12-month warranty. [Source](https://www.parkcameras.com/used/lenses/sony/used-sony-fe-35mm-f-1-4-gm-e-mount-lens/) |
+| Sony FE 35mm F1.4 GM | Park Cameras | £939.00 | Used, Excellent; SKU UP-7240579G-2474596, add to basket, £10 voucher offer displayed, 12-month warranty. [Source](https://www.parkcameras.com/used/lenses/sony/used-sony-fe-35mm-f-1-4-gm-e-mount-lens/) |
+
+Existing records were rechecked and their observed_at timestamps refreshed to the actual 12 November source review: Argos PENTAX WG-90 black £299 (Lowest Price Ever; postcode-dependent fulfilment); Peter Rogers PENTAX DA* 55mm F1.4 SDM £559, in stock, SKU 21790; Wex Sony FE 35mm GM used units £728 Very Good, £829 Mint and £835 Excellent; LCE Sony FE 28-60mm used £149.99 Excellent, in store; Harrison Nikon MB-N12 £329, one in stock; Andertons Shure SM81 £381, two in stock; DigiBroadcast RED Gemini DSMC2 5K S35 £7,200 inc VAT (£6,000 ex VAT), 765 hours, Great Condition, 3–4 day delivery and accessory bundle. The Shure page's precise cable/package contents should still be checked against the master package; the RED evidence is a multi-accessory bundle, not bare-body comparison.
+
+Batch 09 now has **16 active records: 6 UK New and 10 UK Used; all 16 are GBP**. Five additional records were inserted; the rest were refreshed. Used observations remain reference-only and do not affect automatic valuation.
+
+Other leads remain RED VERIFY and were not promoted: Sony RM-BR300H has only base RM-BR300 UK price; PowerDolphin batteries are third-party replacements; HVR-Z5U sources include NTSC/PAL suffix and foreign currency mismatches; Sony NP-FV70 exact A/non-A version unresolved; HDC-F5500V package not enumerated; GF7 body and 12–32mm kit are not interchangeable; Skydio X2E only has a US-dollar offer; Nikon F55 body and lens kit differ; Nikon MB-N12 Jessops is awaiting stock while Harrison is available; SmallRig RC100B ProAV stock wording conflicts; Sony NXLK-IP50Y has only JPY list price; HDC-1500 package contents unclear; HDC-3000 exact product not located; Pentax FA31 colour/version and current prices unresolved; Shure SM81-LC package lacks cable; RED Gemini Japan seller GBP displays are not UK seller evidence. Do not convert foreign currency or promote package mismatches.
+
+No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.

@@ -259,10 +259,10 @@ Google Shopping search links are included per product so the end user can inspec
 - Source findings:
   - Official NEEWER UK: from £39.99 (was £53.99); top message says “More stock coming soon” while page also says “In stock”.
   - Package: one receiver, two transmitters, one charging case, two OTG adapters, charging cable, two windscreens and pouch.
-  - eBay: £39.62, new, private seller in Wolverhampton, 100% positive feedback, 123 feedback; no returns accepted.
+  - eBay: £39.62, new, private seller in Wolverhampton, 100% positive feedback, 123 feedback; no returns accepted. The seller is away until 19 November 2026, so dispatch is delayed.
   - Google Shopping Amazon leads: £38.99 and £47.99; opened Amazon pages were inaccessible.
 - Condition/availability: official new listing with contradictory stock messaging; eBay new private-seller listing.
-- RED VERIFY: check the official selected colour/variant and checkout stock. Keep the eBay seller as private/unverified despite positive feedback; no returns accepted.
+- RED VERIFY: check the official selected colour/variant and checkout stock. Keep the eBay seller as private/unverified despite positive feedback; no returns accepted; seller away until 19 November 2026, so dispatch is delayed.
 - Sources:
   - https://uk.neewer.com/collections/portable-microphone/products/neewer-km19-wireless-lavalier-microphone-66609101
   - https://www.ebay.co.uk/itm/880041406167
@@ -273,9 +273,9 @@ Google Shopping search links are included per product so the end user can inspec
 ### 15. NEEWER — LS-29 PRO
 - Product ID: `ab1ef244-d761-425c-9d03-7480e30e8bfd`
 - Package: NEEWER LS-29 PRO 8mm Fisheye Lens with 17mm Thread
-- UK GBP price: £67.49 historical Amazon-price reference on YPC (as of 2026-08-14); official UK search index previously showed £58.99 but direct page was unavailable/404
+- UK GBP price: £67.49 historical Amazon-price reference on YPC (as of 2026-08-15); official UK search index previously showed £58.99 but direct page was unavailable/404
 - Source findings:
-  - YPC exact LS-29 PRO page describes 8mm fisheye, 220° field of view, 17mm threaded clip and compatibility with 17mm threaded phone cage/case/clamp/backplate. SKU B0DHRHMDY4. Price £67.49 as of 14 August 2026; YPC page states Amazon price/availability at the time of purchase applies.
+  - YPC exact LS-29 PRO page describes 8mm fisheye, 220° field of view, 17mm threaded clip and compatibility with 17mm threaded phone cage/case/clamp/backplate. SKU B0DHRHMDY4. Price £67.49 as of 15 August 2026; YPC page states Amazon price/availability at the time of purchase applies.
   - Official NEEWER UK indexed result displayed £58.99 and zero stock, but the direct product page could not be opened.
   - Google Shopping also surfaced an AliExpress “200 Fish Eye VR Lens” at £33.06; this is not the exact LS-29 PRO and must not be matched as exact.
 - Condition/availability: YPC price is a historical aggregator reference; official UK listing unavailable; AliExpress result is a different product.

@@ -301,3 +301,10 @@ Four inactive rows: BuzzFlyer DEVO-10 no stock, NEEWER KM19 seller away, Sony UK
 Current LIVE source_record_key counts for Batches 01–13: 255 total observations, 252 active (137 UK New, 115 UK Used), three inactive. Per-batch breakdown is in CHECKPOINTS/2026-11-12-live-market-evidence-import-04-to-13.md, which now extends to Batches 01–13. Batch 01: 5 active (3 new, 2 used); Batch 02: 2 active (0 new, 2 used); Batch 03: 5 active (4 new, 1 used); Batches 04–13 retain their current verified counts. Current global LIVE shared_market_evidence table: 4,797 total, 4,742 active, 55 inactive.
 
 This supersedes earlier 220-row/216-active and 246-row/243-active cumulative snapshots. UK Used remains reference-only; three inactive rows remain audit-retained. No TEST, Stripe, schema or valuation changes.
+
+
+## 12 November 2026 — latest Batches 01–13 reconciliation
+
+Fresh LIVE read-back after Batch 02 CVP and Batch 03 parallel additions: 260 batch-keyed observations across Batches 01–13, 257 active (140 UK New, 117 UK Used), three inactive. Current global shared_market_evidence: 4,802 total, 4,747 active, 55 inactive. Latest per-batch breakdown is in CHECKPOINTS/2026-11-12-live-market-evidence-import-04-to-13.md. Batch 02 now 4 active (all UK Used); Batch 03 now 8 active (7 UK New, 1 UK Used).
+
+Batch 03 includes three UK New out-of-stock/backorder Caddx price references; current valuation does not filter active UK New by availability, so they may influence automatic valuation. This is existing behaviour and no valuation logic was changed. UK Used remains reference-only. TEST and Stripe untouched.

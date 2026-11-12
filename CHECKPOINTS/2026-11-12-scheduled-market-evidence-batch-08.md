@@ -402,3 +402,28 @@ Continue with the next 20 eligible active LIVE master products:
 5. Recheck active evidence and queue/prompt status immediately before research.
 6. Research actual product pages and Google Shopping results; preserve uncertain leads with RED VERIFY.
 7. Attempt staging only through the authenticated platform-owner RPC if `auth.uid()` is non-null and the owner check passes. Otherwise create the next detailed checkpoint and project-memory files.
+
+
+## 6. RED VERIFY follow-up — 12 November 2026
+
+Six additional records were imported and read back from LIVE:
+
+| Master product | Source | Price | Evidence/status |
+|---|---|---:|---|
+| Hubsan H501A X4 Air Pro | Elite Models Online | £209.99 | New; out of stock; exact model listing. [Source](https://www.elitemodelsonline.co.uk/Aircraft/Helicopters/By-Manufacturers/Hubsan/136604-/HUBSAN-501A-X4-AIR-PRO-DRONE-w%2AGPS-1080P%2A-1KEY%2A-FOLLOW%2A-WAYPOINT) |
+| Hubsan H501M X4 | Elite Models Online | £139.99 | New; out of stock; exact H501M, package contents verified (drone, HT009 transmitter, charger, props, battery, instructions). [Source](https://www.elitemodelsonline.co.uk/Aircraft/Helicopters/By-Manufacturers/Hubsan/136614-/HUBSAN-501M-X4-DRONE-WAYPOINTS-FPV-720P%2A-RTH%2A-FOLLOW%2A-GPS) |
+| Hubsan ZINO Pro | Elite Models Online | £389.99 | New; supplier stock, usually dispatches in 1–2 working days; standard drone package, not the extra-battery/bag bundles. [Source](https://www.elitemodelsonline.co.uk/Aircraft/Helicopters/By-Manufacturers/Hubsan/135624-/HUBSAN-ZINO-Pro-FOLDING-DRONE-4K%2A-FPV%2A-5%2A-8G%2A-GPS%2A-FOLLOW%2A-RTH) |
+| NEEWER NL660 2-pack light kit | Gumtree | £75.00 | Used, as good as new; two lights, stands, barn doors and softboxes; battery pack not included; collection only. [Source](https://www.gumtree.com/p/lighting-studio/neewer-2-pack-nl660-led-video-lights/1512800837) |
+| GoPro HERO6 Black | UsedLens / MPB listing | £119.00 | Used, Excellent; one current MPB listing, sale price £119 (regular £123). Other eBay prices were accessory bundles and not treated as body-only comparables. [Source](https://usedlens.co.uk/product/gopro-hero-6-black) |
+| NEEWER KM19 wireless microphone | eBay UK — poundstretcher_uk | £47.94 | New; seller in Wolverhampton, 100% positive, no returns; seller away until 19 Nov 2026. Retained inactive until seller returns. [Source](https://www.ebay.co.uk/itm/880041406167) |
+
+Existing evidence was rechecked:
+- MPB Nikon COOLPIX P7700 is now one Good unit at £229, not the earlier £239/£294 range. The existing row was updated to £229, in stock, with the included battery, charger and 12-month warranty.
+- Very HOVERAir X1 PROMAX Standard is confirmed at £609 sale price (regular £639), in stock with 3–5 day delivery; charger not included. The existing row's notes and availability were refreshed.
+- The NEEWER KM19 eBay seller-away observation is stored but inactive; the existing NEEWER official £39.99 observation remains active.
+
+Batch 08 now has **14 database rows: 13 active (10 UK New, 3 UK Used) and one inactive UK New seller-away row; all 14 are GBP**.
+
+Other leads remain RED VERIFY: official Hubsan /eur pages show GBP prices for MINI and ZINO MINI PRO but the UK delivery region is not confirmed; Hubsan HT55 package contents remain unclear; H109 page suffix does not match the H109 master; Menkind Zino Pro £279 is an old crawl and was superseded by the current Elite Models £389.99 standard package; GoPro HERO6 eBay offers are bundles with differing batteries/accessories; the earlier MPB Good £82 HERO6 listing is no longer visible; NEEWER KM19 seller-away price is inactive; NEEWER PA028E title/spec suffix mismatch remains; NEEWER NL660 official stock wording remains mixed. No unsupported region, package or model match was promoted.
+
+No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.

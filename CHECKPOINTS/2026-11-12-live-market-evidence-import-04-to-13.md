@@ -99,3 +99,29 @@ Follow-up additions: Batch 04 +4, Batch 05 +9, Batch 06 +3, Batch 07 +4 = 20 add
 The LIVE valuation function selects the latest active GBP uk_new observation by observed_at then created_at; it does not filter availability. UK Used is not selected. Sold-out/backorder UK New rows remain active with their explicit availability and notes, consistent with the current evidence policy; a Notify Me/no-stock row was made inactive. No valuation function or schema change was made.
 
 The actual documentation paths have now been located and updated on production: docs/TRADEFLOW-SYSTEM-HANDBOOK.md and docs/TRADEFLOW-AI-OPERATING-MANUAL.md. Dashboard progress notifications are posted in platform_ai_agent_messages on thread tradeflow-research. TEST and Stripe remain untouched.
+
+
+## 12 November 2026 — LIVE reconciliation after Batch 08 follow-up
+
+The initial scheduled import pass contained 107 GBP rows. Follow-up reviews of Batches 04–08 have added 26 more rows. Direct LIVE read-back now confirms **133 total rows, 131 active, 2 inactive; all 133 are GBP**. Active evidence comprises **75 UK New and 56 UK Used**. The two inactive records are BuzzFlyer DEVO-10 + RX1002 (Notify Me/no stock) and NEEWER KM19 eBay (seller away until 19 Nov).
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 11 | 11 | 5 | 6 | 0 |
+| 10 | 12 | 12 | 7 | 5 | 0 |
+| 11 | 10 | 10 | 3 | 7 | 0 |
+| 12 | 12 | 12 | 8 | 4 | 0 |
+| 13 | 12 | 12 | 7 | 5 | 0 |
+
+Totals: **133 total, 131 active (75 UK New, 56 UK Used), 2 inactive**. The original 107 total was correct; earlier per-batch summary values for Batches 10–12 were misallocated. Current database counts are Batch 10=12, Batch 11=10, Batch 12=12. Follow-up additions were Batch 04 +4, Batch 05 +9, Batch 06 +3, Batch 07 +4, Batch 08 +6 = 26.
+
+Batches 09–13 have not yet received the RED VERIFY follow-up pass in this continuation; their initial verified rows remain unchanged. The presence of imported rows does not mean every product or every source URL in the research checkpoints has been resolved.
+
+LIVE calculate_buying_item_valuation(uuid,uuid) selects the latest active GBP uk_new observation by observed_at then created_at; it does not filter availability. UK Used is not selected. Active sold-out/backorder UK New observations retain their explicit status and can still affect automatic valuation under the existing function. No-stock Notify Me and seller-away records are retained but inactive until availability returns. No valuation code or schema change was made.
+
+The actual manuals remain docs/TRADEFLOW-SYSTEM-HANDBOOK.md and docs/TRADEFLOW-AI-OPERATING-MANUAL.md, both updated. Dashboard progress is posted to platform_ai_agent_messages on thread tradeflow-research. TEST and Stripe remain untouched.

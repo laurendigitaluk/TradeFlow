@@ -6309,3 +6309,10 @@ Current Batches 01–13: 261 observations, 257 active (140 UK New, 117 UK Used),
 Four UK Used Blackmagic offers from CVP/MPB were verified against exact masters: URSA Cine 12K LF Body CVP Open Box £4,989.40 ex VAT / £5,987.28 inc; Studio Camera 6K Pro CVP £1,580.40 ex VAT; URSA Cine 17K 65 + EVF CVP £16,199.10 ex VAT; URSA Cine 12K LF PL Fit MPB £5,509. Retain ex-VAT basis, condition, accessory and mount differences exactly as documented in the Batch 02 checkpoint. All remain UK Used reference-only.
 
 Current Batches 01–13: 261 observations, 257 active (140 UK New, 117 UK Used), four inactive. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — RM-BR300 model separation and latest counts
+
+The N.I. Broadcast £499 used listing is exact RM-BR300, not RM-BR300H; it was matched to the separate RM-BR300 master. Evidence row 48d36782-0c1b-42ff-8fd0-938e73779c31. Preserve the model distinction.
+
+Current Batches 01–13: 262 observations, 258 active (140 UK New, 118 UK Used), four inactive. Global shared_market_evidence: 4,804 total, 4,748 active, 56 inactive. Batch 13 now 50 active (29 new, 21 used). UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.

@@ -1,3 +1,25 @@
+## 12 November 2026 — Batch 12 additional evidence and cumulative totals
+
+Batch 12 gained Sony NEX-FS100 eBay UK £768.08 used (private UK seller, package unspecified) and Z CAM ExAscend CFast Reader ProAV £51.60 inc VAT (£43 ex), backorder. Walkera Vitus Starlight is now confirmed as exact; Vitus 320 is the underlying aircraft platform on the same Starlight product page. Camix Sony FE 50mm F1.4 GM £1,032 inc VAT was reconfirmed direct, new/in stock, with box contents and warranty stated. Batch 12 now has 27 rows, 26 active (17 UK New, 9 UK Used), one inactive Sony UK E35 £225 price-conflict row.
+
+Cumulative batches 04–13 now contain 220 GBP rows, 216 active (112 UK New, 104 UK Used), four inactive. Per-batch total/active/new/used/inactive:
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 20 | 20 | 9 | 11 | 0 |
+| 10 | 27 | 27 | 12 | 15 | 0 |
+| 11 | 29 | 29 | 8 | 21 | 0 |
+| 12 | 27 | 26 | 17 | 9 | 1 |
+| 13 | 41 | 40 | 21 | 19 | 1 |
+
+This supersedes the previous 218/214 cumulative snapshot. UK Used remains reference-only. LIVE valuation selects latest active GBP uk_new by observed_at/created_at and does not filter availability. No schema/valuation function changes. TEST and Stripe untouched.
+
+---
+
 ## 12 November 2026 — Batch 11 additional evidence and cumulative totals
 
 Batch 11 gained seven UK Used observations: Nikon P900 Harrison £420 and Wex £449; Nikon F2AS Data Grays bundle £6,500 (MF-10 plus MD-2/MB-1 and DS-12); Panasonic Leica 50-200 Park £929 and MPB £1,009; Panasonic DMC-GM5 MPB £624; Pentax SMC FA 100mm macro eBay £234.89 with £49.99 postage. Batch 11 now has 29 active GBP rows (8 UK New, 21 UK Used).

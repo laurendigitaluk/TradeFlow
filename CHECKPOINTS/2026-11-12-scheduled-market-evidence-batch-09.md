@@ -413,3 +413,14 @@ The seller's full eBay description was retrieved and resolves the prior package 
 Lenses, RCP750/1500 and HDVF viewfinders are extra-cost items; no lens or viewfinder is included in the channel price. Direct eBay page currently shows £8,010 or Best Offer (previously £8,900), used, full working order, 10 available, UK business seller N.I. Broadcast Ltd with 100% positive feedback. No returns accepted. The displayed £200 Parcelforce Global Priority quote is for the non-UK destination; the seller says UK shipping is available but the domestic quote must be requested. [Listing](https://www.ebay.co.uk/itm/198054902757) · [Full seller description](https://itm.ebaydesc.com/itmdesc/198054902757?category=3319&cspheader=1&descgauge=1&domain=ebay.com&excSoj=1&excTrk=1&ittenable=false&lang=en&lsite=3&oneClk=2&secureDesc=1&seller=n.i_broadcast&t=1710364074000&ver=1)
 
 Imported as active UK Used evidence against the existing HDC-1500 Standard Package master and read back successfully. Batch 09 now has 21 active GBP rows: 9 UK New and 12 UK Used. UK Used remains reference-only and excluded from automatic valuation. Cumulative Batches 04–13 now contain 234 GBP observations: 230 active (126 UK New, 104 UK Used), four inactive.
+
+
+## 10. Shure SM81 / SM81-LC package verification — 12 November 2026
+
+One additional exact UK New source was imported into LIVE and read back:
+- Stage Supply product code 4736, manufacturer SKU SM81-LC: £405.00 inc VAT (£337.50 ex VAT), 8 available online, more supplier stock in 1–3 weeks, 2-year manufacturer warranty. [Retailer listing](https://stagesupply.co.uk/product/shure-sm81-cardioid-condenser-instrument-microphone/).
+- Shure UK's official product page identifies the SM81 with SKU SM81-LC and £439 RRP. [Manufacturer page](https://www.shure.com/en-GB/products/microphones/sm81).
+- Shure's user guide confirms the supplied A57F microphone clip, 34A830 attenuator lock, 95A2313 carrying/storage bag and 49A111 windscreen. [User guide](https://www.shure.com/en-US/docs/guide/SM81).
+- LC means supplied without an XLR cable. The retailer package is the SM81 microphone with supplied accessories, not a cable-included bundle.
+
+The observation is matched to the existing SM81 master and remains active UK New GBP evidence. Batch 09 now has 22 rows, all active: 10 UK New and 12 UK Used. Cumulative Batches 04–13 now contain 235 GBP observations: 231 active (127 UK New, 104 UK Used), four inactive. UK Used remains excluded from automatic valuation. No schema, valuation function, TEST or Stripe changes.

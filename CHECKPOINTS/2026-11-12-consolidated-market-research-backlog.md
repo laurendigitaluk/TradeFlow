@@ -142,3 +142,25 @@ Cumulative Batches 04–13: 150 GBP rows, 148 active (81 UK New, 67 UK Used), 2 
 | 13 | 12 | 12 | 7 | 5 | 0 |
 
 No master/schema/valuation logic changes. Used evidence remains reference-only; latest active GBP UK New source continues to be the valuation reference. TEST and Stripe untouched.
+
+
+## 12 November 2026 — Batch 11 RED VERIFY follow-up and cumulative totals
+
+Batch 11 received twelve further GBP observations: Nikon P900 MPB £319 and LCE £349.99 used; Nikon Df LCE £699.99 used; Nikon NIKKOR Z 50mm f/1.4 Nikon UK £449 new; Nikon Z 26mm f/2.8 Nikon UK £449 new; Pentax HD D FA 28-105 MPB £244 and SRS £209 used; Pentax HD D FA Macro 100mm Carmarthen £699.99 new; Pentax O-RC1 SCAN £29.99 and Clifton £26 awaiting stock; Panasonic FZ1000 II Kamerastore £709 used with zoom-unit fault; Panasonic GM5 Wex £929 used body-only. Batch 11 now has 22 active GBP rows (8 UK New, 14 UK Used). See checkpoint for links and caveats.
+
+Cumulative Batches 04–13: 162 GBP rows, 160 active (86 UK New, 74 UK Used), 2 inactive.
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 16 | 16 | 6 | 10 | 0 |
+| 10 | 24 | 24 | 12 | 12 | 0 |
+| 11 | 22 | 22 | 8 | 14 | 0 |
+| 12 | 12 | 12 | 8 | 4 | 0 |
+| 13 | 12 | 12 | 7 | 5 | 0 |
+
+Used evidence remains reference-only. Preserve the FZ1000 II zoom lever fault, Df loose grips and remote awaiting-stock status. No master/schema/valuation logic changes. TEST and Stripe untouched.

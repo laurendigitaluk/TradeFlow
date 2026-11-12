@@ -186,3 +186,25 @@ Cumulative Batches 04–13: 175 GBP rows, 172 active (94 UK New, 78 UK Used), 3 
 | 13 | 12 | 12 | 7 | 5 | 0 |
 
 Used evidence remains reference-only. Do not use price-conflict row or seller-away/no-stock rows as active valuation sources. No schema/valuation logic changes. TEST and Stripe untouched.
+
+
+## 12 November 2026 — Batch 13 RED VERIFY follow-up and final totals
+
+Batch 13 gained 24 further source observations: ECM-B10 three new retailer prices (£175 Park, £175 Bristol, £179 Harrison) and two used (£137 Wex, £145 MPB); FE85 GM II £1,789 CameraWorld new, £1,710 open-box, £1,269 Wex used and £1,249.99 LCE used; FE12-24 GM LCE £2,645 new; Ranger module Flying Tech £99 and 3DXR £99.99; XDCA-FS7 used MPB £123/£144, eBay £175, 3D Broadcast £390; SRG-X400 black/white SCAN £3,199.99 each awaiting ETA; HOVERAir AQUA Standard Currys £1,129 and Ballicom £1,113.56; PowerDolphin Wizard sold used £449.99; HXR-MC50E Cash Converters sold £129.99, eBay sold £229.99 and faulty £69.99. PowerDolphin Wizard new eBay £1,449 was deactivated due package contents not proven. HVR-V1E eBay title was rejected because item specifics identify HVR-Z1E.
+
+Batch 13 now 36 total GBP rows, 35 active (17 New, 18 Used), one inactive. Cumulative Batches 04–13: 199 GBP rows, 195 active (104 UK New, 91 UK Used), 4 inactive.
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 16 | 16 | 6 | 10 | 0 |
+| 10 | 24 | 24 | 12 | 12 | 0 |
+| 11 | 22 | 22 | 8 | 14 | 0 |
+| 12 | 25 | 24 | 16 | 8 | 1 |
+| 13 | 36 | 35 | 17 | 18 | 1 |
+
+Inactive rows: BuzzFlyer DEVO-10 no stock; NEEWER KM19 seller away; Sony E35 price conflict; PowerDolphin Wizard package unverified. Used observations remain reference-only. No master/schema/valuation logic changes. TEST and Stripe untouched.

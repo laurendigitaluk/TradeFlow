@@ -1,3 +1,11 @@
+## 12 November 2026 — Batch 11 LIVE evidence follow-up
+
+Batch 11 received twelve additional GBP observations: Nikon P900 MPB £319 and LCE £349.99 used; Nikon Df LCE £699.99 used; Nikon NIKKOR Z 50mm f/1.4 Nikon UK £449 new; Nikon Z 26mm f/2.8 Nikon UK £449 new; Pentax HD D FA 28-105mm MPB £244 and SRS £209 used; Pentax HD D FA Macro 100mm Carmarthen £699.99 new; Pentax O-RC1 SCAN £29.99 and Clifton £26 (both awaiting stock); Panasonic FZ1000 II Kamerastore £709 used with slow/unresponsive zoom lever; Panasonic GM5 Wex £929 used body-only. Batch 11 totals 22 active GBP rows: 8 UK New, 14 UK Used. Used records remain reference-only. Retain fault/condition notes and distinguish body-only from kits.
+
+Cumulative Batches 04–13: 162 GBP rows, 160 active (86 UK New, 74 UK Used), 2 inactive. Batch totals/active: 04 18/18; 05 18/18; 06 12/12; 07 14/13; 08 14/13; 09 16/16; 10 24/24; 11 22/22; 12 12/12; 13 12/12. Inactive rows: BuzzFlyer DEVO-10 no stock and NEEWER KM19 seller away. No schema or valuation function changes; TEST and Stripe untouched.
+
+---
+
 ## 12 November 2026 — Batch 10 LIVE evidence follow-up and totals
 
 Batch 10 gained twelve observations: Sony LMD-A240 used Visual Impact £1,560 and eBay/N.I. Broadcast £1,150; Shure MV7+ SCAN £259 new; Sony SRG-A40 white Currys Business £3,635.98 and TopAV £5,054.39 new; Sony VG-C3EM used Wex £69 and Harrison £70; Sony FE PZ 28-135 new CameraWorld £1,960 and used MPB Good £814; Sony PDW-U1 used eBay £208.70 with PSU and Snet Technologies £1,459.95 with warranty; Shure MoveMic Two Receiver Kit official Shure UK £311.40. Batch 10 totals 24 active GBP rows (12 UK New, 12 UK Used). ProAV LMD-A240 £3,030 was rechecked and marked backorder due contradictory stock wording. Shure MoveMic Two pair £258.30 (receiver sold separately) is distinct from receiver kit £311.40.

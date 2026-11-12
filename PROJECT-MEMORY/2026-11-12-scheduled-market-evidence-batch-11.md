@@ -52,3 +52,10 @@ Twelve additional GBP rows imported/read back: Nikon P900 MPB from £319 and LCE
 Seven further UK Used observations were imported/read back: Nikon COOLPIX P900 / Harrison Cameras £420 Very Good, one in stock; Nikon COOLPIX P900 / Wex £449 Excellent, in stock; Nikon F2AS Data / Grays of Westminster via UsedLens UK £6,500 As New with MF-10 data back plus MD-2/MB-1 motor drive and DS-12 aperture attachment (bundle, not bare body); Panasonic Leica DG 50-200mm / Park Cameras £929 Very Good, two available; same lens / MPB UK £1,009, two used units from £1,009–£1,059; Panasonic DMC-GM5 / MPB £624 Good, lowest of eight; Pentax older SMC FA 100mm f/2.8 Macro / Fivercam eBay £234.89 used with £49.99 shipping.
 
 Batch 11 now has 29 active GBP rows: 8 UK New and 21 UK Used. All seven new records are UK Used reference-only. The Nikon F2AS Data price is an accessory-rich bundle; Pentax SMC FA remains separate from D FA/HD D FA; Panasonic 50-200 exact Micro Four Thirds lens. Observed_at values were normalized to the actual read-back time for this single import session; no timestamp staggering/backdating. Remaining uncertainties stay RED VERIFY. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 12 November 2026 — Nikon D60 used-market follow-up
+
+Three direct UK used offers were imported and read back against LIVE Nikon D60 master d52bf262-7a5b-407c-8066-c548cfc06b24: MPB SKU 4158743 £52 Good (flash fault, LCD scratches, 5,777 shutter count, charger/battery, 12-month warranty); MPB SKU 4174829 £67 Excellent (minor LCD dust/marks, 13,533 shutter count, charger/battery, 12-month warranty); LCE item 259873 £59.99 Good (Southampton, in store, two batteries, charger, box, strap, guides, six-month warranty). Source URLs and exact row IDs are in CHECKPOINTS/2026-11-12-scheduled-market-evidence-batch-11.md. All three are active UK Used GBP comparison-only observations; faults and condition are retained. No valuation effect.
+
+Batch 11 now 32 active (8 UK New, 24 UK Used). Cumulative Batches 04–13 now 240 rows, 236 active (128 UK New, 108 UK Used), four inactive. No master/schema/valuation changes; TEST and Stripe untouched.

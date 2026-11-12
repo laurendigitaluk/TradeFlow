@@ -4193,3 +4193,13 @@ A new isolated research handoff has been added for the owner's existing LM Studi
 - This connector is LIVE-only for the first acceptance pass. Do not sync TEST data or TEST reports into LIVE.
 - All submitted research remains `submitted_for_review`; ChatGPT/owner independently verifies source URLs, prices, package identity, condition and availability before any separate approved import process.
 - Historical Gemma tables, RPCs and Common Room are not re-enabled. Do not restore their permissions or UI.
+
+
+## 2026-11-12 — Batch 03 AKASO / Casio follow-up
+- LIVE-only evidence update; exact existing master products reused; no catalogue master or schema changes.
+- Imported and read back two UK Used GBP observations: AKASO Brave 6 Plus Standalone, Cash Converters UK item 048500408933, £79.99, evidence ID `60aabc70-c2cf-485d-a548-ad6245b3fb9c`; and AKASO V50 X Standalone (camera only), eBay UK item 189041389978, £36.75, evidence ID `343ef1d7-64df-47bf-bb0f-3d920069df9a`.
+- Both use unique `source_record_key` values and were verified active in `public.shared_market_evidence` after insertion.
+- Casio EX-FR200 £116 Gumtree listing remains inactive historical reference because the direct listing returned HTTP 410. Other found EX-FR200 listings were located in Japan and excluded from UK evidence.
+- Batch 03: 15 total, 14 active (7 UK New, 7 UK Used), 1 inactive. Batches 01–13: 275 total, 267 active (142 UK New, 125 UK Used), 8 inactive. Global LIVE evidence table: 4,820 total, 4,758 active, 62 inactive.
+- Existing policy retained: historical UK GBP prices are retained with availability recorded; no bulk deactivation and no valuation-function changes. UK Used remains reference-only.
+- TEST, Stripe, valuation logic and schema untouched. Dashboard status message ID: `1c75fbac-5171-453b-8b1c-64cbb465d9e7`.

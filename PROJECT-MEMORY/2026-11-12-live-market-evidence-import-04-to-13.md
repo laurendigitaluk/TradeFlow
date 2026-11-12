@@ -343,3 +343,10 @@ Latest Batches 01–13: 263 total, 257 active (139 UK New, 118 UK Used), six ina
 Historical context confirms the established ChatGPT evidence import route is a privileged server-side Supabase SQL migration (used since 23 October), not the manual AI queue RPC. It is user-directed, runs through the trusted server-side integration, uses unique source_record_key + `ON CONFLICT DO NOTHING`, exact LIVE master/package, GBP, direct source and complete condition/availability/provenance notes, then verifies the row by direct LIVE read-back. It is not a browser/client RLS bypass and must never expose service-role credentials to the browser. The manual AI queue submit/review/verify RPCs do not import shared evidence and their statuses are not changed by this path; the dedicated app-level queue importer remains a separate missing feature.
 
 Latest LIVE read-back: numbered Batches 01–13 = 263 total, 257 active (139 UK New, 118 UK Used), six inactive. Global shared_market_evidence = 4,808 total, 4,750 active, 58 inactive (one non-GBP/null). Three queue-linked Anycubic imports are outside numbered batch prefixes: Kobra 4 Standard £159, Kobra 3 Max V2 + ACE2Pro Combo £499, Kobra S1 + ACE2Pro 4-Color Combo £409. Bambu A1 existing 3D Prima row refreshed in place at £215, in stock 50+. Queue remains 81 total / 28 imported / 43 rejected / 10 needs_research. TEST and Stripe untouched.
+
+
+## 12 November 2026 — HDC1500R follow-up and latest totals
+
+Added KitPlus/N.I. Broadcast exact HDC1500R used camera channel £8,650, with HDC1500R head, HDCU-1000 CCU, HDVF20A and RCP750; RCP1500/7-inch viewfinder extra, lens excluded. Existing LIVE HDC1500R Standard Package master; evidence row afd9e40d-fabb-4e28-b797-2e2b8f877948. Batch 10: 32 total, 31 active (15 new, 16 used), one inactive.
+
+Latest Batches 01–13: 264 total, 258 active (139 UK New, 119 UK Used), six inactive. Global LIVE: 4,809 total, 4,751 active, 58 inactive (one non-GBP/null). Queue: 81 total, 28 imported, 43 rejected, 10 needs_research. TEST and Stripe untouched.

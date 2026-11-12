@@ -5786,3 +5786,14 @@ MKS-R3210 remains without an exact UK GBP price; do not map the BKS-R3210 eBay l
 Verified Camix direct UK source for Sony FE 85mm F1.4 GM II Lens Only: £1,325 (from £1,849), £1,104.17 ex VAT, new, in stock, one-year warranty, free UK delivery; exact lens/caps/hood/case package. Camix Ltd company no. 12830683, Batley WF17 9NE. LIVE row e1d4ebb0-ccb2-4a27-b4c7-06b3f9ab32af against existing Lens Only master. Source https://camix.co.uk/product/sony-fe-85mm-f1-4-gm-ii-lens/. Cotswold £1,049 page redirects to homepage and was not imported.
 
 Current Batches 01–13: 268 total, 261 active (142 UK New, 119 UK Used), seven inactive. Global LIVE: 4,813 total, 4,754 active, 59 inactive. TEST, Stripe, schema, master data and valuation logic untouched.
+
+
+## 12 November 2026 — Manual research queue reconciliation and source availability
+
+A LIVE reconciliation of the manual research queue found ten `needs_research` records. Seven candidates already had matching evidence rows in `shared_market_evidence`; these were re-read and reconciled without duplicate inserts. Exact queue/evidence IDs, current source URLs and remaining unresolved package variants are recorded in `CHECKPOINTS/2026-11-12-manual-research-queue-reconciliation.md`.
+
+Current direct UK printer source checks: Bambu Lab A1 Standard is £215 inc VAT at 3D Prima (In Stock 50+) and £189 inc VAT at Additive-X (In Stock / Next Working Day); Kobra 4 Standard £159 inc VAT; Kobra 3 Max V2 Standard £379, 4-Color Combo £519 and separate ACE 2 Pro combo £499; Kobra S1 ACE 2 Pro 4-Color Combo £409 on one official page and £449 on a second current official page. Keep each model/package distinct. The £641 Kobra 3 Max V2 All-in-One bundle contains camera, printhead assembly, adhesive and 4KG PLA and must not be mapped to the base 4-Color Combo master.
+
+PlayStation UK still lists PS5 Digital Edition 825GB at £519.99 but the current direct product page explicitly states Out of stock. The official evidence row now records `out_of_stock`; a duplicate official RRP row was deactivated. The separate two-controller bundle at Argos £559.99 is not the standard one-controller package and local stock needs postcode confirmation; do not assign its price to the standard package. Keep older Amazon ASIN B08H98GVK8 unresolved until model generation and current price are verified.
+
+The seven reconciled candidates have corresponding LIVE evidence, but queue statuses were not changed because the owner-review workflow was not invoked. Three candidates remain unresolved. Batches 01–13 total 268 observations, 261 active (142 UK New, 119 UK Used), seven inactive. UK Used remains reference-only. TEST, Stripe, schema, master catalogue and valuation logic untouched.

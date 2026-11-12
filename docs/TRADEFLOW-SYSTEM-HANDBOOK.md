@@ -5636,3 +5636,10 @@ Four Batch 03 UK-source observations were imported and read back against exact e
 The existing Sony HXR-MC2500E £789.99 UK Used row was found attached to the non-E HXR-MC2500 master despite an exact HXR-MC2500E / Standard master existing. The existing row was reassigned to exact master 7c3e5517-1c19-4080-bd65-7cb41a4925f3 after current eBay item specifics confirmed model HXR-MC2500E, 32GB, Wi-Fi and battery/charger. No duplicate or price change. Evidence row a92bb4e6-7fb1-436f-bb26-19f4795ed61f; source https://www.ebay.co.uk/itm/318668491967.
 
 Cumulative Batches 03–13: 246 observations, 243 active (133 UK New, 110 UK Used), three inactive. Batch 03: 4 active (3 new, 1 used). Batch 12: 27 total, 26 active (17 new, 9 used), one inactive price-conflict row. TEST, Stripe, schema, master catalogue and valuation logic untouched.
+
+
+## 12 November 2026 — AKASO V50 X With SD Bundle evidence
+
+A current direct eBay UK listing was verified for the existing AKASO V50 X / With SD Bundle master d763014a-70e2-4a0e-a7ce-bf8e0afdb0e1: Clarkson Direct £153.99, new, two available / one sold; listing title and item specifics identify V50 X-U3 and 64GB microSD card, while seller description confirms V50 X and two 1350mAh batteries. UK business seller in Beverley, 95.5% positive, 11K items sold; no returns, eBay Money Back Guarantee applies. Evidence row 8c8b32c5-e38d-4c5c-83f9-a0af9ee3aa3d is active UK New GBP and was read back from LIVE. Source https://www.ebay.co.uk/itm/326424455596. The earlier YPC £109.99 was a dated 22 October snapshot and must not be treated as a current live offer.
+
+Batches 01–13 now total 255 observations, 252 active (137 UK New, 115 UK Used), three inactive. Batch 03: five active (four new, one used). UK Used remains reference-only. TEST, Stripe, schema, master data and valuation logic untouched.

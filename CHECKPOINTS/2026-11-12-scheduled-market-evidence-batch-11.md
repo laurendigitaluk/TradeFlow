@@ -356,3 +356,17 @@ Batch 11 now has **29 active GBP records: 8 UK New and 21 UK Used**. All seven n
 Outstanding leads remain RED VERIFY where no exact UK offer could be verified: Nikon S6900 offers are Japan-based; Nikon Ai-S 800mm f/8 ED remains suffix/identity uncertain; Nikon F2 Data Grays bundle is not a bare package; Nikonos V waterproofing untested; Panasonic 50-200 Camix new-stock wording conflicts and Hong Kong seller offers exclude VAT; Panasonic FZ1000 II Kamerastore zoom lever fault must remain visible; Potensic Dreamer 1 vs Dreamer 4K identity still needs manufacturer/catalogue confirmation. No foreign currency or wrong model price was promoted.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.
+
+
+## 8. Nikon D60 — exact used-market sources verified and imported — 12 November 2026
+
+The outstanding Nikon D60 body-only price leads were revisited using direct product pages. LIVE master: Nikon D60 / Nikon D60, ID d52bf262-7a5b-407c-8066-c548cfc06b24. No matching evidence or research-queue candidate existed before insertion.
+
+Three exact UK used offers were imported into LIVE and read back:
+- MPB SKU 4158743 — £52.00, Good; pop-up flash not working, LCD scratched but functional, shutter count 5,777; body cap, strap, battery door, eyecup, battery and charger; 12-month warranty. https://www.mpb.com/en-uk/product/nikon-d60/sku-4158743
+- MPB SKU 4174829 — £67.00, Excellent; light dust under LCD and light LCD marks, shutter count 13,533; body cap, battery door, eyecup, battery and charger; 12-month warranty. https://www.mpb.com/en-uk/product/nikon-d60/sku-4174829
+- London Camera Exchange item 259873 — £59.99, Good; Southampton Civic Centre, in store, next-working-day home delivery available; two batteries, charger, box, strap, guide book and instructions; six-month warranty. https://www.lcegroup.co.uk/Used/Nikon-D60-Body_500561.html
+
+Evidence row IDs: 9e2df28b-340d-4e09-ad83-660ff34a6bb8; e3c42ef7-aa7a-45f1-a937-5fd13399b5e1; c788d584-728c-4e73-8f92-63499e232b24. All are active UK Used GBP reference records; the fault/condition/accessory differences are preserved. No valuation effect from UK Used.
+
+Batch 11 now has 32 active GBP rows (8 UK New, 24 UK Used). Cumulative Batches 04–13: 240 GBP observations, 236 active (128 UK New, 108 UK Used), four inactive. No master product, tenant/customer, schema or valuation changes. TEST and Stripe untouched.

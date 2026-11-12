@@ -304,3 +304,23 @@ Batch 12 now has **25 total records: 24 active (16 UK New, 8 UK Used) and one in
 Other RED VERIFY items remain excluded: Skydio X2 enterprise controller/charger has USD-only or consumer 2/2+ mismatches; Yuneec E10Tvx has EUR/PLN only; Walkera Vitus Starlight listing contents say Vitus 320; PXW-Z1500 appears to be a PXW-Z150 typo; HZCU-FZ90 appears to be HXCU-FZ90 CCU; PXW-Z190V seller's GSP UK delivery total not confirmed; Sony NEX-FS100 package contents not confirmed; MKS-R3210 only EUR quote and BKS-R3210 wrong model; SmallRig 3263 no UK GBP price; UHC-8300 CCU is separate; HDC-3200 dual-filter SKU package needs comparison; E-Infinity Sony FE100 macro price needs import/checkout confirmation. No unverified currency, model or package match was promoted.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.
+
+
+## 7. Further RED VERIFY review — 12 November 2026
+
+Two further exact UK observations were added to LIVE and read back:
+
+| Product | Source | Price | Verification |
+|---|---|---:|---|
+| Sony NEX-FS100 | eBay UK — ashuk786 | £768.08 | Used; private UK seller in Luton, 100% positive; no returns; listing does not itemise lens/accessories, so package remains unspecified. [Source](https://www.ebay.co.uk/itm/204601074708) |
+| Z CAM ExAscend CFast 2.0 Reader | ProAV | £51.60 inc VAT (£43 ex VAT) | Exact single-slot 10Gbps reader, UK price; backorder, typical delivery when stocked around four weeks. [Source](https://proav.co.uk/accessories/card-readers/cfast/) |
+
+Two existing observations were rechecked and clarified:
+- Walkera Vitus Starlight: the direct RC Hobby Avenues page title and model field both say Vitus Starlight. Its technical specifications identify the underlying aircraft platform as Vitus 320; this is not a different product listing. £544.91, in stock. The earlier RED VERIFY identity concern is resolved. Package contents are case, 8 propellers, 3 batteries, DEVO F8S remote, phone holder and instructions.
+- Sony FE 50mm F1.4 GM / Camix: direct product page reconfirmed £1,032 inc VAT (£860 ex), brand new, in stock, one-year warranty, free UK delivery; box contents are lens, front/rear caps and hood. The previously low price is verified on the opened retailer page and remains active.
+
+Batch 12 now has **27 total GBP records: 26 active (17 UK New, 9 UK Used) and one inactive price-conflict row**. The inactive row remains Sony UK E 35mm F1.8 OSS £225, because the same page exposed £225 sale context and £325 original/product-page price without a clear checkout selection. The two new rows are one UK New (Z CAM reader) and one UK Used (NEX-FS100).
+
+Other RED VERIFY exclusions remain: Skydio X2 controller/charger has no verified UK price and consumer 2/2+ products are different; Yuneec E10Tvx has EUR/PLN only; HZCU-FZ90 is likely a catalogue typo for HXCU-FZ90 CCU and ProAV HXC-FZ90 is a different camera head; PXW-Z1500 is not an identified Sony model (PXW-Z150 is different); PXW-Z190V remains suffix/package-specific; SmallRig 3263 has no confirmed UK GBP offer; MKS-R3210 has no exact UK price; NEX-FS100 high-price Snet listing has bundle contents unresolved; HDC-3200 dual-filter SKU package needs comparison; UHC-8300 CCU is separate from camera head. No foreign-currency or wrong-model evidence was promoted.
+
+No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.

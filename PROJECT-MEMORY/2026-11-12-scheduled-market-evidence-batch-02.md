@@ -25,3 +25,10 @@ The production owner dashboard recognizes `evidence_role=comparison_only` (“Un
 ## Next-run selection rule
 
 Read the latest scheduled evidence checkpoint before selecting products. Exclude all product IDs listed in every prior scheduled research checkpoint and all products already covered by outstanding research-queue candidates/prompts. Do not use fixed SQL OFFSET. Recheck active evidence and outstanding candidates immediately before each batch. Continue in batches of 20, using manufacturer sites, UK retailers, marketplaces and Google Shopping; open product pages and inspect variants/package contents, price, condition and availability. Keep uncertain links with explicit verification notes. Do not touch TEST, Stripe, master products, schema or valuation logic.
+
+
+## 12 November 2026 — CVP/MPB used-market follow-up
+
+Four further UK Used GBP rows were verified from direct pages and read from LIVE: CVP Open Box URSA Cine 12K LF Body £4,989.40 ex VAT / £5,987.28 inc (Like New, immediate delivery, 90-day warranty); CVP Studio Camera 6K Pro £1,580.40 ex VAT (Excellent, immediate delivery, 90-day warranty); CVP URSA Cine 17K 65 + EVF £16,199.10 ex VAT (Excellent, immediate delivery, 90-day warranty, full EVF/8TB package); MPB URSA Cine 12K LF PL Fit £5,509 (Excellent, one available, 12-month warranty, PL fit with EF mount included). Exact master IDs, row IDs, package notes and direct URLs are in the Batch 02 checkpoint. All are UK Used reference-only, not automatic valuation inputs.
+
+Batch 02 now four active UK Used observations. Current Batches 01–13 LIVE: 261 observations, 257 active (140 UK New, 117 UK Used), four inactive. TEST, Stripe, schema and valuation logic untouched.

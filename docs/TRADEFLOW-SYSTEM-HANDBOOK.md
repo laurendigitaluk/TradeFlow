@@ -1,3 +1,15 @@
+## 12 November 2026 — Batch 06 LIVE evidence follow-up and source-order control
+
+Batch 06 gained three direct-source observations in LIVE shared_market_evidence: Aputure LS 600d Pro / eBay UK £1,225.58 used; Benro GH2N / CameraWorld £342 new; Benro GH2N / Harrison Cameras £299 new. The existing Clifton Cameras GH2N £289 page was re-opened after those two retailer pages and its observed_at refreshed; read-back confirms £289 Clifton is the latest active UK New source for that product. Batch 06 totals 12 active GBP rows (8 uk_new, 4 uk_used).
+
+The CVP Aputure LS 600d Pro used row was corrected after direct page inspection: £1,000 ex VAT, Coming Soon / Awaiting Grading, no unit available to buy now. It is not in-stock/used-good. This is a status correction on a uk_used reference, not an automatic valuation input.
+
+Important valuation behaviour verified in LIVE: calculate_buying_item_valuation(uuid,uuid) selects the latest active GBP uk_new observation by observed_at (then created_at) for the shared-market fallback; it does not calculate a minimum or average across retailers. UK Used observations are not selected. When rechecking multiple new sources, observed_at must reflect the actual order in which each page was checked. Keep the most recently verified page as the latest row; do not manipulate timestamps or choose an arbitrary source. Preserve every other retailer observation separately. This is an existing behaviour; no valuation code was changed.
+
+Exact URLs, prices, availability and package uncertainties are documented in Batch 06 checkpoint and project memory. TEST and Stripe remain untouched.
+
+---
+
 ## 12 November 2026 — LIVE market evidence follow-up (Batch 05)
 
 Batch 05 received nine additional direct-source observations in LIVE public.shared_market_evidence: four UK New RØDE Wireless GO Gen 3 listings (Disc DJ £179, Jessops £179, Wex £159 blue/limited stock, Westend DJ £179.99); two UK New Sony FE 24-70mm F2.8 GM II listings (LCE £1,699 and CameraWorld £1,813); two UK Used Sony SRG-300H eBay observations (£567.55 current, £491.34 ended including buyer-protection fee); and one UK Used Nikon Nikkor-H Auto 50mm f/2 eBay observation (£71.05). Batch 05 now has 18 active GBP rows: 10 uk_new and 8 uk_used.

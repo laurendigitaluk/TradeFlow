@@ -94,3 +94,23 @@ Current direct LIVE read-back confirms Batches 04–13 contain **138 total GBP e
 All rows are GBP. Follow-up additions since the prior 127-row reconciliation: Batch 08 +6 rows (5 active, 1 inactive); Batch 09 +5 active rows. Existing source observations in Batch 09 were also refreshed after direct rechecks. Used rows remain comparison-only; latest active GBP UK New observation remains the automatic shared-market reference under current valuation behaviour. No schema or valuation code was changed.
 
 The two actual manuals are docs/TRADEFLOW-SYSTEM-HANDBOOK.md and docs/TRADEFLOW-AI-OPERATING-MANUAL.md. Both are updated with this continuation. TEST and Stripe remain untouched.
+
+
+## 12 November 2026 — cumulative LIVE reconciliation after Batch 10 follow-up
+
+Direct LIVE read-back now confirms Batches 04–13 contain **150 total GBP evidence rows, 148 active and 2 inactive**. Active evidence is 81 UK New and 67 UK Used. Inactive rows remain BuzzFlyer DEVO-10 Notify Me/no stock (Batch 07) and NEEWER KM19 eBay seller away (Batch 08).
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 16 | 16 | 6 | 10 | 0 |
+| 10 | 24 | 24 | 12 | 12 | 0 |
+| 11 | 10 | 10 | 3 | 7 | 0 |
+| 12 | 12 | 12 | 8 | 4 | 0 |
+| 13 | 12 | 12 | 7 | 5 | 0 |
+
+Batch 10 follow-up added 12 active rows (5 UK New, 7 UK Used), taking Batch 10 from 12 to 24. All rows remain GBP. Used evidence is reference-only. No valuation function/schema change; current automatic shared reference still selects latest active GBP UK New by observed_at/created_at. TEST and Stripe remain untouched.

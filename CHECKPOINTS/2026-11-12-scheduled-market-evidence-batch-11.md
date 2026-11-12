@@ -307,3 +307,29 @@ The final post-research status recheck returned zero active evidence, zero match
 The next scheduled run must read this batch-11 checkpoint and its PROJECT-MEMORY before selection. Exclude all 20 product IDs above, all product IDs in every earlier scheduled checkpoint, any outstanding LIVE research-queue candidate and any outstanding manual AI prompt. Select the next 20 active LIVE products with no active evidence using anti-joins and stable ordering; no fixed SQL OFFSET. Recheck status immediately before research. Check owner-auth first; only use the supported authenticated platform-owner RPC if auth.uid is non-null and owner check succeeds. Otherwise save the next detailed checkpoint and project memory.
 
 **No TEST, Stripe, catalogue master product, schema or valuation changes were made.**
+
+
+## 6. RED VERIFY follow-up — 12 November 2026
+
+Twelve further exact UK GBP observations were imported into LIVE and read back:
+
+| Master product | Source | Price | Evidence / status |
+|---|---|---:|---|
+| Nikon COOLPIX P900 | MPB | £319.00 | Used; 12 available from £319–£494; grades/accessories vary. [Source](https://www.mpb.com/en-uk/product/nikon-coolpix-p900) |
+| Nikon COOLPIX P900 | London Camera Exchange | £349.99 | Used Good; Winchester, in store, clean optics, working, box/charger/front cap, 6-month warranty. [Source](https://www.lcegroup.co.uk/Used/Nikon-Coolpix-P900_496299.html) |
+| Nikon Df body | London Camera Exchange | £699.99 | Used Average; 32,000 shutter count; Derby in-store; main/thumb grips slightly loose; 6-month warranty. [Source](https://www.lcegroup.co.uk/Used/Nikon-Df-Body-_492648.html) |
+| Nikon NIKKOR Z 50mm f/1.4 | Nikon UK | £449.00 | New; in stock, reduced from £499; caps and hood included. [Source](https://www.nikon.co.uk/en_GB/product/lenses/mirrorless/nikkor-z-50mm-f1.4_1-JMA004DA) |
+| Nikon NIKKOR Z 26mm f/2.8 | Nikon UK | £449.00 | New; in stock, reduced from £499; rear cap, hood and lens cap included. [Source](https://www.nikon.co.uk/en_GB/product/lenses/mirrorless/nikkor-z-26mm-f2.8_1-JMA002DA) |
+| Pentax HD D FA 28-105mm f/3.5-5.6 ED DC WR | MPB | £244.00 | Used Excellent; one available, SKU 4178933, caps/hood, 12-month warranty. [Source](https://www.mpb.com/en-uk/product/pentax-hd-pentax-d-fa-28-105mm-f-3-5-5-6-ed-dc-wr) |
+| Pentax HD D FA 28-105mm f/3.5-5.6 ED DC WR | SRS Microsystems | £209.00 | Used Excellent; checked/guaranteed, box/caps/hood, 12-month warranty, 30-day approval. [Source](https://www.srsmicrosystems.co.uk/dpt/used-equipment/used-pentax-hd-d-fa-28-105mm-35-56-wr--12-months-warranty__17630) |
+| Pentax HD D FA Macro 100mm f/2.8 ED AW | Carmarthen Cameras | £699.99 | New black, two in stock, ready to ship; exact SKU 0027075304857. [Source](https://carmarthencameras.com/products/pentax-d-fa-macro-100mm-hd-f2-8ed-aw-black) |
+| Pentax O-RC1 waterproof remote | SCAN | £29.99 | New; exact code 39892, awaiting ETA / preorder. [Source](https://www.scan.co.uk/products/ricoh-pentax-o-rc1-remote-control) |
+| Pentax O-RC1 waterproof remote | Clifton Cameras | £26.00 | New; exact MPN/EAN, awaiting stock, orders accepted, usually 5–7 days. [Source](https://www.cliftoncameras.co.uk/pentax-o-rc1-waterproof-remote-control) |
+| Panasonic Lumix DC-FZ1000 II | Kamerastore | £709.00 | Certified used, in stock; zoom lever slow/unresponsive, viewfinder scratched; fault explicitly retained. [Source](https://kamerastore.com/en-gb/products/panasonic-lumix-dc-fz1000-ii-t150535) |
+| Panasonic Lumix DMC-GM5 body only | Wex Photo Video | £929.00 | Used Excellent, in stock, approx. 4,000 shutter count, clean sensor, box/manual/battery/charger; USB cable not included. [Source](https://www.wexphotovideo.com/panasonic-lumix-dmc-gm5-body-only-used-3357606/) |
+
+Batch 11 now has **22 active records: 8 UK New and 14 UK Used; all 22 are GBP**. Twelve additional records were inserted. Used prices remain reference-only. The Panasonic FZ1000 II zoom-unit fault is explicitly retained and must not be treated as a fully functional comparison. Nikon Df grip looseness and body condition are also noted.
+
+Other leads remain RED VERIFY: Nikon S6900 marketplace leads are Japan sellers, including a faulty lens-error listing; Nikon Ai-S 800mm f/8 ED has no fully verified UK exact source; Nikon D60 body-only prices were available from retailer price comparison but no exact product page was opened in this follow-up; Nikon F2 Data back prices are JPY/EUR only; Nikon NIKONOS V Kamerastore item has untested waterproofing; Panasonic Leica 50-200mm Camix page has copied/contradictory product description and stock wording; Pentax Macro 100 Park price requires option/store selection and voucher not confirmed; Potensic Dreamer 1 catalogue identity versus Dreamer 4K still requires confirmation. These were not promoted as exact verified evidence.
+
+No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.

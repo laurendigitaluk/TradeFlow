@@ -486,3 +486,14 @@ One further exact UK New observation was imported into LIVE and read back:
 | GoPro MISSION 1 PRO Grip Edition | GoPro UK | £679.99 | Official UK bundle listing displays the exact Grip Edition at £679.99; selected product page shows Add To Cart. All bundles include the MISSION 1 PRO camera, Enduro 2 battery and camera case; Grip Edition adds the Point-and-Shoot Grip. [Price listing](https://gopro.com/en/gb/shop/deals/camera-bundle-deals) · [Selected product](https://gopro.com/en/gb/shop/buy-cameras/mission-1-series?bundle-id=CHDRW-011-master&product-id=CHDHW-011-master) |
 
 The earlier £579.99 search snippet was stale; the current official GoPro UK listing shows £679.99. The selected product page does not expose a separate stock count and checkout was not completed, so the evidence availability note records Add To Cart shown but stock count unconfirmed. Batch 08 now has 16 database rows: 15 active (12 UK New, 3 UK Used) and one inactive UK New seller-away row; all 16 are GBP. Cumulative Batches 04–13 now total 232 GBP observations: 228 active (125 UK New, 103 UK Used), four inactive. UK Used remains excluded from automatic valuation.
+
+
+## 12. Hubsan Zino Mini Pro Refined UK source — 12 November 2026
+
+One additional exact UK New observation was imported into LIVE and read back:
+
+| Product | Source | Price | Verification |
+|---|---|---:|---|
+| Hubsan Zino Mini Pro Refined, three-battery package (H817DR / EAN 6922572413412) | Align-Trex UK | £485.99 (RRP £539.99) | Direct UK retailer page confirms exact H817DR, three batteries, 64GB onboard memory, and explicitly Out of Stock / Notify Me. [Source](https://www.align-trex.co.uk/hubsan-zino-mini-pro-refined-h817dr.html) |
+
+The row is matched to the existing ZINO MINI PRO REFINED master, not the one-battery standard package, and is retained as active historical UK New evidence with explicit out_of_stock status. Batch 08 now has 17 rows: 16 active (13 UK New, 3 UK Used) and one inactive UK New seller-away row; all GBP. Cumulative Batches 04–13 now contain 233 GBP observations: 229 active (126 UK New, 103 UK Used), four inactive.

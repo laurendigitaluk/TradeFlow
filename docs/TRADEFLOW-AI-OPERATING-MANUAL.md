@@ -6211,3 +6211,10 @@ For future work, do not assume a ready prompt has the latest schema contract. Ch
 A qualifying direct UK source for Sony HDC-5500 / Standard was imported into TradeFlow LIVE and read back: Visuals SKU HDC-5500//U, £60,036 inc VAT (£50,030 ex VAT), 3+ in stock. The In The Box list identifies camera-head accessories only; record this as the camera-head Standard offer, not a complete camera channel. Evidence row 10248d49-cc2b-43eb-8546-acd1881a3c86; source key batch10-followup-sony-hdc5500-visuals-60036-20261112; URL https://www.visuals.co.uk/sony-hdc-5500.html.
 
 Maintain strict identity and package controls: XVS-G1 £20,765.70 remains unimported until VAT basis and configuration are known; NP-FV70A/A2 is not the non-A NP-FV70; SEL100400GM and SEL100400MCW are distinct from the unverified “II” master; PowerDolphin Wizard stays inactive until full Wizard contents are evidenced. HDC-F5500V already has its own distinct evidence row/master. Latest Batches 04–13 read-back: 237 total, 233 active (128 UK New, 105 UK Used), four inactive. Used observations remain reference-only. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Batch 11 Nikon D60 direct-source import
+
+Three UK Used Nikon D60 body listings were verified and imported into LIVE, with exact item condition and faults retained: MPB SKU 4158743 £52 Good (pop-up flash fault, LCD scratches, 5,777 shutter count); MPB SKU 4174829 £67 Excellent (minor LCD dust/marks, 13,533 shutter count); LCE item 259873 £59.99 Good (two batteries, charger, box, strap and manuals). Evidence IDs: 9e2df28b-340d-4e09-ad83-660ff34a6bb8; e3c42ef7-aa7a-45f1-a937-5fd13399b5e1; c788d584-728c-4e73-8f92-63499e232b24. Full direct links and notes are in the Batch 11 checkpoint. All remain UK Used comparison references and do not affect automatic valuation.
+
+Current Batches 04–13 total: 240 observations, 236 active (128 UK New, 108 UK Used), four inactive. Batch 11: 32 active (8 new, 24 used). TEST, Stripe, schema and valuation logic unchanged.

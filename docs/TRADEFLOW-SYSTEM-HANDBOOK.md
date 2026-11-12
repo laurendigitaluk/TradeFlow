@@ -5737,3 +5737,10 @@ Latest Batches 01–13: 263 rows, 257 active (139 UK New, 118 UK Used), six inac
 ## 12 November 2026 — Manual AI queue Kobra 4 evidence import
 
 An outstanding Anycubic Kobra 4 queue candidate was matched to existing LIVE master Kobra 4 / Standard Printer c673eabf-716d-4ca9-b6eb-9acba6e593a3. Official UK Anycubic variant selector distinguishes standalone Kobra 4 £159 from Kobra 4 Combo (4 colours) £259; the standard price is GBP including VAT and the standalone model is estimated to ship within 24 hours. Imported active UK New evidence row ae7a2f85-ff95-4c22-8bf0-b856ed46142c. Source https://uk.anycubic3d.com/products/kobra-4-3d-printer. The queue candidate remains `needs_research` pending the authenticated owner status workflow; do not mutate queue state directly or bypass RLS. This is a shared_market_evidence import, not a manual report submission.
+
+
+## 12 November 2026 — Anycubic queue evidence resolution
+
+Two manual AI queue candidates were imported into existing LIVE catalogue masters after exact UK source/package verification: Kobra 3 Max V2 + ACE 2 Pro Combo £499 (one ACE 2 Pro; four-colour base, expandable up to eight) to master e01ce831-0efa-4923-848e-efd218d72518, evidence row 24e67af8-e9bf-44ea-b515-c8226a1dec9e; and Kobra S1 + ACE 2 Pro Combo £409 (one ACE 2 Pro; four-colour base) to master c7b0b645-2cc6-4e22-b782-e4f8010d5088, evidence row b10534b7-fd71-493f-89f5-cbeab5c7927b. Official UK sources are documented in the manual AI queue checkpoint. GB VAT included; both pages show dispatch within 24 hours.
+
+Kobra 3 Max V2 Standard £379, Kobra 3 Max V2 4-Color Combo £519 and Kobra S1 ACE 2 Pro 4-Color Combo £449 were rechecked and already had exact LIVE evidence, so no duplicates were inserted. Kobra 3 Max V2 All-in-One Bundle £641 includes additional camera, printhead, adhesives and filament; do not map to the standard combo master. Original queue statuses remain needs_research until authenticated owner workflow can update them; do not mutate queue state directly or bypass RLS. Global LIVE evidence: 4,808 total, 4,750 active, 58 inactive. TEST, Stripe, schema and valuation logic unchanged.

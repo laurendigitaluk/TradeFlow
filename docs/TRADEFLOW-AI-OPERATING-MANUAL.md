@@ -1,3 +1,25 @@
+## 12 November 2026 — Batch 09 additional sources and current totals
+
+Batch 09 added Visuals Sony HDC-F5500V £85,619.24 inc VAT (available to order, not in stock), SmallRig Direct UK Store eBay RC100B Pro 5143 £242.90 (new, three available), ColinsCameras eBay Nikon F55 body £28.60 (used; £35 international postage shown), and Clifton Cameras Pentax HD FA31 black £999 (awaiting stock). Refreshed Peter Rogers Pentax DA*55 £559, Andertons Shure SM81 £381 and Harrison Nikon MB-N12 £329. Batch 09 now 20 active GBP rows: 9 UK New and 11 UK Used.
+
+Current cumulative LIVE total for Batches 04–13 is 208 GBP rows, 204 active (111 UK New, 93 UK Used), four inactive. Per-batch:
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 20 | 20 | 9 | 11 | 0 |
+| 10 | 24 | 24 | 12 | 12 | 0 |
+| 11 | 22 | 22 | 8 | 14 | 0 |
+| 12 | 25 | 24 | 16 | 8 | 1 |
+| 13 | 41 | 40 | 21 | 19 | 1 |
+
+This supersedes previous 204 total/16 Batch 09 count. UK Used remains reference-only. Valuation selects latest active GBP uk_new by observed_at then created_at and does not filter availability. Sold-out/backorder new rows can still affect valuation; Notify Me/seller-away rows must remain inactive until availability returns. Do not change valuation logic without explicit approval. TEST and Stripe untouched.
+
+---
+
 ## 12 November 2026 — second Batch 13 retailer recheck and final LIVE state
 
 Five further Batch 13 rows added: ECM-B10 CameraWorld £159 new; FE85 GM II LCE and Park £1,799 each new; FE12-24 GM CameraWorld £2,548 new and £2,548 open-box. Batch 13 now 41 total rows, 40 active (21 new, 19 used), one inactive package-unverified PowerDolphin Wizard row.

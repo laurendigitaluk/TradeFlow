@@ -6171,3 +6171,10 @@ Imported and read back one UK Used observation for the exact Sony HXC-D70 Standa
 Rechecked the HDC-3000 uncertainty: Sony UK support model listings show current HDC family identifiers such as HDC3500, HDC-2500, HDC-P50 and HDC3200, but not an exact HDC-3000 camera. Sony press material uses “HDC-3000 series” wording while enumerating other actual camera models; this is not proof of an exact HDC-3000 sellable model. Keep RED VERIFY; do not attach HDC-3500/HDC-3200/HSC-300 or HDCU component prices.
 
 Batch 09 now has 23 GBP rows: 23 active (10 UK New, 13 UK Used). Cumulative Batches 04–13: 236 GBP rows, 232 active (127 UK New, 105 UK Used), four inactive.
+
+
+## Market evidence write-authorization hold — 12 November 2026
+
+A further exact UK source was identified for the existing Hubsan Zino Pro Standard Package master: Align-Trex UK lists H117P at £356.80, explicitly Out of Stock / Notify Me. This is a historical UK New candidate only; it is not an in-stock offer. It must remain separate from the Elite Models £419.99 Zino Pro bundle, which includes an extra battery and storage bag. The existing Elite Models £389.99 standard-package observation remains a distinct, active supplier-stock record.
+
+No evidence row was inserted or updated in this pass. The LIVE SQL authorization check returned `auth.uid() = NULL` with database role `postgres`. Under the scheduled evidence checkpoint's write gate, a null authenticated user means stop before writing; do not bypass this with privileged migration execution. The candidate is preserved in the continuation checkpoint for a later authenticated owner-authorized import. No TEST, Stripe, schema, master-product, tenant, customer or valuation data was changed. Cumulative evidence remains 236 GBP observations, 232 active (127 UK New, 105 UK Used), four inactive.

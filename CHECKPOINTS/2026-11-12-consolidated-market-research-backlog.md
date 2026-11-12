@@ -98,3 +98,25 @@ Follow-up reviews have now added 26 more rows to the initial 107 verified GBP ro
 Follow-up additions by batch: 04 +4, 05 +9, 06 +3, 07 +4, 08 +6. Batches 09–13 remain to be reviewed for outstanding RED VERIFY sources. The earlier database-import-outstanding note is superseded: the established idempotent migration route has imported the verified rows, with read-back checks. The unresolved research queue is not the same thing as the verified evidence import; do not mark all 220 product research records complete.
 
 The LIVE valuation function uses the latest active GBP UK New evidence by observed_at/created_at and does not filter availability. UK Used is reference-only. Sold-out/backorder UK New rows remain active with status notes; Notify Me and seller-away records are inactive until availability returns. No code or schema change, no TEST or Stripe change.
+
+
+## 12 November 2026 — Batch 08–09 RED VERIFY follow-up and current totals
+
+Batches 08 and 09 were reviewed beyond the original import pass. Batch 08 gained six rows and now has 14 total (13 active: 10 UK New, 3 UK Used; one inactive seller-away listing). Batch 09 gained five rows and refreshed its existing source observations; it now has 16 active GBP rows (6 UK New, 10 UK Used). Batch 09 sources include Currys PENTAX WG-90 £299; eBay Sony FE28-60 £141.12 used; MPB Sony FE35 GM from £819 used; Park Cameras Sony FE35 GM £839 Good and £939 Excellent. See the batch checkpoints for URLs and caveats.
+
+Cumulative Batches 04–13: 138 GBP rows, 136 active (76 UK New, 60 UK Used), 2 inactive. Inactive records are BuzzFlyer DEVO-10 Notify Me/no stock (Batch 07) and NEEWER KM19 eBay seller away (Batch 08).
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 16 | 16 | 6 | 10 | 0 |
+| 10 | 12 | 12 | 7 | 5 | 0 |
+| 11 | 10 | 10 | 3 | 7 | 0 |
+| 12 | 12 | 12 | 8 | 4 | 0 |
+| 13 | 12 | 12 | 7 | 5 | 0 |
+
+No uncertain currency, seller, model suffix or package mismatch was promoted. Used evidence is reference-only. The LIVE valuation function still selects latest active GBP UK New by observed_at/created_at and does not filter availability; no valuation logic was changed. TEST and Stripe remain untouched.

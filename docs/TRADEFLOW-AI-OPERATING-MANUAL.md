@@ -6351,3 +6351,10 @@ Current Batches 01–13: 263 observations, 257 active (139 UK New, 118 UK Used),
 ## 12 November 2026 — Anycubic Kobra 4 queue candidate resolution
 
 Queue candidate 5c951409-c951-4f35-be87-884eba7968cc was matched to existing Kobra 4 / Standard Printer master c673eabf-716d-4ca9-b6eb-9acba6e593a3. Official UK Anycubic page explicitly lists standalone Kobra 4 at £159, separate from the £259 four-colour Combo, with GB VAT included and estimated shipping within 24 hours. Active UK New GBP evidence row ae7a2f85-ff95-4c22-8bf0-b856ed46142c was imported and read back. Queue status remains needs_research until authenticated owner workflow is available; no direct queue status update or RLS bypass.
+
+
+## 12 November 2026 — Anycubic manual queue evidence matching
+
+Verified and imported two exact UK Anycubic sources to existing LIVE masters: Kobra 3 Max V2 + ACE 2 Pro Combo £499 (one ACE2Pro, four-colour base, expandable to eight) and Kobra S1 + ACE 2 Pro Combo £409 (one ACE2Pro, four-colour base). Evidence IDs: 24e67af8-e9bf-44ea-b515-c8226a1dec9e and b10534b7-fd71-493f-89f5-cbeab5c7927b. Full sources/package details in the manual queue checkpoint.
+
+Three other queue candidates already matched existing exact evidence and were not duplicated: Kobra 3 Max V2 Standard £379; Kobra 3 Max V2 4-Color Combo £519; Kobra S1 ACE 2 Pro 4-Color Combo £449. Keep the Kobra 3 Max V2 £641 All-in-One bundle separate because it includes additional accessories/filament. Queue statuses remain needs_research pending authenticated owner workflow; do not bypass RLS. Global LIVE evidence: 4,808 total, 4,750 active, 58 inactive. TEST, Stripe, schema and valuation logic unchanged.

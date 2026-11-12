@@ -87,7 +87,7 @@ async function signIn(){
   button.disabled=true;button.textContent='Signing in…';error.textContent='';
   try{
     session=await request('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});
-    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainActions();await loadProductPages();await loadCloudAiProviders();await loadCloudAiJobs();await loadCloudAiReviewQueue();await loadManualAiResearchBatches();await window.loadPublicPages?.();
+    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainActions();await loadProductPages();await loadCloudAiProviders();await loadCloudAiJobs();await loadCloudAiReviewQueue();await loadManualAiResearchBatches();await loadManualAiChatGptUpdates();await window.loadPublicPages?.();
   }catch(e){session=null;save();error.textContent=e.message||String(e)}
   finally{button.disabled=false;button.textContent='Sign in'}
 }
@@ -380,7 +380,7 @@ $('platform-email-form').onsubmit=savePlatformEmail;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{
-  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadDomainActions(),loadProductPages(),loadCloudAiProviders(),loadCloudAiJobs(),loadCloudAiReviewQueue(),loadManualAiResearchBatches(),window.loadPublicPages?.()])}
+  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadDomainActions(),loadProductPages(),loadCloudAiProviders(),loadCloudAiJobs(),loadCloudAiReviewQueue(),loadManualAiResearchBatches(),loadManualAiChatGptUpdates(),window.loadPublicPages?.()])}
   catch(e){showAuth('')}
 })();
 
@@ -601,6 +601,16 @@ async function enqueueCloudAiJob(e){
  finally{button.disabled=false;}
 }
 
+async function loadManualAiChatGptUpdates(){
+ const host=$('manual-ai-chatgpt-updates');if(!host)return;
+ host.innerHTML='<p class="muted">Loading ChatGPT updates…</p>';
+ try{
+  const rows=await request('/rest/v1/rpc/platform_owner_list_ai_agent_messages',{method:'POST',body:JSON.stringify({p_thread_key:'tradeflow-research',p_category_slug:null,p_limit:50,p_before:null})});
+  const messages=Array.isArray(rows)?rows:[];
+  if(!messages.length){host.innerHTML='<p class="muted">No ChatGPT research updates yet.</p>';return;}
+  host.innerHTML=messages.filter(m=>m.sender_kind==='chatgpt_supervisor'||m.sender_key==='chatgpt').reverse().map(m=>'<article style="border:1px solid var(--border,#ddd);border-radius:8px;padding:12px;margin:8px 0"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><strong>'+escapeHtml(m.title||'ChatGPT update')+'</strong><span class="muted">'+escapeHtml(m.sender_name||'ChatGPT')+' · '+escapeHtml(new Date(m.created_at).toLocaleString('en-GB'))+'</span></div><p style="white-space:pre-wrap;margin:8px 0 0">'+escapeHtml(m.body||'')+'</p></article>').join('')||'<p class="muted">No ChatGPT research updates yet.</p>';
+ }catch(err){host.innerHTML='<p class="error">Could not load ChatGPT updates: '+escapeHtml(err.message||String(err))+'</p>';}
+}
 async function loadManualAiResearchBatches(){
  const host=$('manual-ai-batches');if(!host)return;
  host.innerHTML='<p class="muted">Loading saved batches…</p>';
@@ -852,6 +862,7 @@ async function submitManualAiResponse(promptId,button){
 }
 $('manual-ai-create-batch')?.addEventListener('click',createManualAiResearchBatch);
 $('manual-ai-refresh')?.addEventListener('click',loadManualAiResearchBatches);
+$('manual-ai-chatgpt-refresh')?.addEventListener('click',loadManualAiChatGptUpdates);
 
 $('cloud-ai-refresh')?.addEventListener('click',loadCloudAiProviders);
 $('cloud-ai-jobs-refresh')?.addEventListener('click',loadCloudAiJobs);

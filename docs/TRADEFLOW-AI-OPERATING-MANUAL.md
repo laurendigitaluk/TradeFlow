@@ -6255,3 +6255,10 @@ Current Batches 03–13: 246 observations, 243 active (133 UK New, 110 UK Used),
 For AKASO V50 X / With SD Bundle master d763014a-70e2-4a0e-a7ce-bf8e0afdb0e1, a direct eBay UK listing was verified at £153.99, new, two available / one sold. Listing title and item specifics confirm V50 X-U3 and 64GB microSD; seller description confirms V50 X and two 1350mAh batteries. The existing master was used; no new catalogue product created. LIVE evidence row 8c8b32c5-e38d-4c5c-83f9-a0af9ee3aa3d was read back successfully. Source: https://www.ebay.co.uk/itm/326424455596. The YPC £109.99 lead is a dated 22 October snapshot only.
 
 Current Batches 01–13: 255 observations, 252 active (137 UK New, 115 UK Used), three inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Camera evidence Batches 01–13 current reconciliation
+
+Batches 01–02 were extended with seven direct UK source rows: Pentax 17 new £499 and two used MPB units £389/£354; Blackmagic Pocket Cinema Camera 6K G2 new RCB Logic £1,666.80 inc VAT and Jigsaw24 £1,890 inc VAT; Blackmagic Studio Camera 6K Pro used CVP £1,580.40 ex VAT; URSA Cine 12K LF used MPB £5,509 PL Fit. Preserve source VAT basis, mount, package and condition notes. Batch 03 now also includes AKASO V50 X-U3 / With 64GB microSDXC at £153.99 new from eBay UK Clarkson Direct; row 8c8b32c5-e38d-4c5c-83f9-a0af9ee3aa3d.
+
+Current LIVE batch-keyed reconciliation across Batches 01–13: 255 observations, 252 active (137 UK New, 115 UK Used), three inactive. Per-batch counts are in the consolidated checkpoint. Global LIVE shared_market_evidence table: 4,797 total, 4,742 active, 55 inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.

@@ -6358,3 +6358,10 @@ Queue candidate 5c951409-c951-4f35-be87-884eba7968cc was matched to existing Kob
 Verified and imported two exact UK Anycubic sources to existing LIVE masters: Kobra 3 Max V2 + ACE 2 Pro Combo £499 (one ACE2Pro, four-colour base, expandable to eight) and Kobra S1 + ACE 2 Pro Combo £409 (one ACE2Pro, four-colour base). Evidence IDs: 24e67af8-e9bf-44ea-b515-c8226a1dec9e and b10534b7-fd71-493f-89f5-cbeab5c7927b. Full sources/package details in the manual queue checkpoint.
 
 Three other queue candidates already matched existing exact evidence and were not duplicated: Kobra 3 Max V2 Standard £379; Kobra 3 Max V2 4-Color Combo £519; Kobra S1 ACE 2 Pro 4-Color Combo £449. Keep the Kobra 3 Max V2 £641 All-in-One bundle separate because it includes additional accessories/filament. Queue statuses remain needs_research pending authenticated owner workflow; do not bypass RLS. Global LIVE evidence: 4,808 total, 4,750 active, 58 inactive. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Bambu A1 and PS5 queue matching
+
+Bambu Lab A1 candidate matched existing LIVE A1 / Standard Printer master; refresh existing 3D Prima evidence rather than duplicate: £215 GBP incl VAT, delivery excluded, stock 50+, SKU 12558, EAN 6975337039150, MPN PF002-A-EU. AMS Lite is a different package. Evidence row 62ea3f7e-34aa-4f5c-9c3e-fd426ffcc95e. Full source in manual queue checkpoint.
+
+Do not map PS5 Digital Edition 825GB Two DualSense bundle to the single-controller 825GB master. The matching official bundle is out of stock. The older B08H98GVK8 PS5 Digital Edition is the 2020 generation and its current UK price was not verified. Keep PS5 Slim Digital evidence separate. Queue statuses remain needs_research pending authenticated owner workflow; do not bypass RLS.

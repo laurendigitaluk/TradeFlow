@@ -308,3 +308,10 @@ This supersedes earlier 220-row/216-active and 246-row/243-active cumulative sna
 Fresh LIVE read-back after Batch 02 CVP and Batch 03 parallel additions: 260 batch-keyed observations across Batches 01–13, 257 active (140 UK New, 117 UK Used), three inactive. Current global shared_market_evidence: 4,802 total, 4,747 active, 55 inactive. Latest per-batch breakdown is in CHECKPOINTS/2026-11-12-live-market-evidence-import-04-to-13.md. Batch 02 now 4 active (all UK Used); Batch 03 now 8 active (7 UK New, 1 UK Used).
 
 Batch 03 includes three UK New out-of-stock/backorder Caddx price references; current valuation does not filter active UK New by availability, so they may influence automatic valuation. This is existing behaviour and no valuation logic was changed. UK Used remains reference-only. TEST and Stripe untouched.
+
+
+## 12 November 2026 — final count correction
+
+DigiBroadcast Shure MoveMic Two Receiver Kit row dee5cf7a-27cb-4097-84a1-a918764c0cf2 was deactivated because the direct page currently displays EUR and the earlier £496.80 GBP amount is unsupported. It remains retained inactive with currency_unverified. Batch 10 now 30 total, 29 active, one inactive.
+
+Latest Batches 01–13: 261 total, 257 active (140 UK New, 117 UK Used), four inactive. Global LIVE shared_market_evidence: 4,803 total, 4,747 active, 56 inactive. This supersedes 260/257 and prior global count. UK Used remains reference-only; no TEST, Stripe, schema or valuation changes.

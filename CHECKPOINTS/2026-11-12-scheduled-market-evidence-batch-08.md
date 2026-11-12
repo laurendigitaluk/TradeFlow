@@ -445,7 +445,7 @@ Existing evidence corrections:
 
 Batch 08 now has **14 total records: 13 active (10 UK New, 3 UK Used), one inactive UK New seller-away row; all 14 are GBP**. Out-of-stock Hubsan UK New observations remain active as historical UK price observations with explicit status; this follows current LIVE evidence policy. The seller-away KM19 row is inactive so it cannot be selected by the valuation function while the seller cannot fulfil orders.
 
-Exact source URLs and evidence notes are retained in the inserted records and this checkpoint. Unresolved leads remain RED VERIFY: FIMI X8 Mini V2 has no reliable UK GBP exact source; Freefly Flux H1 and Wave lack UK retail pricing; GoPro MISSION 1 PRO Grip Edition package/retailer price needs checkout confirmation; Hubsan H109/HT55/MINI and ZINO MINI PRO lack qualifying UK GBP offers; NEEWER LS-29 PRO now has an exact official UK £58.99 package/price observation, but is out of stock; PA028E still needs exact model/package and current UK pricing; NEEWER RH12C £79.99 and TP014 £102.99 official UK pages have now been rechecked; both are in stock with Add to Cart and exact package contents confirmed. The TP014 Google Shopping £82.39 variant remains unverified.. These were not promoted.
+Exact source URLs and evidence notes are retained in the inserted records and this checkpoint. Unresolved leads remain RED VERIFY: FIMI X8 Mini V2 has no reliable UK GBP exact source; Freefly Flux H1 and Wave lack UK retail pricing; GoPro MISSION 1 PRO Grip Edition now has an exact official UK package/price observation at £679.99 with Add To Cart shown; stock count is not separately displayed and checkout was not completed, so retain the availability caveat.; Hubsan H109/HT55/MINI and ZINO MINI PRO lack qualifying UK GBP offers; NEEWER LS-29 PRO now has an exact official UK £58.99 package/price observation, but is out of stock; PA028E still needs exact model/package and current UK pricing; NEEWER RH12C £79.99 and TP014 £102.99 official UK pages have now been rechecked; both are in stock with Add to Cart and exact package contents confirmed. The TP014 Google Shopping £82.39 variant remains unverified.. These were not promoted.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.
 
@@ -475,3 +475,14 @@ Two existing UK New rows were refreshed in place; no duplicates inserted:
 - NEEWER RH12C, SKU 66607222: £79.99, 3 in stock, Add to Cart, UK warehouse shipping normally 2–5 working days. Package contents: ring light, stand, ball head, flexible phone holder, RT116 Bluetooth shutter release, UK-plug USB adapter, USB-C cable and manual. The “More stock coming soon” label is a replenishment notice alongside three currently available units, not a stock contradiction.
 
 Both rows' notes and observed_at were updated and read back. Batch 08 remains 15 database rows: 14 active (11 UK New, 3 UK Used) and one inactive UK New seller-away row; all 15 GBP. Cumulative totals remain 231 GBP observations: 227 active (124 UK New, 103 UK Used), four inactive.
+
+
+## 11. GoPro MISSION 1 PRO Grip Edition — 12 November 2026
+
+One further exact UK New observation was imported into LIVE and read back:
+
+| Product | Source | Price | Verification |
+|---|---|---:|---|
+| GoPro MISSION 1 PRO Grip Edition | GoPro UK | £679.99 | Official UK bundle listing displays the exact Grip Edition at £679.99; selected product page shows Add To Cart. All bundles include the MISSION 1 PRO camera, Enduro 2 battery and camera case; Grip Edition adds the Point-and-Shoot Grip. [Price listing](https://gopro.com/en/gb/shop/deals/camera-bundle-deals) · [Selected product](https://gopro.com/en/gb/shop/buy-cameras/mission-1-series?bundle-id=CHDRW-011-master&product-id=CHDHW-011-master) |
+
+The earlier £579.99 search snippet was stale; the current official GoPro UK listing shows £679.99. The selected product page does not expose a separate stock count and checkout was not completed, so the evidence availability note records Add To Cart shown but stock count unconfirmed. Batch 08 now has 16 database rows: 15 active (12 UK New, 3 UK Used) and one inactive UK New seller-away row; all 16 are GBP. Cumulative Batches 04–13 now total 232 GBP observations: 228 active (125 UK New, 103 UK Used), four inactive. UK Used remains excluded from automatic valuation.

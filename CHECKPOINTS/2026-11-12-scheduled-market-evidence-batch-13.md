@@ -245,3 +245,10 @@ The public schema exposes owner RPCs for listing, reviewing and deleting researc
 ## Next run
 
 Read this batch 13 checkpoint and project memory first. Exclude all 20 product IDs above, all IDs from scheduled checkpoints 02–13, all outstanding LIVE queue candidates and all outstanding manual AI research prompt product IDs. Recheck evidence and queue status immediately before research. Select the next 20 eligible active LIVE master products dynamically without SQL OFFSET. Continue source click-through, variant/package verification and `RED VERIFY` retention. If owner auth remains null or owner check fails, create the next checkpoint and project memory only.
+
+
+## Background importer repair note — 12 November 2026
+
+- The initial automated import run correctly stopped before any write because checkpoint UUID extraction included historical/recheck IDs.
+- The importer now extracts only explicit product-ID fields and requires exactly 220 unique records across batches 03–13 before writing.
+- Research is staged as `pending_review` reference candidates only; no price is copied without source-level matching, no foreign currency is converted, and no evidence is approved automatically.

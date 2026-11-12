@@ -5669,3 +5669,10 @@ Batches 01–13: 258 observations, 255 active (140 UK New, 115 UK Used), three i
 ## 12 November 2026 — AKASO V50 X Diving Bundle package control
 
 The official AKASO variant selector defines the Diving Bundle as camera + 64GB SD card + floating hand grip. The UK £119.99 floating-grip bundle explicitly excludes microSD, so it is not an exact Diving Bundle and must not be imported against that master. Keep RED VERIFY until a UK offer confirms both the SD card and floating grip. The separate With SD Bundle has its own evidence and must not be reused. Source and checkpoint references: https://shopakaso.com/products/akaso-v50-x and the Batch 03 research checkpoint.
+
+
+## 12 November 2026 — latest camera evidence reconciliation
+
+The two older Blackmagic batches now include four verified UK Used rows in Batch 02: CVP Studio Camera 6K Pro £1,580.40 ex VAT; MPB URSA Cine 12K LF PL Fit £5,509; CVP URSA Cine 12K LF Body £5,987.28 inc VAT, Like New; CVP URSA Cine 17K 65 and EVF £16,199.10 ex VAT, Excellent. The body and EVF bundle are matched to their exact existing masters, not the generic 12K LF or body-only product. Full row IDs and package details are in the Batch 02 checkpoint.
+
+Current Batches 01–13 read-back: 260 batch-keyed rows, 257 active (140 UK New, 117 UK Used), three inactive. Global LIVE shared_market_evidence: 4,802 total, 4,747 active, 55 inactive. Batch 03 has three active UK New Caddx out-of-stock/backorder price references; availability is recorded, but the current valuation path does not filter active UK New by availability. This existing behaviour was not changed. UK Used remains reference-only. TEST, Stripe, schema, master data and valuation logic untouched.

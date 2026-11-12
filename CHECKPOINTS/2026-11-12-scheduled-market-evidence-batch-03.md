@@ -294,3 +294,10 @@ YourFPV direct page confirms exact Caddx Peanut / Insta360 Go 2 FPV camera, SKU 
 Imported against existing Caddx Peanut / Caddx Peanut Action Camera master dbf3777c-4f84-4cd1-86db-03d8ed66482f as active UK New GBP with availability out_of_stock. LIVE evidence row 3cf32e49-d7b0-4d30-9851-9da8155e1577; source_record_key batch03-caddx-peanut-yourfpv-21899-oos-20261112. Read-back confirmed exact master, source, price, package notes and unavailable status.
 
 Batch 03 now has 8 active rows (7 UK New, 1 UK Used). Batches 01–13 now contain 258 observations, 255 active (140 UK New, 115 UK Used), three inactive. Do not treat this out-of-stock reference as a live buying option. No master/schema/valuation change; TEST and Stripe untouched.
+
+
+## AKASO V50 X Diving Bundle — package mismatch retained, no import — 12 November 2026
+
+Rechecked the official Shop-AKASO variant selector. It defines the Diving Bundle as V50 X Standalone + 64GB SD card + Floating Hand Grip. The UK YPC floating-hand-grip bundle and Amazon-linked listing (model SYYA0022-GY-01-FLB+P) explicitly state that a microSD card is not included. Therefore, the £119.99 UK YPC offer is not the exact catalogue Diving Bundle and has not been imported against that master. Official variant reference: https://shopakaso.com/products/akaso-v50-x ; UK comparison: https://www.ypc.co.uk/product/akaso-v50-x-action-camera-floating-hand-grip-bundle-includes-v50-x-4k-underwater-camera-floating-hand-grip-2-batteries-carrying-case-and-accessories-kit/.
+
+The separate AKASO V50 X With SD Bundle already has exact direct eBay UK evidence at £153.99. Do not cross-assign that price or the no-SD floating-grip bundle to the Diving Bundle. Keep Diving Bundle RED VERIFY until a UK source confirms both 64GB SD card and floating grip in the same offer.

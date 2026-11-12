@@ -360,3 +360,11 @@ Six further RED VERIFY leads were resolved and imported across Batches 06–08:
 - Exact GoPro MISSION 1 PRO Grip Edition, official GoPro UK £679.99, exact Grip Edition selected with Add To Cart shown; camera, Enduro 2 battery, case and Point-and-Shoot Grip package confirmed. [Price listing](https://gopro.com/en/gb/shop/deals/camera-bundle-deals) · [Selected product](https://gopro.com/en/gb/shop/buy-cameras/mission-1-series?bundle-id=CHDRW-011-master&product-id=CHDHW-011-master). Stock count is not separately displayed and checkout was not completed; the caveat is retained in the row.
 
 Cumulative Batches 04–13 now contain **232 GBP observations: 228 active (125 UK New, 103 UK Used) and four inactive retained for audit**. Batch 06 now contains 15 active rows (11 UK New, 4 UK Used). Batch 07 now contains 15 rows: 14 active (10 UK New, 4 UK Used) and one inactive UK New Notify Me row. Batch 08 now contains 16 rows: 15 active (12 UK New, 3 UK Used) and one inactive UK New seller-away row. UK Used remains excluded from automatic valuation. The valuation function, schema, TEST and Stripe were not changed.
+
+
+## Cumulative LIVE evidence update — 12 November 2026 (Batch 08 continuation)
+
+One additional RED VERIFY lead was resolved and imported:
+- Exact Hubsan Zino Mini Pro Refined three-battery package, H817DR / EAN 6922572413412, Align-Trex UK £485.99 (RRP £539.99), explicitly Out of Stock / Notify Me. The direct page confirms three batteries and 64GB onboard memory. [Source](https://www.align-trex.co.uk/hubsan-zino-mini-pro-refined-h817dr.html). The row was read back successfully and matched to the ZINO MINI PRO REFINED master, not the one-battery standard package. It remains active historical UK New evidence with explicit out_of_stock status.
+
+Cumulative Batches 04–13 now contain **233 GBP observations: 229 active (126 UK New, 103 UK Used) and four inactive retained for audit**. Batch 08 now contains 17 rows: 16 active (13 UK New, 3 UK Used) and one inactive UK New seller-away row. UK Used remains excluded from automatic valuation. The valuation function, schema, TEST and Stripe were not changed.

@@ -377,3 +377,24 @@ Batch 10 now has **27 active GBP records: 12 UK New and 15 UK Used**. The three 
 Other leads remain RED VERIFY: HDC-5500 KitPlus package contains camera head, HDCU-5500 and installed options, not a bare camera; FE 100-400mm F4.5-5.6 GM OSS II exact identity unresolved; EVI-D90 HSSL result is a system bundle and blocked; PMW-160 SLRHut new/stock claims require seller verification; XVS-G1 configuration and I/O unclear; PMW-150 Alfatec page returned 403; HDC1500 is not HDC1500R; Skydio Controller USD only. No foreign-currency or package-mismatch price was imported.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.
+
+
+## 9. Sony HDC-5500 exact UK source resolved and imported — 12 November 2026
+
+A direct UK retailer source was re-opened and the Standard package identity was checked against the LIVE master before insertion:
+- LIVE master: Sony HDC-5500 / Standard, ID 75fabe8a-7cd8-4419-9cc3-235443d881a3.
+- Visuals exact SKU HDC-5500//U: £60,036.00 inc VAT (£50,030.00 ex VAT), 3+ in stock. Direct page: https://www.visuals.co.uk/sony-hdc-5500.html.
+- The source In The Box list contains cable clamp belt, two screws and attached label only. The observation is the camera-head Standard offer; it is not a complete channel with CCU, RCP, viewfinder or lens. The separate £54,000 KitPlus used channel remains a different package and is not attached to this Standard record.
+- Inserted idempotently into LIVE shared_market_evidence as active UK New GBP, source_record_key batch10-followup-sony-hdc5500-visuals-60036-20261112.
+- Evidence row ID: 10248d49-cc2b-43eb-8546-acd1881a3c86. Insert result succeeded and direct LIVE read-back confirmed exact master, package, source, URL, £60,036 GBP, new condition, retailer channel and in_stock status.
+
+Batch 10 now has 28 active GBP rows: 13 UK New and 15 UK Used. Cumulative Batches 04–13 now contain 237 GBP observations: 233 active (128 UK New, 105 UK Used), four inactive. No master product, tenant/customer, schema or valuation changes. TEST and Stripe untouched.
+
+Additional source rechecks retained as RED VERIFY / no import:
+- Sony XVS-G1: C2S Media direct page displays £20,765.70 but does not establish VAT basis or exact base-unit/control-panel/I/O configuration; ProAV page has no visible price and contradictory In Stock / Backorder wording. Do not import yet. C2S: https://c2s-media.com/product/sony-xvs-g1/ ; ProAV: https://proav.co.uk/sony-xvs-g1-live-production-switcher.
+- Sony NP-FV70: UK retailer pages resolve to NP-FV70A / NP-FV70A2.CE, not the exact original non-A variant; do not map the A-version £49.99 price to the non-A master. Bristol: https://www.bristolcameras.co.uk/product/sony-np-fv70-infolithium-rechargeable-battery/.
+- Sony FE 100-400mm F4.5-5.6 GM OSS II: no exact II model verified. SEL100400GM (first-generation variable-aperture lens) and SEL100400MCW (current constant-F4.5 lens) are different products; do not assign either price to the II master.
+- PowerDolphin Wizard £1,449 eBay offer is active/new, but the direct listing does not establish the full Wizard sonar/bait-drop/controller/accessory package. Keep the existing package-unverified row inactive; do not reactivate from title alone.
+- Sony HDC-F5500V Visuals £85,619.24 record already exists against the separate HDC-F5500V Standard Package master. The refreshed page confirms SKU HDC-F5500V-4K and Available to Order; no duplicate was inserted.
+
+The Sony HDC-3000 checkpoint remains unresolved: Sony's “HDC-3000 series” wording is a series designation, not proof of a distinct sellable HDC-3000 camera model. Keep related HDC-3500/HDC-3200/HSC-300 and CCU offers separate.

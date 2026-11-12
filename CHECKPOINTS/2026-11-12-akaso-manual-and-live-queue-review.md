@@ -77,3 +77,16 @@ Existing exact evidence rechecked; no duplicate imports:
 - Queue candidate `495eaf7f-b6ba-42e7-84b3-04bbe4ab4a5b` — Kobra 3 Max V2 All-in-One Bundle remains unresolved: £641 offer includes additional camera, printhead assembly, adhesives and 4KG filament, so it is not the standard 4-Color Combo. Do not attach it to that master.
 
 All imported rows were read back from LIVE. Queue records remain `needs_research` until the authenticated owner queue-status workflow is available; no direct queue status mutation or RLS bypass was used. Remaining queue candidates: two PlayStation 5 Digital Edition listings and Bambu Lab A1 (no matching master found), plus the Kobra 3 Max V2 all-in-one bundle package mismatch. Global LIVE shared_market_evidence now 4,808 total, 4,750 active, 58 inactive. TEST, Stripe, schema, master catalogue and valuation logic untouched.
+
+
+## Follow-up: Bambu Lab A1 refreshed; PlayStation 5 candidates held for exact package verification — 12 November 2026
+
+### Bambu Lab A1
+The manual AI queue candidate `8c18a064-c2e3-4bfd-a1a9-5660254acec7` was matched to existing LIVE Bambu Lab A1 / Standard Printer master `6c70c94c-279f-4b46-931f-e99c421c9473`. No new master product or duplicate evidence row was created. Reopened 3D Prima's direct UK page and refreshed existing evidence row `62ea3f7e-34aa-4f5c-9c3e-fd426ffcc95e`: £215.00 GBP including VAT (delivery excluded), In Stock (50+), SKU 12558, EAN 6975337039150, MPN PF002-A-EU. This is the Standard Printer only; AMS Lite is not included and remains a separate package master. Source https://www.3dprima.co.uk/bambu-lab/bambu-lab-a1-12558. Read-back confirmed current stock and exact product/package.
+
+### PlayStation 5 queue candidates
+- `14ee4607-66d6-4fb4-9973-95fc493f99b3` / Amazon ASIN B0HHFXFS8C is the PS5 Digital Edition 825GB bundle with **two DualSense controllers**. It is not the existing single-controller 825 GB Digital Edition package, so no evidence was attached to that master. PlayStation Direct's matching bundle page lists £559.99 but currently states Out of stock. Keep package mismatch / unavailable state visible.
+- `aeb85439-6781-4cfd-8740-f88606aa1994` / Amazon ASIN B08H98GVK8 is the original PS5 Digital Edition (825GB, 2020 generation), not the current PS5 Slim Digital model. Amazon UK page returned 503 and no current exact UK retailer offer was verified. Do not substitute the current Slim Digital £519.99 evidence or foreign-currency price.
+- Existing PS5 Slim Digital / 825 GB master `cb599ad1-5800-4aca-9a83-f77b3fca7950` already has active official PlayStation Direct UK evidence at £519.99; kept separate from both candidates.
+
+The three queue records remain `needs_research` pending authenticated owner queue-status workflow; no direct status mutation or RLS bypass. TEST, Stripe, schema, master catalogue and valuation logic untouched.

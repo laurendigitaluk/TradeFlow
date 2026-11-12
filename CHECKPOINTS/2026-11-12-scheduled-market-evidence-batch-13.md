@@ -306,3 +306,22 @@ The initial PowerVision PowerDolphin Wizard £1,449 new eBay row was marked inac
 Batch 13 now has **36 total rows: 35 active (17 UK New, 18 UK Used) and one inactive package-unverified new row; all 36 are GBP**. UK Used remains reference-only. Out-of-stock/preorder UK New rows are retained with their explicit status under existing behaviour; they may still be selected by the current valuation function if active.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.
+
+
+## Additional retailer price recheck — 12 November 2026
+
+Five more exact direct-source observations were added and read back:
+- Sony ECM-B10 — CameraWorld £159 new, in stock, 3–5 day dispatch; category product listing confirms exact model.
+- Sony FE 85mm F1.4 GM II — London Camera Exchange £1,799 new, in stock; £200 cashback after claim.
+- Sony FE 85mm F1.4 GM II — Park Cameras £1,799 new, in stock; £200 cashback after claim, two-year warranty after registration.
+- Sony FE 12-24mm F2.8 GM — CameraWorld £2,548 new, two available, 3–5 day dispatch, free delivery and 2-year guarantee.
+- Sony FE 12-24mm F2.8 GM — CameraWorld £2,548 open-box, one unique item in stock, recorded separately from new.
+
+Sources:
+- [CameraWorld ECM-B10 listing](https://www.cameraworld.co.uk/videography-products/video-camera-microphones/shopby/sony.html)
+- [LCE FE85 GM II](https://www.lcegroup.co.uk/New/Sony-FE-85mm-F1.4-G-Master-II_175416.html)
+- [Park Cameras FE85 GM II](https://www.parkcameras.com/shop/sony-fe-85mm-f14-gm-ii-lens_7240588g)
+- [CameraWorld FE12-24 GM](https://www.cameraworld.co.uk/sony-fe-12-24mm-f28-gm-lens.html?condition=new)
+- [CameraWorld FE12-24 open-box](https://www.cameraworld.co.uk/sony-fe-12-24mm-f28-gm-lens.html?condition=open-box)
+
+Batch 13 now has **41 total GBP rows: 40 active (21 UK New, 19 UK Used) and one inactive package-unverified PowerDolphin Wizard new listing**.

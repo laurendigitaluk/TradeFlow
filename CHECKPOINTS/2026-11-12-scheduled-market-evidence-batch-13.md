@@ -325,3 +325,25 @@ Sources:
 - [CameraWorld FE12-24 open-box](https://www.cameraworld.co.uk/sony-fe-12-24mm-f28-gm-lens.html?condition=open-box)
 
 Batch 13 now has **41 total GBP rows: 40 active (21 UK New, 19 UK Used) and one inactive package-unverified PowerDolphin Wizard new listing**.
+
+
+## Additional direct-source RED VERIFY follow-up — 12 November 2026
+
+Six additional UK New observations were imported and read back:
+
+| Product | Source | Price | Verification |
+|---|---|---:|---|
+| Sony ECM-B10 | Wex Photo Video | £175.00 | Exact product code 3052619; new, limited stock/selling fast. [Source](https://www.wexphotovideo.com/sony-ecm-b10-wireless-shotgun-microphone-3052619/) |
+| Sony FE 85mm F1.4 GM II | Sony Centre Direct | £1,799.00 | Exact SKU SEL85F14GM2B.SYX; standalone lens, free standard 48-hour delivery shown. [Source](https://sonycentresdirect.co.uk/p-55783-fe-85mm-f14-gm-ii.aspx) |
+| Sony FE 12-24mm F2.8 GM | Sony UK | £2,645.00 | Exact SKU SEL1224GM.SYX; official store, Add to Basket and delivery date shown. [Source](https://www.sony.co.uk/store/product/sel1224gm.syx/buy) |
+| Sony FE 12-24mm F2.8 GM | Sony Centre Direct | £2,645.00 | Exact SKU SEL1224GM.SYX; reduced from £2,899, free standard delivery shown. [Source](https://sonycentresdirect.co.uk/p-41047-sony-sel1224gm-fe-12-24mm-f28-gm-lens.aspx) |
+| HOVERAir AQUA Standard | HOVERAir UK Official Store | £1,129.00 | Exact Standard bundle: AQUA with one battery, USB-C cable, Lighthouse/armband, repair kit and waterproof battery bag. Fly More is a different £1,299 package. [Source](https://uk.hoverair.com/products/hoverair-aqua) |
+| HOVERAir AQUA Standard | Park Cameras | £1,129.00 | Exact product code 9021170A, in stock, Add to Basket; one-battery Standard bundle. [Source](https://www.parkcameras.com/shop/hoverair-x1-aqua-standard_9021170a) |
+
+Data-quality correction: the BuzzFlyer Walkera Furious F320 £369 observation is a new retail listing (condition new, sold out), not UK Used. Its evidence_type was corrected from uk_used to uk_new; price, source URL, sold-out availability and active status were retained. It remains a sold-out new asking-price reference under the existing evidence policy.
+
+Batch 13 now has **47 total GBP rows: 46 active (28 UK New, 18 UK Used) and one inactive package-unverified PowerDolphin Wizard new row**. UK Used/open-box records remain reference-only. The inactive PowerDolphin Wizard row remains stored for audit because the listing does not establish the full Wizard package contents.
+
+Other RED VERIFY leads remain excluded where no exact UK GBP source or package match was established: PDW-F800 £260 basis may be hire rather than sale; Skydio Beacon/X10D battery no UK source; Z CAM P2-R1N no UK GBP price; Yuneec H850-RTK no verified UK seller/package; HXR-V1E search-result listing item specifics identify HVR-Z1E, so not matched; PowerEgg X Wizard Shopping lead did not resolve; HDC/Sony package or seller terms remain uncertain. No foreign-currency conversion or wrong-model match was imported.
+
+No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.

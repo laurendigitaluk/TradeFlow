@@ -306,3 +306,10 @@ Batch 10 now 29 active (14 UK New, 15 UK Used). Cumulative Batches 04–13: 241 
 ## 12 November 2026 — DigiBroadcast Shure currency correction
 
 Deactivated existing Shure MoveMic Two Receiver Kit DigiBroadcast row dee5cf7a-27cb-4097-84a1-a918764c0cf2. Direct page currently defaults to EUR (€593.29 / €494.41; RRP €617.65 / €514.71), so prior £496.80 is not supported as GBP. Row retained inactive with currency_unverified; package contents confirmed. Use separate Canford GBP evidence. Batch 10 now 30 total, 29 active (14 UK New, 15 UK Used), one inactive.
+
+
+## 12 November 2026 — Shure MoveMic Two Receiver Kit currency and source correction
+
+Shure UK direct page confirms exact MV-TWO-KIT-Z6 at £519.00 RRP with two lavaliers, charging case, receiver, cables and roll bag; corrected existing official row b5e0c19c-179a-465e-954c-b1dab8da9286 to £519 RRP (not the £311.40 unverified search offer). Canford exact stock code 74-5422 / MV-TWO-KIT-Z6 confirms £431 ex VAT, on demand 3–4 weeks, exact receiver-kit contents; imported as active UK New GBP/backorder against existing master. Evidence row 1c662613-7d5f-40e3-84eb-5ed2b84b5962. DigiBroadcast page currently defaults to EUR, so its former £496.80 row dee5cf7a-27cb-4097-84a1-a918764c0cf2 was deactivated as currency_unverified. Direct source URLs and full details are in Batch 10 checkpoint.
+
+Batch 10: 30 total, 29 active (14 new, 15 used), one inactive. Current Batches 01–13: 261 total, 257 active (140 UK New, 117 UK Used), four inactive. No master/schema/valuation change; TEST and Stripe untouched.

@@ -38,3 +38,12 @@ Two exact UK used offers were imported and read back into LIVE:
 Batch 02 now has 2 active records (0 UK New, 2 UK Used). Evidence IDs/source keys are in LIVE shared_market_evidence with batch02-followup prefixes.
 
 Remaining exact used gaps stay unresolved: PYXIS 6K PL, Studio Camera 4K Plus G2, Studio Camera 4K Pro G2, URSA Broadcast G2, URSA Cine 12K LF + EVF, URSA Cine 12K LF 100G, URSA Cine 12K LF Body and URSA Cine 17K 65. No UK direct exact used offers found; do not substitute base/+EVF/100G/body variants or US/EU listings.
+
+
+## Additional exact used offers — 12 November 2026
+
+Two further exact CVP used offers were verified, imported and read back:
+- URSA Cine 12K LF Body, part number CINEURSAA12KLFBODY / CINEURSAAA12KLFABDY: £4,989.40 ex VAT / £5,987.28 inc VAT, Like New open-box in-house demo, 90-day warranty, in stock for immediate delivery. Matched to the exact existing URSA Cine 12K LF Body master; body includes EF mount and excludes top handle, baseplate, PSU, battery plate and PL mount. Evidence row 6d56eb6e-dd44-4824-9673-ff954ecdf57e. Source https://cvp.com/product/ex-showroom-blackmagic-ursa-cine-12k-lf-13325487.
+- URSA Cine 17K 65 and EVF, part number CINEURSAA17K65/EVF / CINEURSAAD17K65CEVF: £16,199.10 ex VAT, Excellent, in stock for immediate delivery, 90-day warranty, serial 13755470. Package includes 17K 65 camera with PL mount, 8TB media module/case, EVF and bracket/rods/cables, handle, baseplate, battery plate, PSU, media accessories and Pelican case. Matched to existing URSA Cine 17K 65 Standard master because source SKU explicitly includes EVF; EVF and mount details retained. Evidence row d42fdc5d-69ca-4a91-9879-1375086624fa. Source https://cvp.com/product/used-blackmagic-ursa-cine-17k-65-and-evf/ex-showroom-blackmagic-ursa-cine-17k-65-evf-1.
+
+Batch 02 now has 4 active UK Used GBP records. The DigiBroadcast URSA Cine 12K LF + EVF offer remains unimported because the current page renders EUR despite a GBP selector and the title says “like new” while the body says “Good condition”; do not convert or guess. Park Cameras Studio Camera 4K Pro G2 used page currently says no stock despite a stale search card; do not import. The other exact used gaps remain unresolved where no direct UK stock offer exists.

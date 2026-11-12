@@ -6346,3 +6346,8 @@ Current Batches 01–13: 263 total observations, 257 active (139 UK New, 118 UK 
 Earlier duplicate Sony FE 12-24mm F2.8 GM and Sony ECM-B10 source rows were deactivated and retained for audit; later exact same-source rows remain active. Other retailer offers are independent. Batch 13 is now 50 total, 48 active (27 UK New, 21 UK Used), two inactive duplicates.
 
 Current Batches 01–13: 263 observations, 257 active (139 UK New, 118 UK Used), six inactive. Global shared_market_evidence: 4,805 total, 4,747 active, 58 inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Anycubic Kobra 4 queue candidate resolution
+
+Queue candidate 5c951409-c951-4f35-be87-884eba7968cc was matched to existing Kobra 4 / Standard Printer master c673eabf-716d-4ca9-b6eb-9acba6e593a3. Official UK Anycubic page explicitly lists standalone Kobra 4 at £159, separate from the £259 four-colour Combo, with GB VAT included and estimated shipping within 24 hours. Active UK New GBP evidence row ae7a2f85-ff95-4c22-8bf0-b856ed46142c was imported and read back. Queue status remains needs_research until authenticated owner workflow is available; no direct queue status update or RLS bypass.

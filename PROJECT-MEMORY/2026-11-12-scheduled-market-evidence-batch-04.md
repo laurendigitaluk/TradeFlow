@@ -62,3 +62,10 @@ Read batch 04 checkpoint and this project-memory file first. Exclude these 20 pr
 Four additional exact UK GBP used-market observations were imported and read back from LIVE shared_market_evidence: Olympus VF-4 / MPB £146; Nikon AF-S DX 18-200mm VR II / eBay Fivercam £170.10; Nikon AF-S DX 18-200mm VR II / London Camera Exchange £149.99; RØDE Wireless GO II dual-channel / eBay DR Beauties £99.99 (out of stock, historical reference). All four use uk_used and are reference-only. The LIVE valuation function was inspected: shared automatic valuation selects GBP uk_new evidence only, so these used rows do not affect automatic valuation.
 
 Batch 04 now has 18 active evidence rows (8 UK New, 10 UK Used), all GBP. Exact URLs, conditions and notes are in the checkpoint. The Cotswold low-price offer, Production Gear stock conflict, Ubuy landed-cost uncertainty, on-order DSR-PD175P and unresolved package/variant matches remain RED VERIFY and were not promoted. No master data, schema, valuation logic, TEST or Stripe changes.
+
+
+## 12 November 2026 — Sony FE 85mm F1.4 GM II Camix source
+
+Cotswold £1,049 page URL now redirects to homepage, so that low offer was not imported. A current direct Camix UK offer was verified: Sony FE 85mm F1.4 GM II Lens Only £1,325 (from £1,849), £1,104.17 ex VAT, brand new, in stock, one-year warranty, free UK delivery, complete lens/caps/hood/case. Camix Ltd company no. 12830683, Batley WF17 9NE. Imported to existing LIVE Lens Only master ca3129be-6d49-4c7b-ba63-007b859ee343; evidence row e1d4ebb0-ccb2-4a27-b4c7-06b3f9ab32af. Source https://camix.co.uk/product/sony-fe-85mm-f1-4-gm-ii-lens/.
+
+Batch 04 now 19 active (9 UK New, 10 UK Used), all GBP. Batches 01–13: 268 total, 261 active (142 UK New, 119 UK Used), seven inactive. Global LIVE: 4,813 total, 4,754 active, 59 inactive. Other Batch 04 RED VERIFY leads remain unresolved; no master/schema/valuation change; TEST and Stripe untouched.

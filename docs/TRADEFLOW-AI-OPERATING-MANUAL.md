@@ -1,3 +1,8 @@
+## 12 November 2026 — Batch 10 follow-up and cumulative evidence state
+
+Batch 10 follow-up imported 12 further records: LMD-A240 used £1,560 Visual Impact and £1,150 eBay; Shure MV7+ £259 SCAN new; SRG-A40 white £3,635.98 Currys Business and £5,054.39 TopAV new; VG-C3EM used £69 Wex and £70 Harrison; FE PZ 28-135 new £1,960 CameraWorld and used £814 MPB; PDW-U1 used £208.70 eBay with PSU and £1,459.95 Snet Technologies with warranty; MoveMic Two Receiver Kit £311.40 official Shure UK. Batch 10 has 24 active GBP rows: 12 new, 12 used.
+
+Keep Shure MoveMic Two transmitter pair (receiver sold separately) distinct from receiver kit. Record conflicting stock labels as backorder where page explicitly states backorder. Keep used evidence reference-only. Cumulative Batches 04–13 now have 150 GBP rows, 148 active (81 UK New, 67 UK Used), 2 inactive. Per-batch total/active: 04 18/18, 05 18/18, 06 12/12, 07 14/13, 08 14/13, 09 16/16, 10 24/24, 11 10/10, 12 12/12, 13 12/12. Inactive: BuzzFlyer DEVO-10 no stock and NEEWER KM19 seller away. No schema or valuation changes; TEST and Stripe untouched.
 ## 12 November 2026 — Batch 09 follow-up and current LIVE evidence totals
 
 Batch 09 follow-up added Currys PENTAX WG-90 £299 new; eBay Sony FE 28-60mm £141.12 used; MPB Sony FE 35mm GM from £819 used; Park Cameras Sony FE 35mm GM £839 Good and £939 Excellent. Existing Argos WG-90, Peter Rogers Pentax DA*55, Wex Sony FE35, LCE Sony FE28-60, Harrison Nikon MB-N12, Andertons Shure SM81 and DigiBroadcast RED Gemini records were rechecked/refreshed. Batch 09 has 16 active GBP rows: 6 new, 10 used. Check the checkpoint for package/availability caveats; Shure cable variant and RED accessory bundle are not bare standard-package comparables.

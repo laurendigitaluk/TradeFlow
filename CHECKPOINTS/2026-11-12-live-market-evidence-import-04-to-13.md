@@ -428,3 +428,10 @@ Latest Batches 01–13 totals: **262 total, 258 active (140 UK New, 118 UK Used)
 A further exact Batch 10 UK New observation was verified from Visual Impact: Sony HDC-3100 camera head, £25,066.80 inc VAT, Available to Order (not held in stock), matched to HDC-3100 Standard master. Batch 10 is now 31 total, 30 active (15 UK New, 15 UK Used), one inactive.
 
 Latest Batches 01–13: **263 total, 259 active (141 UK New, 118 UK Used), four inactive**. Batch 13 remains 50 active (29 new, 21 used). Global LIVE shared_market_evidence: **4,805 total, 4,749 active, 56 inactive**. This supersedes 262/258 and global 4,804/4,748/56. Source and camera-head-only package notes are in the Batch 10 checkpoint.
+
+
+## Latest reconciliation correction — Batch 13 duplicate deactivations — 12 November 2026
+
+Two duplicate captures were deactivated in Batch 13 and retained for audit: earlier Sony FE 12-24mm F2.8 GM Sony UK row 0c023277-93cd-47bb-8677-4f005693e738 (later active same-source row fa2cbd78-e707-481c-be3f-e46aa3cf18d5) and earlier Sony ECM-B10 Wex row 9d7a7b65-8a2a-4a28-90b7-2a1c64e38564 (later active same-source row f9bb53b9-c1a1-4983-b0bd-77bdb4f6ccba). Batch 13: 50 total, 48 active (27 new, 21 used), two inactive.
+
+Latest Batches 01–13: **263 total, 257 active (139 UK New, 118 UK Used), six inactive**. Per-batch totals/active: 01 5/5; 02 4/4; 03 8/8; 04 18/18; 05 18/18; 06 15/15; 07 15/14; 08 17/16; 09 23/23; 10 31/30; 11 32/32; 12 27/26; 13 50/48. Global LIVE shared_market_evidence: **4,805 total, 4,747 active, 58 inactive**. This supersedes 263/259 and global 4,805/4,749/56. UK Used remains reference-only; TEST and Stripe untouched.

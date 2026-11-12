@@ -27,3 +27,14 @@ Scope: next 10 active Cameras products with at least one missing UK new/used evi
 
 ## Next batch
 Continue with the next 10 active LIVE Cameras products with missing `uk_new` or `uk_used` evidence, skipping the first 20 products already researched.
+
+
+## Verified used-source follow-up imports — 12 November 2026
+
+Two exact UK used offers were imported and read back into LIVE:
+- Blackmagic Studio Camera 6K Pro, CVP ex-showroom unit, product code CINSTUDMFT/G26PDK, serial 13537384, £1,580.40 ex VAT, Excellent, in stock for immediate delivery, 90-day warranty. Full box contents recorded: camera, sun shade, tripod mount/plate, turret dust cap, 12V DC PSU, welcome wallet, DaVinci Resolve card and sticker. This is UK Used reference-only; the source price is ex VAT.
+- Blackmagic URSA Cine 12K LF, MPB SKU 3704604, PL Fit, £5,509, Excellent, one available, 12-month warranty. Includes EF mount, 24V 250W power supply, handle, top rod mount, V-Lock battery plate and Wi-Fi antennas. Matched to existing URSA Cine 12K LF Standard master with PL-fit and accessory details retained. UK Used reference-only.
+
+Batch 02 now has 2 active records (0 UK New, 2 UK Used). Evidence IDs/source keys are in LIVE shared_market_evidence with batch02-followup prefixes.
+
+Remaining exact used gaps stay unresolved: PYXIS 6K PL, Studio Camera 4K Plus G2, Studio Camera 4K Pro G2, URSA Broadcast G2, URSA Cine 12K LF + EVF, URSA Cine 12K LF 100G, URSA Cine 12K LF Body and URSA Cine 17K 65. No UK direct exact used offers found; do not substitute base/+EVF/100G/body variants or US/EU listings.

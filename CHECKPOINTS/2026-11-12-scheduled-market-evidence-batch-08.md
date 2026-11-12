@@ -445,7 +445,7 @@ Existing evidence corrections:
 
 Batch 08 now has **14 total records: 13 active (10 UK New, 3 UK Used), one inactive UK New seller-away row; all 14 are GBP**. Out-of-stock Hubsan UK New observations remain active as historical UK price observations with explicit status; this follows current LIVE evidence policy. The seller-away KM19 row is inactive so it cannot be selected by the valuation function while the seller cannot fulfil orders.
 
-Exact source URLs and evidence notes are retained in the inserted records and this checkpoint. Unresolved leads remain RED VERIFY: FIMI X8 Mini V2 has no reliable UK GBP exact source; Freefly Flux H1 and Wave lack UK retail pricing; GoPro MISSION 1 PRO Grip Edition package/retailer price needs checkout confirmation; Hubsan H109/HT55/MINI and ZINO MINI PRO lack qualifying UK GBP offers; NEEWER LS-29 PRO now has an exact official UK £58.99 package/price observation, but is out of stock; PA028E still needs exact model/package and current UK pricing; NEEWER RH12C and TP014 retailer pages require price/availability revalidation. These were not promoted.
+Exact source URLs and evidence notes are retained in the inserted records and this checkpoint. Unresolved leads remain RED VERIFY: FIMI X8 Mini V2 has no reliable UK GBP exact source; Freefly Flux H1 and Wave lack UK retail pricing; GoPro MISSION 1 PRO Grip Edition package/retailer price needs checkout confirmation; Hubsan H109/HT55/MINI and ZINO MINI PRO lack qualifying UK GBP offers; NEEWER LS-29 PRO now has an exact official UK £58.99 package/price observation, but is out of stock; PA028E still needs exact model/package and current UK pricing; NEEWER RH12C £79.99 and TP014 £102.99 official UK pages have now been rechecked; both are in stock with Add to Cart and exact package contents confirmed. The TP014 Google Shopping £82.39 variant remains unverified.. These were not promoted.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.
 
@@ -458,7 +458,7 @@ One further exact UK New observation was imported into LIVE and read back:
 |---|---|---:|---|
 | NEEWER LS-29 PRO 8mm Fisheye Lens with 17mm Thread Phone Lens Clip (SKU 66605766) | NEEWER UK | £58.99 inc VAT (was £86.99) | Exact official UK product page and package contents confirmed; 0 in stock / Sold Out / More stock coming soon. Retained as active historical UK New evidence with explicit out-of-stock status. [Source](https://uk.neewer.com/products/neewer-ls-29-pro-8mm-fisheye-lens-with-17mm-thread-phone-lens-clip-66605766) |
 
-Batch 08 now has 15 database rows: 14 active (11 UK New, 3 UK Used) and one inactive UK New seller-away row; all 15 are GBP. The existing NEEWER RH12C £79.99 row remains active with its stock caveat: the official page simultaneously says “More stock coming soon” and shows two in stock. The TP014 £82.39 Shopping variant remains unverified because the variant page could not be opened; do not replace the official £102.99 observation without confirming that exact variant and its checkout availability.
+Batch 08 now has 15 database rows: 14 active (11 UK New, 3 UK Used) and one inactive UK New seller-away row; all 15 are GBP. The existing NEEWER RH12C £79.99 row was rechecked: the official page says “More stock coming soon” and shows 3 in stock with Add to Cart; treat this as three current units plus replenishment, not a stock contradiction. The TP014 £82.39 Shopping variant remains unverified because the variant page could not be opened; do not replace the official £102.99 observation without confirming that exact variant and its checkout availability.
 
 The NEEWER LS-29 PRO lead is no longer RED VERIFY for model/package/price; availability is still out of stock. PA028E remains RED VERIFY pending exact model/package and current UK price. UK Used remains reference-only and excluded from automatic valuation. No valuation logic, schema, TEST or Stripe data was changed.
 
@@ -466,3 +466,12 @@ The NEEWER LS-29 PRO lead is no longer RED VERIFY for model/package/price; avail
 ## 9. PA028E suffix cross-check — 12 November 2026
 
 The existing NEEWER UK PA028E row was rechecked in place, not duplicated. Direct UK page: £45.99 (was £64.99), SKU 66604178, 3 in stock, Add to Cart, UK warehouse dispatch normally 2–5 working days. Product title and SKU identify PA028E; UK specifications field says PA028, while the official NEEWER Australia page for the same SKU explicitly says PA028E. The existing evidence notes and observed_at were updated, preserving the minor UK specs-field suffix caveat. PA028E is no longer RED VERIFY for model/package/price. Cumulative totals remain 231 GBP observations: 227 active (124 UK New, 103 UK Used), four inactive.
+
+
+## 10. TP014 and RH12C official UK stock recheck — 12 November 2026
+
+Two existing UK New rows were refreshed in place; no duplicates inserted:
+- NEEWER BASICS TP014, SKU 66609186: £102.99, In Stock, Add to Cart, UK warehouse shipping normally 2–5 working days. Exact package contents: TP014 tripod/monopod, two L-shaped hex keys, carrying bag and user manual. The Google Shopping £82.39 variant remains unverified and does not replace the direct official £102.99 page.
+- NEEWER RH12C, SKU 66607222: £79.99, 3 in stock, Add to Cart, UK warehouse shipping normally 2–5 working days. Package contents: ring light, stand, ball head, flexible phone holder, RT116 Bluetooth shutter release, UK-plug USB adapter, USB-C cable and manual. The “More stock coming soon” label is a replenishment notice alongside three currently available units, not a stock contradiction.
+
+Both rows' notes and observed_at were updated and read back. Batch 08 remains 15 database rows: 14 active (11 UK New, 3 UK Used) and one inactive UK New seller-away row; all 15 GBP. Cumulative totals remain 231 GBP observations: 227 active (124 UK New, 103 UK Used), four inactive.

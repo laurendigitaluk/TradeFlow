@@ -275,3 +275,8 @@ LIVE read-back confirms Batch 05 now has **18 active records: 10 UK New and 8 UK
 Remaining RED VERIFY leads were not promoted where exact UK pricing or availability is not established. In particular, the PPP Cameras Nikkor-H Auto page displays £60 but its terms page still states prices are in euros; the LCE Nikon D5000 £49.99 page did not expose a current price/stock state on re-open; the generic Insta360 Flow 2 Series master still spans distinct editions and bundles; Sony UWP-D22 listings are K33-band packages; and Sony HDC-1700 includes a camera control unit not confirmed in the Standard master package. The X10D propeller listing is for Skydio 2/2+, not X10D. Other overseas, suffix, accessory and package mismatches remain outside exact evidence.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed. Used records do not affect automatic valuation.
+
+
+## 8. Latest-source ordering refresh — 12 November 2026
+
+After importing the additional Sony FE 24-70mm F2.8 GM II observations, the direct CameraWorld page (£1,813) was checked first and the direct London Camera Exchange page (£1,699) was checked afterwards. The LCE evidence row's observed_at was refreshed to the later actual recheck time. Read-back confirms LCE £1,699 is now the latest verified active UK New source for this product; CameraWorld £1,813 and the earlier Wex £1,699 observations remain intact. This does not change valuation code; it ensures the existing latest-observation selection follows the actual source recheck order.

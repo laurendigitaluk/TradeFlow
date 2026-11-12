@@ -6218,3 +6218,10 @@ Maintain strict identity and package controls: XVS-G1 £20,765.70 remains unimpo
 Three UK Used Nikon D60 body listings were verified and imported into LIVE, with exact item condition and faults retained: MPB SKU 4158743 £52 Good (pop-up flash fault, LCD scratches, 5,777 shutter count); MPB SKU 4174829 £67 Excellent (minor LCD dust/marks, 13,533 shutter count); LCE item 259873 £59.99 Good (two batteries, charger, box, strap and manuals). Evidence IDs: 9e2df28b-340d-4e09-ad83-660ff34a6bb8; e3c42ef7-aa7a-45f1-a937-5fd13399b5e1; c788d584-728c-4e73-8f92-63499e232b24. Full direct links and notes are in the Batch 11 checkpoint. All remain UK Used comparison references and do not affect automatic valuation.
 
 Current Batches 04–13 total: 240 observations, 236 active (128 UK New, 108 UK Used), four inactive. Batch 11: 32 active (8 new, 24 used). TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — PowerDolphin Wizard evidence status corrected
+
+The existing PowerDolphin Wizard £1,449 eBay UK observation was reverified against the exact listing model/MPN PDW10 / EAN 6970820830313 and the Wizard manual package list, then reactivated in place. The new, unopened listing is Buy It Now from a Nottingham UK business seller. The manual confirms the Wizard package includes the PowerSeeker sonar, bait container/link, remote controller, battery, charger, propellers, cables and storage bag. Evidence row 6f11ca53-fcc7-4c39-8f3a-ec2aa2aee09e is active UK New GBP/in_stock; no duplicate was created. Full source links are in the Batch 13 checkpoint.
+
+Current Batches 04–13 total: 240 observations, 237 active (129 UK New, 108 UK Used), three inactive. Batch 13: 47 active (29 new, 18 used). Preserve UK Used as reference-only; TEST, Stripe, schema and valuation logic unchanged.

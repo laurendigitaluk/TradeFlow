@@ -60,7 +60,7 @@ Price handling:
 - Observed price: £24.21–£24.71 for third-party Cameron Sino PDOIB10 replacements; eBay £50.74.
 - Condition: New replacement batteries; eBay seller lists 5800mAh.
 - Availability: Energystox and Bigupgadgets show in stock; eBay shows 6 available.
-- Visible note: RED VERIFY — exact compatible part PDOIB10 identified, but UK offers are third-party replacement batteries, not confirmed genuine PowerVision originals. Check capacity, connector, compatibility and seller provenance. eBay seller is a Hong Kong business; shipping/import costs are additional.
+- Visible note: RED VERIFY — exact compatible part PDOIB10 identified, but UK offers are third-party replacement batteries, not confirmed genuine PowerVision originals. Check capacity, connector, compatibility and seller provenance. Opened eBay page confirms £50.74, new, 6 available, business seller ECOMIDF DIFFUSION in Tsuen Wan, Hong Kong; shipping/import costs vary.
 - Source pages:
   - [Bigupgadgets — PDOIB10 replacement, £24.71, in stock](https://uk.bigupgadgets.com/battery-powervision-powerdolphin-wizard-underwate-powerdolphin-intellijet-p-n-pdoib10-01-0039568)
   - [Energystox — PDOIB10 Cameron Sino replacement, £24.21, in stock](https://uk.energystox.com/battery-powervision-pdoib10-for-powerdolphin-intellijet-powerdolphin-wizard-underwate-ex-ag702)
@@ -71,25 +71,25 @@ Price handling:
 ### 3. Sony HVR-Z5U
 - Product ID: 566ba03a-0262-4552-a97c-c9ae1c807b31
 - Package: Standard
-- Observed price: No reliable current UK GBP price confirmed. Ubuy indexed result showed GBP 2,469 ex VAT, but opened page is out of stock and has no live price. Less-established UK-facing seller shows £1,110.89.
+- Observed price: No reliable current UK GBP price confirmed. Ubuy indexed result showed GBP 2,469 ex VAT, but opened page is out of stock and has no live price. Less-established UK-facing seller shows £1,110.89. Exact eBay U-model listing displays USD $930; eBay also shows an approximate GBP conversion, which is not used as a GBP price.
 - Condition: eBay exact U model used; other UK price lead presented as new/retail.
 - Availability: Ubuy out of stock; usamarafiquephotography page has Add to Cart; eBay US listing available when crawled.
-- Visible note: RED VERIFY — exact U model is NTSC. UK HVR-Z5E listings are PAL variants and must not be treated as exact matches. £1,110.89 seller has not been independently verified. Ubuy imports from USA and currently shows out of stock; indexed GBP amount is not a live offer.
+- Visible note: RED VERIFY — exact U model is NTSC. UK HVR-Z5E listings are PAL variants and must not be treated as exact matches. £1,110.89 seller has not been independently verified. Ubuy imports from USA and currently shows out of stock; indexed GBP amount is not a live offer. The exact eBay listing is a US seller in Los Angeles and displays USD $930 (eBay's approximate GBP display is not recorded as a GBP price).
 - Source pages:
   - [Ubuy UK — exact HVR-Z5U, currently out of stock; prior indexed price GBP 2,469 ex VAT](https://www.u-buy.co.uk/product/8JOVNVI2-sony-hvr-z5u-high-definition-handheld-professional-camcorder)
   - [usamarafiquephotography — exact HVR-Z5U, £1,110.89, accessories listed; seller needs verification](https://usamarafiquephotography.co.uk/product/sony-hvr-z5u-camcorder-1080p-1-12-mp-20x-optical-zoom-mini-dv-hdv)
   - [eBay UK — exact HVR-Z5U, USD $930, used, 2 batteries and charger, US seller](https://www.ebay.co.uk/itm/324789009548)
-  - [eBay UK — HVR-Z5E near variant, £437.67, used](https://www.ebay.co.uk/itm/325932287113)
+  - [eBay UK — HVR-Z5E near variant; search result lead £437.67, direct page shows Good used condition but does not expose a live price](https://www.ebay.co.uk/itm/325932287113)(https://www.ebay.co.uk/itm/325932287113)
   - [DigiBroadcast — HVR-Z5E with Vinten Vision 100 tripod, £720 gross / £600 ex VAT; different PAL model and package](https://www.digibroadcast.com/used-equipment-c211/camcorders-c213/sony-hvr-z5e-14x10-hrs-vinten-vision-blue-tripod-used-p50916)
 - Google Shopping: https://www.google.com/search?tbm=shop&q=Sony%20HVR-Z5U%20Standard%20UK%20price
 
 ### 4. Pentax WG-90
 - Product ID: 56977dfa-b65e-4e39-ba45-b0d9116107ec
 - Package: Standard
-- Observed price: £329.00–£329.99 current retailer leads; £379.00–£379.99 other UK listings. Google Shopping card showed £299 Jessops, but direct page shows £379.
+- Observed price: £299.00 Argos direct page; £329.00–£329.99 Carmarthen/Camera Centre; £379.00 Currys/Jessops/Maplin.
 - Condition: New standard camera, black/blue variants.
 - Availability: Carmarthen Cameras shows 1 in stock; Camera Centre UK shows in stock; Currys delivery/stock check; Maplin stock wording inconsistent.
-- Visible note: RED VERIFY — Google Shopping £299 Jessops card conflicts with opened product page showing £379. HDEW Cameras Shopping lead £235 was not independently verified. Confirm colour and checkout price.
+- Visible note: RED VERIFY — Argos direct page opened and shows £299, but postcode stock check is required. Jessops direct page shows £379 despite its £299 Shopping card. HDEW £235 Shopping lead was not independently verified. Confirm colour and checkout price.
 - Source pages:
   - [Carmarthen Cameras — blue, £329.99, 1 in stock](https://carmarthencameras.com/products/pentax-wg-90-waterproof-tough-compact-camera-blue)
   - [Camera Centre UK — black, £329.00, page reports in stock](https://www.cameracentreuk.com/pentax-wg-90-waterproof-digital-compact-camera-black)
@@ -97,7 +97,7 @@ Price handling:
   - [Currys — blue, £379.00](https://www.currys.co.uk/products/pentax-wg90-tough-compact-camera-blue-10268534.html)
   - [Maplin — blue, £379.00, delivery shown but availability message also says email when available](https://www.maplin.co.uk/products/pentax-wg-90-16mp-5x-zoom-tough-compact-camera-blue)
   - [Jessops — blue, direct page £379.00; Shopping card had £299 lead](https://www.jessops.com/p/pentax/wg-90-digital-camera-in-blue-206260)
-  - [Argos — blue, £379.99, postcode stock check required](https://www.argos.co.uk/product/7619607)
+  - [Argos — blue, £299.00 direct page price; postcode stock check required](https://www.argos.co.uk/product/7619607)(https://www.argos.co.uk/product/7619607)
 - Google Shopping: https://www.google.com/search?tbm=shop&q=Pentax%20WG-90%20Standard%20UK%20price
 
 ### 5. Sony NP-FV70 Battery
@@ -145,7 +145,7 @@ Price handling:
 - Observed price: £186.69 UK body-only private listing; £129.95 historic sold body-only listing; £213.90–£249.99 used lens-kit aggregator leads. Foreign-currency listings are not converted.
 - Condition: Used body-only and used 12–32mm lens-kit offers.
 - Availability: £186.69 body-only eBay listing active when crawled; £129.95 listing sold; CameraWorld £279 lens kit sold out; SDS aggregator tracks 2 used kit offers.
-- Visible note: RED VERIFY — separate body-only from 12–32mm kit prices. Japan eBay body listing displays USD $275.29 plus USD $49 shipping; approximate GBP display is not used as a GBP price. UK eBay body listing is private seller in Cheadle. UK eBay kit listing is seller in Stratford-upon-Avon, but direct page did not expose a live price.
+- Visible note: RED VERIFY — separate body-only from 12–32mm kit prices. Japan eBay body listing displays USD $275.29 plus USD $49 shipping; eBay's approximate GBP display is not used as a GBP price. UK eBay body listing is private seller in Cheadle. UK eBay kit listing is seller in Stratford-upon-Avon and includes charger, but direct page did not expose a live price; use the SDS aggregator's £213.90–£249.99 kit leads as comparison only.
 - Source pages:
   - [eBay UK — body only, £186.69, private seller in Cheadle](https://www.ebay.co.uk/itm/358922423033)
   - [eBay UK — brown body plus 12–32mm lens kit, seller in Stratford-upon-Avon](https://www.ebay.co.uk/itm/257755102329)
@@ -162,7 +162,7 @@ Price handling:
 - Observed price: Wex used £728, £829 and £835; LCE used £629.99 lead; Norwich Cameras £843 indexed page; Amazon Renewed Shopping lead £835.
 - Condition: Used Very Good/Mint/Excellent; new/retail leads; Amazon renewed lead.
 - Availability: Wex listings in stock; LCE page redirects to search; Norwich page indicates 5–7 days and seller is HK-based; Amazon page could not be opened.
-- Visible note: RED VERIFY — compare condition and accessories. Wex £728 Very Good includes original box/manual/caps/hood but no soft case; Wex £829 Mint has brown box and soft case; Wex £835 Excellent includes original box/manual/soft case and notes a fine rear-optic scratch. LCE £629.99 not independently re-opened. Norwich seller Futronix HK and no VAT. Amazon Shopping title says Renewed, not new.
+- Visible note: RED VERIFY — compare condition and accessories. Wex £728 Very Good includes original box/manual/caps/hood but no soft case; Wex £829 Mint has brown box and soft case; Wex £835 Excellent includes original box/manual/soft case and notes a fine rear-optic scratch. LCE £629.99 page redirects to the generic used-search page. Norwich seller Futronix HK and no VAT. Amazon Shopping title says Renewed, not new; direct Amazon URL returned an access error.
 - Source pages:
   - [Wex used — £728, Very Good, in stock, Norwich](https://www.wexphotovideo.com/sony-fe-35mm-f1-4-gm-lens-used-3374329/)
   - [Wex used — £829, Mint, in stock](https://www.wexphotovideo.com/sony-fe-35mm-f1-4-gm-lens-used-3372761/)
@@ -208,7 +208,7 @@ Price handling:
 - Observed price: Bristol Cameras £24 used body-only; eBay £28.60; Vinted £49 (or £52.15 incl. buyer fee) with 28–80mm lens and case; Ffordes £59/£69.50 discrepancy; sold-out body-only leads £20–£65.
 - Condition: Used body-only and used kit offers.
 - Availability: Bristol search result says in stock; Vinted active; Ffordes price/stock needs recheck; Vintage Camera Hut and Colins listings sold out.
-- Visible note: RED VERIFY — distinguish body-only from 28–80mm lens kits. Bristol page returned HTTP 520 when opened, but indexed result showed £24 and 3-month guarantee. Ffordes Shopping card £69.50 differs from earlier £59 search price. Film Camera Store £165 page title says F55 with 28–80mm lens but URL slug says F50 and stock is backordered. Vinted listing includes lens and case, not body-only.
+- Visible note: RED VERIFY — distinguish body-only from 28–80mm lens kits. Bristol page returned HTTP 520 when opened, but indexed result showed £24 and 3-month guarantee. Ffordes direct page opened but did not expose a current price; search snippets/Shopping cards differed (£59 vs £69.50), so verify checkout. Film Camera Store page opens and title says F55 with 28–80mm lens but URL slug says F50; £165 and backorder are search-result leads, not verified on the opened page. Vinted listing includes lens and case, not body-only.
 - Source pages:
   - [Bristol Cameras — Nikon F55 body only, £24 used search listing; page failed to open](https://www.bristolcameras.co.uk/product/nikon-f55-body-only-35mm-film-camera-used/)
   - [eBay UK — body only, £28.60, used Very Good](https://www.ebay.co.uk/itm/326836970654)
@@ -299,7 +299,7 @@ Price handling:
 - Observed price: £381.00 Andertons; £405.00 Stage Supply; £399.00 guitarguitar; £430.80 Amber Sound; £439.00 OnBuy plus delivery.
 - Condition: New.
 - Availability: Andertons 1 in stock; Stage Supply 8 available online with further supply 1–3 weeks; guitarguitar in stock; Amber Sound backordered; OnBuy listed in stock.
-- Visible note: RED VERIFY — retailer pages commonly identify SM81-LC. LC denotes microphone package without cable; check whether catalogue SM81 package expects cable/stand adapter/case. Prices are retailer asking prices, not used evidence.
+- Visible note: RED VERIFY — retailer pages commonly identify SM81-LC. LC denotes microphone package without cable; check whether catalogue SM81 package expects cable/stand adapter/case. OnBuy direct URL returned 404; £439 is a search-result lead only, not a live verified offer. Other prices are retailer asking prices, not used evidence.
 - Source pages:
   - [Andertons — £381, 1 in stock](https://www.andertons.co.uk/shure-sm81-condenser-mic/)
   - [Stage Supply — £405 inc VAT / £337.50 ex VAT, 8 available online, SM81-LC](https://stagesupply.co.uk/product/shure-sm81-cardioid-condenser-instrument-microphone/)

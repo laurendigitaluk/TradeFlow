@@ -17,3 +17,10 @@ Three queue records remain unresolved and must not be forced into wrong catalogu
 Queue remains 10 needs_research because no owner-review workflow status was altered. Seven already have matching evidence rows; three remain genuinely unresolved. No auth impersonation used.
 
 Batches 01–13 currently contain 268 observations, 261 active (142 UK New, 119 UK Used), seven inactive. UK Used remains reference-only. TEST, Stripe, schema, master catalogue and valuation logic untouched.
+
+
+## 12 November 2026 — availability semantics and valuation behavior confirmed
+
+Current LIVE `calculate_buying_item_valuation` selects latest active `uk_new` GBP shared evidence; it filters active flag, price and currency but does not filter availability. The catalogue page RPC similarly returns active UK New/UK Used prices separately without excluding out-of-stock status. This is consistent with the user's earlier decision (30 Aug / 1 Sep 2026) to retain genuine UK GBP prices even when sold out, ended or unavailable, with availability and checked date recorded. Do not bulk-deactivate out-of-stock UK New records or change valuation logic without explicit owner approval. `is_active` means valid retained price observation, not guaranteed current stock. UK Used remains reference-only and is excluded from automatic valuation by evidence_type filter.
+
+No availability-driven bulk deactivation or valuation code change was made in this review. Duplicate PlayStation UK price row was deactivated only as a same-seller/same-model/same-package/same-price duplicate; one active out-of-stock RRP observation remains. Caddx Peanut/Walnut out-of-stock references remain active, as required by the evidence-retention rule.

@@ -335,3 +335,24 @@ Evidence and links:
 4. Select the next 20 active LIVE catalogue master products dynamically, with no fixed SQL OFFSET.
 5. Open actual manufacturer/retailer/marketplace/Google Shopping product pages. Retain useful links even when uncertain; use RED VERIFY and explain the exact uncertainty.
 6. Check owner-auth context first. Only stage candidates through the supported authenticated platform-owner RPC when `auth.uid()` is non-null and owner check passes. Otherwise create the next checkpoint and project-memory files; do not write directly to the queue.
+
+
+## 7. RED VERIFY follow-up — 12 November 2026
+
+Three additional observations were imported into LIVE and read back:
+
+| Master product | Source | Price | Evidence/status |
+|---|---|---:|---|
+| Aputure LS 600d Pro | eBay UK — gpuigmal | £1,225.58 | Used; private UK seller in Edinburgh, 100% positive; Buy It Now, no returns; seller description does not establish accessory contents. [Source](https://www.ebay.co.uk/itm/127463990329) |
+| Benro GH2N Gimbal Head | CameraWorld | £342.00 | New; exact SKU 34057 / EAN 6931747320219; in stock; head and QR plate. [Source](https://www.cameraworld.co.uk/benro-gh2n-gimbal-tripod-head.html) |
+| Benro GH2N Gimbal Head | Harrison Cameras | £299.00 | New; exact product code GH2N / barcode 6931747320219; two in stock; UK manufacturer warranty. [Source](https://harrisoncameras.co.uk/products/benro-gh2n-gimbal-head-gh2n) |
+
+The existing Clifton Cameras Benro GH2N source was re-opened after the two additional retailers: £289, one available, in stock. Its observed_at was refreshed to the actual later recheck time. LIVE read-back confirms the latest active UK New reference remains Clifton Cameras at £289; Harrison £299 and CameraWorld £342 are retained as separate observations.
+
+A data-quality correction was also made to the existing CVP Aputure LS 600d Pro used observation. The direct CVP page states no unit is currently available to buy; one unit is under evaluation, marked Coming Soon / Awaiting Grading, at £1,000 ex VAT. The LIVE row previously said in-stock/used-good. It now correctly records awaiting_grading / coming_soon, with the £1,000 ex-VAT price retained as a used-market reference. This is a status correction, not a new valuation input.
+
+Batch 06 now has **12 active records: 8 UK New and 4 UK Used; all 12 are GBP**. The new used Aputure record remains reference-only. For UK New sources, the current valuation function selects the latest active GBP observation by observed_at (then created_at), not the lowest price or an average. Source pages were therefore checked in sequence and timestamps reflect the actual recheck order: CameraWorld first, Harrison second, Clifton last. The latest Benro reference remains the verified £289 Clifton offer.
+
+Unresolved leads remain RED VERIFY and were not promoted: Angenieux EZ-1 has no current sale price (rental rates excluded); Aputure Grelly £849.41 aggregator could not be opened; Bebob V98 has conflicting ProAV stock/backorder wording and a sold-out Production Gear listing; BetaFPV O4 variants require receiver selection; Bright Tangerine and OpenRig listings are sold out/preorder or have stale stock dates; Brinno price is for BCC5000 bundle, not standalone TLC5000; Casio overseas listings remain non-GBP/foreign-seller; DJI Mini 3 Argos title names DJI RC but the full Fly More Combo Plus contents are not established, while SCAN title/specs conflict (DJI RC vs RC-N1); FIMI generic X6 is not verified as FIMI and X8 Pro has no reliable UK GBP source.
+
+No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed. Only evidence rows/status and observation timestamps were updated.

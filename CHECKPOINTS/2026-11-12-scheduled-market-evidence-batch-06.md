@@ -360,10 +360,11 @@ No master product, tenant, customer, schema, valuation function, TEST or Stripe 
 
 ## 13. Further RED VERIFY follow-up — 12 November 2026
 
-One additional exact UK New observation was inserted into LIVE and read back:
+Two additional exact UK New observations were inserted into LIVE and read back:
 
 | Product | Source | Price | Verification |
 |---|---|---:|---|
 | Bebob V98 V-Mount Battery (SKU V98) | CVP | £312.00 inc VAT (£260.00 ex VAT) | Direct CVP page identifies part number V98, one remaining in stock for immediate delivery, confirms UK battery shipping and two-year standard warranty. [Source](https://cvp.com/product/bebob_v98_battery) |
+| DJI Mini 3 Fly More Combo Plus (DJI RC), SKU CP.MA.00000613.01 | Drone Safe Store | £509.00 inc VAT (was £579.00) | Direct UK retailer page explicitly shows OUT OF STOCK / Notify Me. Package list confirms DJI RC, three flight batteries, two-way charging hub, shoulder bag, spare propellers, screws, screwdriver, gimbal protector and cables. [Source](https://www.dronesafestore.com/products/dji-mini-3-fly-more-combo-dji-rc) |
 
-The existing ProAV V98 row remains active but marked backorder due its contradictory “in stock” and backorder wording. The new CVP observation is exact V98, not V98micro/V98microC, and is the latest active UK New observation for this master product. Batch 06 now has 13 active GBP records: 9 UK New and 4 UK Used. UK Used remains reference-only. No master product, schema, valuation function, TEST or Stripe data was changed.
+The existing ProAV V98 row remains active but marked backorder due its contradictory “in stock” and backorder wording. The new CVP observation is exact V98, not V98micro/V98microC. The DJI record is matched to the existing Fly More Combo Plus (DJI RC) master via SKU CP.MA.00000613.01; it is not the RC-N1 variant. Its out-of-stock status is retained explicitly as historical UK New evidence under the existing policy. Batch 06 now has 14 active GBP records: 10 UK New and 4 UK Used. UK Used remains reference-only. No master product, schema, valuation function, TEST or Stripe data was changed.

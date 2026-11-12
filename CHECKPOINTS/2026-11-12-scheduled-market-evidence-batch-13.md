@@ -405,3 +405,16 @@ The PowerDolphin Wizard user manual item list independently confirms the Wizard 
 Existing row ID 6f11ca53-fcc7-4c39-8f3a-ec2aa2aee09e, master PowerDolphin / Wizard Package (d85ca7a7-e811-427a-a23c-d1abe267536a), source_record_key batch13-powervision-powerdolphin-wizard-ebay-1449. Read-back confirms £1,449 GBP, UK New, new condition, in_stock, active.
 
 Batch 13 now has 47 active rows (29 UK New, 18 UK Used), zero inactive. Cumulative Batches 04–13 now have 240 GBP observations, 237 active (129 UK New, 108 UK Used), three inactive. Used evidence remains reference-only. No master product, schema, valuation logic, TEST or Stripe changes.
+
+
+## HVR-Z1E misidentified lead matched to existing master — 12 November 2026
+
+The earlier Shopping candidate labelled HXR-V1E was correctly excluded from that model because the item specifics identified HVR-Z1E. Rather than discard the useful evidence, current direct UK sources were researched and matched to the existing LIVE HVR-Z1E / Standard Package master, ID ef1447f4-5967-44f8-abc0-282f2ecb40d3.
+
+Two exact N.I. Broadcast used offers were imported and read back:
+- Product code 6946 — £250, stock 1, used; tested recording, playback, audio, zoom and focus; no battery or charger supplied (seller offers them separately for £30); title records 81x10 drum hours. https://www.nibroadcast.com/sony-hvr-z1e-hdv-high-definition-camcorder-81x10-drum-hours.html
+- Product code 6944 — £250, stock 1, used; includes battery and charger; tested recording, playback, audio, zoom and focus; title records 23x10 drum hours. https://www.nibroadcast.com/sony-hvr-z1e-hdv-high-definition-camcorder-23x10-drum-hours-battery.html
+
+LIVE evidence IDs: 6c7ed3f9-4679-4e3b-98f4-5dcc0f1f7688 and 340ca15f-8d26-4c17-8fb2-46aaecb72b6d. Both are UK Used GBP reference-only, with accessory differences preserved; no valuation effect.
+
+Batch 13 now has 49 active GBP rows (29 UK New, 20 UK Used), zero inactive. Cumulative Batches 04–13 now have 243 observations, 240 active (130 UK New, 110 UK Used), three inactive. No master/schema/valuation change; TEST and Stripe untouched.

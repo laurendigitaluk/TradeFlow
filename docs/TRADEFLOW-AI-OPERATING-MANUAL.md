@@ -6198,3 +6198,9 @@ LIVE SQL returned `auth.uid() = NULL`; the checkpoint write gate requires authen
 - Sony HDC-3000: no exact sellable model established; continue not to substitute HDC-3500, HDC-3200, HSC-300 or CCU prices.
 
 No evidence rows were inserted or changed. LIVE auth remains `auth.uid() = NULL`; do not bypass the authenticated-owner write gate. No TEST, Stripe, schema, master-product, tenant/customer or valuation data changed. Cumulative evidence remains 236 GBP observations, 232 active (127 UK New, 105 UK Used), four inactive.
+
+## Manual AI response compatibility — 12 November 2026
+
+The 20-product AKASO prompt reviewed on 12 November was created at 13:39 UTC on 11 November, before the V2 prompt update. Its saved prompt text did not explicitly request `catalogue_package_name` or `page_access`, even though the current LIVE intake validator requires both (along with `source_kind` and a package classification consistent with the actual source package). The companion response checkpoint was corrected against the LIVE catalogue snapshot before submission. All ten findings remain comparison-only; ten products are explicitly recorded as not found. No prompt submission or catalogue import occurred because the available SQL session has no authenticated platform-owner JWT.
+
+For future work, do not assume a ready prompt has the latest schema contract. Check its creation/update time and generated text; refresh older prompts in the owner dashboard, or preflight the complete JSON against the current RPC before submission. The dashboard submission action requires the owner's browser session and token; a direct SQL connection reporting `auth.uid() = NULL` cannot perform that action.

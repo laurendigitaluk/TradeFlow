@@ -285,3 +285,12 @@ Batch 03 now has 7 active rows (6 UK New, 1 UK Used). Batches 01–13 now total 
 A further exact UK New source was imported by the parallel research workstream and verified against LIVE: AKASO V50 X-U3 / With 64GB microSDXC bundle, eBay UK Clarkson Direct, £153.99, new, three available, one sold. Seller is a UK business in Beverley HU17 8YA with 95.5% positive feedback and 12K items sold. Listing item specifics confirm MPN/model V50 X-U3 and package “With 64GB microSD Card”; seller description confirms V50 X and two rechargeable 1350mAh batteries. No returns accepted; eBay Money Back Guarantee applies. Listing updated 28 Oct 2026 and rechecked 12 Nov 2026. Direct source https://www.ebay.co.uk/itm/326424455596. Evidence row 8c8b32c5-e38d-4c5c-83f9-a0af9ee3aa3d; exact master V50 X / With SD Bundle; source_record_key batch03-followup-akaso-v50x-with-sd-ebay-15399-20261112.
 
 Batch 03 now has five active GBP rows (4 UK New, 1 UK Used). This supersedes the previous four-row count.
+
+
+## Caddx Peanut — exact UK specialist price reference — 12 November 2026
+
+YourFPV direct page confirms exact Caddx Peanut / Insta360 Go 2 FPV camera, SKU YFPV - CaddX - PNT, £218.99. The page has a UK Stock heading but explicitly states Out of stock / Join Waitlist; this is therefore a UK GBP price reference, not a currently available offer. Product details: 27g camera, 2.5K/1440p at 50fps, FlowState stabilisation, built-in and external power, ND8/ND16 filter set. In the box: Peanut camera, mount adapter, power connector, USB connector, two M1.25 3-pin power cables, 2–6S step-down BEC module, ND8 and ND16 filters, mounting screws/nuts, user manual and lens cloth. Direct source https://yourfpv.co.uk/product/caddx-peanut-insta360/.
+
+Imported against existing Caddx Peanut / Caddx Peanut Action Camera master dbf3777c-4f84-4cd1-86db-03d8ed66482f as active UK New GBP with availability out_of_stock. LIVE evidence row 3cf32e49-d7b0-4d30-9851-9da8155e1577; source_record_key batch03-caddx-peanut-yourfpv-21899-oos-20261112. Read-back confirmed exact master, source, price, package notes and unavailable status.
+
+Batch 03 now has 8 active rows (7 UK New, 1 UK Used). Batches 01–13 now contain 258 observations, 255 active (140 UK New, 115 UK Used), three inactive. Do not treat this out-of-stock reference as a live buying option. No master/schema/valuation change; TEST and Stripe untouched.

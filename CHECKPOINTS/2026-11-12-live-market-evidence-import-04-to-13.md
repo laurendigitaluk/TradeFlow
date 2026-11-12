@@ -167,3 +167,23 @@ Direct LIVE read-back now confirms Batches 04–13 contain **150 total GBP evide
 | 13 | 12 | 12 | 7 | 5 | 0 |
 
 Batch 10 follow-up added 12 active rows (5 UK New, 7 UK Used), taking Batch 10 from 12 to 24. All rows remain GBP. Used evidence is reference-only. No valuation function/schema change; current automatic shared reference still selects latest active GBP UK New by observed_at/created_at. TEST and Stripe remain untouched.
+
+
+## 12 November 2026 — cumulative LIVE reconciliation after Batch 11 follow-up
+
+Direct LIVE read-back confirms Batches 04–13 now contain **162 total GBP evidence rows, 160 active and 2 inactive**. Active evidence comprises 86 UK New and 74 UK Used. The two inactive records remain BuzzFlyer DEVO-10 Notify Me/no stock (Batch 07) and NEEWER KM19 eBay seller away (Batch 08).
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 16 | 16 | 6 | 10 | 0 |
+| 10 | 24 | 24 | 12 | 12 | 0 |
+| 11 | 22 | 22 | 8 | 14 | 0 |
+| 12 | 12 | 12 | 8 | 4 | 0 |
+| 13 | 12 | 12 | 7 | 5 | 0 |
+
+Batch 11 follow-up added 12 active records (5 UK New, 7 UK Used), taking Batch 11 from 10 to 22. Used evidence remains reference-only. No schema or valuation function changed. TEST and Stripe remain untouched.

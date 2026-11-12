@@ -73,3 +73,10 @@ Two further records were imported and read back: Sony NEX-FS100 / eBay UK £768.
 Rechecked and resolved: Walkera Vitus Starlight £544.91 is the exact product; page title/model both identify Starlight and Vitus 320 is the underlying aircraft platform, with case, 8 props, 3 batteries and DEVO F8S remote. Camix Sony FE 50mm F1.4 GM £1,032 inc VAT is reconfirmed direct, in stock, new, warranty/delivery and box contents listed.
 
 Batch 12 now has 27 total GBP rows, 26 active (17 UK New, 9 UK Used), one inactive Sony UK E35 £225 price-conflict row. Used references remain excluded from automatic valuation. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 12 November 2026 — HXR-MC2500E evidence master corrected
+
+Existing eBay UK row a92bb4e6-7fb1-436f-bb26-19f4795ed61f (£789.99 used, excellent, fully tested, 32GB, brand-new battery and charger) was incorrectly attached to HXR-MC2500 without the E suffix. LIVE already had exact HXR-MC2500E / Standard master 7c3e5517-1c19-4080-bd65-7cb41a4925f3. Reassigned the existing row to that exact master after opening the current eBay listing and confirming item specifics; no duplicate, price or condition change. Direct source https://www.ebay.co.uk/itm/318668491967. Read-back verified the row now resolves to HXR-MC2500E / Standard.
+
+Batch 12 counts unchanged: 27 total, 26 active (17 new, 9 used), one inactive price conflict. Cumulative Batches 03–13: 246 total, 243 active (133 UK New, 110 UK Used), three inactive. No master/schema/valuation change; TEST and Stripe untouched.

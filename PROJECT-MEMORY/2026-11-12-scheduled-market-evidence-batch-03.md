@@ -64,3 +64,8 @@ A parallel research pass added and read back an exact AKASO V50 X-U3 / With 64GB
 ## 12 November 2026 — Caddx Walnut UK price references
 
 Added two direct UK specialist-retailer references against existing Caddx Walnut master a628320d-771b-43f9-8503-206e06221d49: FlyingTech £117.90 inc VAT (SKU FPV-WALNUTND816, sold out) and Unmanned Tech £129 incl. taxes (CDX-WLNT-AC, sold out/backorder). Exact package contents, URLs and evidence IDs in Batch 03 checkpoint. Both remain active evidence rows with availability explicitly out_of_stock/backorder; not currently purchasable offers. Batch 03 now 7 active (6 new, 1 used). Batches 01–13: 257 total, 254 active (139 UK New, 115 UK Used), three inactive. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 12 November 2026 — Caddx Peanut UK price reference
+
+Added YourFPV direct UK listing for exact Caddx Peanut / Insta360 Go 2, SKU YFPV - CaddX - PNT, £218.99. Explicitly Out of stock / Join Waitlist, so retain as active price-reference evidence with availability out_of_stock, not a current offer. Full package list and URL in Batch 03 checkpoint. LIVE row 3cf32e49-d7b0-4d30-9851-9da8155e1577 read back against existing master dbf3777c-4f84-4cd1-86db-03d8ed66482f. Batch 03 now 8 active (7 new, 1 used). Batches 01–13: 258 total, 255 active (140 UK New, 115 UK Used), three inactive. No master/schema/valuation changes; TEST and Stripe untouched.

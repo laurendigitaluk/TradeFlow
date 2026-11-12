@@ -252,3 +252,57 @@ Read this batch 13 checkpoint and project memory first. Exclude all 20 product I
 - The initial automated import run correctly stopped before any write because checkpoint UUID extraction included historical/recheck IDs.
 - The importer now extracts only explicit product-ID fields and requires exactly 220 unique records across batches 03–13 before writing.
 - Research is staged as `pending_review` reference candidates only; no price is copied without source-level matching, no foreign currency is converted, and no evidence is approved automatically.
+
+
+## Additional direct-source follow-up — 12 November 2026
+
+Twenty-four further observations were inserted into LIVE and read back. One initial PowerDolphin Wizard new listing was deactivated because the seller's package contents do not prove the full Wizard kit.
+
+### Sony ECM-B10
+- Park Cameras £175 new, product code 7680123N; store selection required before basket. [Source](https://www.parkcamera.live/shop/sony-ecm-b10-wireless-shotgun-microphone_7680123n)
+- Bristol Cameras £175 new, available to order, genuine UK stock. [Source](https://www.bristolcameras.co.uk/product/sony-ecm-b10-shotgun-microphone/)
+- Harrison Cameras £179 new, one in stock. [Source](https://harrisoncameras.co.uk/products/sony-ecm-b10-shotgun-microphone-ecmb10-ce7)
+- Wex Photo Video £137 used Mint, in stock, box/manual/windscreen/cap/carry bag. [Source](https://www.wexphotovideo.com/sony-ecm-b10-wireless-shotgun-microphone-used-3363458/)
+- MPB £145 used Like New, three units, 12-month warranty. [Source](https://www.mpb.com/en-uk/product/sony-ecm-b10-shotgun-microphone)
+
+### Sony FE 85mm F1.4 GM II
+- CameraWorld £1,789 new, in stock, 3–5 day dispatch; £200 cashback after purchase. [Source](https://www.cameraworld.co.uk/sony-fe-85mm-f1.4-gm-ii-lens.html?condition=new)
+- CameraWorld £1,710 open-box, one unique item in stock. [Source](https://www.cameraworld.co.uk/sony-fe-85mm-f1.4-gm-ii-lens.html?condition=open-box)
+- Wex £1,269 used, in stock, item 3366284. [Source](https://www.wexphotovideo.com/sony-fe-85mm-f1-4-gm-ii-lens-used-3366284/)
+- London Camera Exchange £1,249.99 used Good, Colchester in store, boxed with hood/case/caps, 6-month guarantee. [Source](https://www.lcegroup.co.uk/Used/Sony-FE-85mm-F1.4-GM-II-Boxed-%7C-4_492536.html)
+
+### Sony FE 12-24mm F2.8 GM
+- London Camera Exchange £2,645 new, in stock, Add to Basket and free delivery. [Source](https://www.lcegroup.co.uk/New/Sony-FE-12-24mm-f2.8-G-Master-Lens_64201.html)
+
+### RadioMaster Ranger full-size 2.4GHz ExpressLRS module
+- Flying Tech £99 inc VAT, five left. [Source](https://www.flyingtech.co.uk/product/radiomaster-ranger-2-4ghz-expresslrs-elrs-module/)
+- 3DXR £99.99 inc VAT, 39 in stock. [Source](https://www.3dxr.co.uk/products/radiomaster-ranger-2-4ghz-elrs-module-lbt)
+Both are the full-size module, not Ranger Micro or Starter Combo.
+
+### Sony XDCA-FS7 extension unit — used
+- MPB £123 Good (SKU 4018689), in stock, 12-month warranty. [Source](https://www.mpb.com/en-uk/product/sony-xdca-fs7-extension-unit)
+- MPB £144 Excellent (SKU 4079559), in stock, original packaging and 12-month warranty. [Source](https://www.mpb.com/en-uk/product/sony-xdca-fs7-extension-unit)
+- eBay UK £175, three available, London business seller, 100% positive, 14-day returns. [Source](https://www.ebay.co.uk/itm/147502069035)
+- 3D Broadcast £390 inc VAT, two used units in stock. [Source](https://3dbroadcastsales.com/products/sony-xdca-fs7-extension-unit-for-pxw-fs7-and-pxw-fs7k-cameras-used)
+
+### Sony SRG-X400 PTZ camera
+- SCAN SRG-X400WC white £3,199.99, awaiting ETA / preorder, 36-month return-to-base warranty. [Source](https://www.scan.co.uk/products/sony-srg-x400-ptz-camera-white-1-25-exmor-r-cmos-1080p60-4k-upgradable-20x-optical-zoom-poeplus-3g-s)
+- SCAN SRG-X400BC black £3,199.99, awaiting ETA / preorder, 36-month return-to-base warranty. [Source](https://www.scan.co.uk/products/sony-srg-x400-ptz-camera-black-1-25-exmor-r-cmos-1080p60-4k-upgradable-20x-optical-zoom-poeplus-3g-s)
+Colour variants are separate SKUs, retained as distinct observations under the shared model.
+
+### HOVERAir AQUA Standard Combo
+- Currys £1,129, approved third-party delivery 3–5 working days, collection unavailable; exact standard package. [Source](https://www.currys.co.uk/products/hoverair-aqua-standard-combo-drone-orange-and-black-10305877.html)
+- Ballicom £1,113.56 inc VAT, 17 immediately available; exact MPN SP08H004, Standard Combo. [Source](https://www.ballicom.co.uk/hoverair-sp08h004-aqua-standard-combo.p1724345.html)
+These are Standard package offers; do not merge Basic Combo or Fly More.
+
+### Historical/fault-condition references
+- PowerVision PowerDolphin Wizard eBay used listing sold 2 Oct 2026 at £449.99; seller in Dundee, 99.7% positive. Retained as historical used evidence; package contents not fully enumerated. [Source](https://www.ebay.co.uk/itm/147582064972)
+- Sony HXR-MC50E Cash Converters £129.99 sold, included camera/charger but no external mic or lens guard. [Source](https://www.cashconverters.co.uk/shop/phones-cameras--computers/cameras/video-cameras/video-camera/017900194034)
+- Sony HXR-MC50E eBay £229.99 sold 15 Aug 2026, fully tested/working, battery and new charger. [Source](https://www.ebay.co.uk/itm/317543403106)
+- Sony HXR-MC50E eBay £69.99 faulty/for parts, London business seller, no returns; not comparable with working units. [Source](https://www.ebay.co.uk/itm/357137612058)
+
+The initial PowerVision PowerDolphin Wizard £1,449 new eBay row was marked inactive because the seller listing does not establish the full Wizard package contents (sonar, bait drop, controller and accessory kit). The historical £449.99 used sale remains active as used reference only. The eBay HVR-V1E search result was not imported: although the title says HVR-V1E, item specifics identify model/MPN HVR-Z1E, so it is a model mismatch.
+
+Batch 13 now has **36 total rows: 35 active (17 UK New, 18 UK Used) and one inactive package-unverified new row; all 36 are GBP**. UK Used remains reference-only. Out-of-stock/preorder UK New rows are retained with their explicit status under existing behaviour; they may still be selected by the current valuation function if active.
+
+No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.

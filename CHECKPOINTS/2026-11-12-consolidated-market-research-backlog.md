@@ -230,3 +230,24 @@ Cumulative Batches 04–13: 204 GBP rows, 200 active (108 UK New, 92 UK Used), 4
 | 13 | 41 | 40 | 21 | 19 | 1 |
 
 Inactive rows remain BuzzFlyer DEVO-10 no stock, NEEWER KM19 seller away, Sony E35 price conflict and PowerDolphin Wizard package unverified. Used evidence remains reference-only. No schema/valuation logic changes. TEST and Stripe untouched.
+
+
+## 12 November 2026 — Batch 09 follow-up and LIVE total reconciliation
+
+Batch 09 now has 20 active GBP rows (9 UK New, 11 UK Used), after four further direct-source observations: Visuals Sony HDC-F5500V £85,619.24 inc VAT available to order; SmallRig RC100B Pro 5143 eBay £242.90 new/3 available; Nikon F55 body-only eBay £28.60 used with unusual £35 international postage; Clifton Pentax HD FA31 black £999 awaiting stock. Peter Rogers Pentax DA*55 £559, Andertons Shure SM81 £381 and Harrison Nikon MB-N12 £329 observations were refreshed after direct recheck.
+
+Cumulative Batches 04–13: 208 total GBP rows, 204 active (111 UK New, 93 UK Used), 4 inactive. Actual counts:
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 20 | 20 | 9 | 11 | 0 |
+| 10 | 24 | 24 | 12 | 12 | 0 |
+| 11 | 22 | 22 | 8 | 14 | 0 |
+| 12 | 25 | 24 | 16 | 8 | 1 |
+| 13 | 41 | 40 | 21 | 19 | 1 |
+
+This supersedes the previous 204 total/16 Batch 09 snapshot. Four inactive rows are BuzzFlyer DEVO-10, NEEWER KM19 and one each in Batches 12 and 13. Continue working remaining RED VERIFY leads; do not treat checkpoint completion as every lead verified. Used references remain excluded from automatic valuation. TEST and Stripe untouched.

@@ -6276,3 +6276,8 @@ Current Batches 01–13: 257 observations, 254 active (139 UK New, 115 UK Used),
 An exact UK GBP source for Caddx Peanut / Insta360 Go 2, YourFPV SKU YFPV - CaddX - PNT, £218.99 was imported as a price reference. The direct page explicitly states Out of stock / Join Waitlist. Preserve availability out_of_stock and do not present this as a currently available offer. LIVE evidence row 3cf32e49-d7b0-4d30-9851-9da8155e1577 is matched to the existing master; package and source notes are in the Batch 03 checkpoint.
 
 Current Batches 01–13: 258 observations, 255 active (140 UK New, 115 UK Used), three inactive. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — AKASO V50 X Diving Bundle identity rule
+
+Do not map the UK £119.99 floating-hand-grip listing to the Diving Bundle: the direct description says microSD is not included, while the official AKASO Diving Bundle definition includes both a 64GB SD card and floating grip. Keep it RED VERIFY; no evidence import until one source proves both package components. Keep the separate With SD Bundle evidence attached only to its own master.

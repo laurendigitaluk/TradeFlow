@@ -324,3 +324,12 @@ Batch 12 now has **27 total GBP records: 26 active (17 UK New, 9 UK Used) and on
 Other RED VERIFY exclusions remain: Skydio X2 controller/charger has no verified UK price and consumer 2/2+ products are different; Yuneec E10Tvx has EUR/PLN only; HZCU-FZ90 is likely a catalogue typo for HXCU-FZ90 CCU and ProAV HXC-FZ90 is a different camera head; PXW-Z1500 is not an identified Sony model (PXW-Z150 is different); PXW-Z190V remains suffix/package-specific; SmallRig 3263 has no confirmed UK GBP offer; MKS-R3210 has no exact UK price; NEX-FS100 high-price Snet listing has bundle contents unresolved; HDC-3200 dual-filter SKU package needs comparison; UHC-8300 CCU is separate from camera head. No foreign-currency or wrong-model evidence was promoted.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.
+
+
+## Exact HXR-MC2500E master correction — 12 November 2026
+
+The existing £789.99 eBay UK used observation (row a92bb4e6-7fb1-436f-bb26-19f4795ed61f; source_record_key batch12-sony-hxr-mc2500e-ebay-78999) had been attached to the non-E HXR-MC2500 master. A fresh direct listing check confirmed exact model HXR-MC2500E, 32GB internal memory and Wi-Fi; the seller's item specifics confirm HXR-MC2500E, excellent used condition, fully tested and working, brand-new battery and charger, UK business seller KRTN Plaza, 99.8% positive and 30-day returns. The LIVE catalogue already contains an exact HXR-MC2500E / Standard master, ID 7c3e5517-1c19-4080-bd65-7cb41a4925f3.
+
+Corrected the existing evidence row's master_product_id to the exact HXR-MC2500E master; no duplicate inserted and no price/condition/source data changed. Direct listing: https://www.ebay.co.uk/itm/318668491967. LIVE read-back confirms the row now joins to model HXR-MC2500E / Standard at £789.99 GBP, UK Used, active. The non-E HXR-MC2500 master no longer receives this row.
+
+Batch 12 counts are unchanged: 27 total, 26 active (17 UK New, 9 UK Used), one inactive price-conflict row. Cumulative Batches 03–13 now 246 observations, 243 active (133 UK New, 110 UK Used), three inactive. No master product, schema or valuation logic changed; TEST and Stripe untouched.

@@ -6316,3 +6316,12 @@ Current Batches 01–13: 261 observations, 257 active (140 UK New, 117 UK Used),
 The N.I. Broadcast £499 used listing is exact RM-BR300, not RM-BR300H; it was matched to the separate RM-BR300 master. Evidence row 48d36782-0c1b-42ff-8fd0-938e73779c31. Preserve the model distinction.
 
 Current Batches 01–13: 262 observations, 258 active (140 UK New, 118 UK Used), four inactive. Global shared_market_evidence: 4,804 total, 4,748 active, 56 inactive. Batch 13 now 50 active (29 new, 21 used). UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Sony HDC-3100 and RM-BR300 source matching
+
+HDC-3100: exact Visual Impact SKU, £25,066.80 inc VAT (£20,889 ex), available to order, not held in stock. Source lists camera-head contents only; no CCU/lens/viewfinder. Keep the HDCU-3100/HDCU-2000 CCU separate. LIVE row 52a8170b-9521-41f0-9f64-6d172408377e; full notes in Batch 10 checkpoint.
+
+RM-BR300: exact N.I. Broadcast product code 7389, £499 used, stock 2; this is RM-BR300, not RM-BR300H, and recorded panel-only. LIVE row 48d36782-0c1b-42ff-8fd0-938e73779c31; full notes in Batch 13 checkpoint. UK Used remains reference-only.
+
+Current Batches 01–13: 263 observations, 259 active (141 UK New, 118 UK Used), four inactive. TEST, Stripe, schema and valuation logic unchanged.

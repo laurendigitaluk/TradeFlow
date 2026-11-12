@@ -6295,3 +6295,10 @@ Current LIVE batch-keyed totals for Batches 01–13: 260 rows, 257 active (140 U
 DigiBroadcast Shure MoveMic Two Receiver Kit row dee5cf7a-27cb-4097-84a1-a918764c0cf2 is now inactive because the direct page defaults to EUR and the earlier £496.80 GBP capture cannot be verified. Keep the row for audit with currency_unverified; use verified Canford GBP source instead.
 
 Current Batches 01–13: 261 rows, 257 active (140 UK New, 117 UK Used), four inactive. Global LIVE evidence table: 4,803 total, 4,747 active, 56 inactive. Batch 10 has 30 total, 29 active. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Shure MoveMic evidence validation
+
+For the exact MoveMic Two Receiver Kit, use verified source currency and package contents. Shure UK confirms £519 RRP and exact receiver-kit contents; £311.40 was only a search result and is not confirmed on the opened page. Canford confirms £431 ex VAT, on demand 3–4 weeks, exact SKU 74-5422 / MV-TWO-KIT-Z6 and complete receiver kit. DigiBroadcast now defaults to EUR; its former £496.80 GBP record was deactivated as currency_unverified. LIVE Canford row 1c662613-7d5f-40e3-84eb-5ed2b84b5962. Full URLs in Batch 10 checkpoint.
+
+Current Batches 01–13: 261 observations, 257 active (140 UK New, 117 UK Used), four inactive. TEST, Stripe, schema and valuation logic unchanged.

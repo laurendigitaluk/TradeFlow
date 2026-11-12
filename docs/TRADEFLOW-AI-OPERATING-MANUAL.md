@@ -6413,3 +6413,10 @@ Batches 01–13: 268 observations, 261 active (142 UK New, 119 UK Used), seven i
 The generic GoPro HERO candidate was checked against MPB's exact model title and item pages and resolved to **GoPro HERO (2014)**. Three UK Used MPB SKUs were imported to the existing HERO master: £45 Excellent (4037958), £41 Good (3962930) and £31 Good (4089283). Keep the accessory differences per SKU; all include battery, USB cable and 12-month warranty. A separate GoPro HERO Session £54.99 used listing was imported against the separate HERO Session master (Cash Converters item 053000253199, Redcar, very minor cosmetic wear, 12-month warranty). A £49.99 alternative was confirmed sold and excluded. Evidence IDs and source URLs are in the Batch 03 checkpoint.
 
 Batch 03: 12 active (7 UK New, 5 UK Used). Cumulative Batches 01–13: 272 observations, 265 active (142 UK New, 123 UK Used), seven inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Casio EX-FR200 unavailable Gumtree result
+
+When a search result provides an exact model and GBP asking price but the direct listing has been removed (HTTP 410), retain it only as an inactive historical reference. The Casio EX-FR200BK £116 Gumtree result in Bournemouth is stored as inactive row 0dbc8a9c-a193-4917-bc46-41dd69de214f. Do not treat it as current stock or active valuation evidence until a live source is found. Full details are in the Batch 03 checkpoint.
+
+Batch 03: 13 total, 12 active (7 UK New, 5 UK Used), one inactive. Cumulative Batches 01–13: 273 observations, 265 active (142 UK New, 123 UK Used), eight inactive. TEST, Stripe, schema and valuation logic unchanged.

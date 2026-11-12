@@ -6232,3 +6232,10 @@ Current Batches 04–13 total: 240 observations, 237 active (129 UK New, 108 UK 
 When reviewing the catalogue lead named “FE 100-400mm F4.5-5.6 GM OSS II”, the exact first-generation source must not be mapped to that II product. Carmarthen Cameras SKU 4548736058422 / SEL100400GM, £2,149 new and in stock, was matched to the existing first-generation FE 100-400mm F4.5-5.6 GM OSS / Lens Only master instead. Evidence row 78d2841a-c109-4933-a786-d5ebe559aaff was read back from LIVE; full package and source notes are in the Batch 10 checkpoint. Keep SEL100400MCW constant-F4.5 separate as well.
 
 Current Batches 04–13: 241 observations, 238 active (130 UK New, 108 UK Used), three inactive. Batch 10: 29 active (14 new, 15 used). Used records remain reference-only. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — HVR-Z1E source matching correction
+
+Do not discard useful evidence when a search result is the wrong catalogue model. The prior HXR-V1E lead's item specifics identified HVR-Z1E, which has its own LIVE Standard Package master. Two exact N.I. Broadcast offers were imported against that master: £250 used product code 6946 without battery/charger, and £250 used product code 6944 with battery/charger. Both were tested and in stock. Evidence IDs and source URLs are in the Batch 13 checkpoint. UK Used remains reference-only and accessory differences must remain visible.
+
+Current Batches 04–13: 243 observations, 240 active (130 UK New, 110 UK Used), three inactive. Batch 13: 49 active (29 new, 20 used). TEST, Stripe, schema and valuation logic unchanged.

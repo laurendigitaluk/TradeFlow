@@ -15,14 +15,17 @@
       "availability": "AKASO Store marketplace offer shown in stock; retailer click-through failed; comparison page dated 9 August 2026",
       "observed_at": "2026-11-12",
       "product_match": "exact",
-      "package_match": "exact_package",
+      "package_match": "same_model_other_package",
       "evidence_role": "comparison_only",
       "source_excerpt": "AKASO Brave 7 Standard — £159.99; in stock.",
       "search_queries_used": [
         "AKASO Brave 7 Brave 7 LE Brave 8 Brave 8 Lite UK retailer price standalone bundle diving vlog SD 2026",
         "AKASO Brave 7 standalone action camera UK retailer £159.99 direct listing"
       ],
-      "research_notes": "Comparison page names the Standard variant and £159.99, but retailer click-through failed. Stale comparison evidence only."
+      "research_notes": "Comparison page names the Standard variant and £159.99, but retailer click-through failed. Stale comparison evidence only.",
+      "catalogue_package_name": "Brave 7 Standalone",
+      "source_kind": "price_aggregator",
+      "page_access": "opened"
     },
     {
       "product_id": "a4a9b434-0066-48be-bf27-07d576cc90a1",
@@ -38,20 +41,23 @@
       "availability": "64GB microSD variant shown in stock; retailer click-through failed; stale comparison page",
       "observed_at": "2026-11-12",
       "product_match": "exact",
-      "package_match": "exact_package",
+      "package_match": "same_model_other_package",
       "evidence_role": "comparison_only",
       "source_excerpt": "AKASO Brave 7 + 64GB microSD — £169.99.",
       "search_queries_used": [
         "AKASO Brave 7 Brave 7 LE Brave 8 Brave 8 Lite UK retailer price standalone bundle diving vlog SD 2026",
         "AKASO Brave 7 Super Bundle Vlog Bundle UK price retailer UK"
       ],
-      "research_notes": "64GB variant is shown, but retailer product page could not be opened. Comparison-only."
+      "research_notes": "64GB variant is shown, but retailer product page could not be opened. Comparison-only.",
+      "catalogue_package_name": "Brave 7 With SD Bundle",
+      "source_kind": "price_aggregator",
+      "page_access": "opened"
     },
     {
       "product_id": "ec1b90e9-9a4a-40ae-8c99-41fd79b51c69",
       "manufacturer": "AKASO",
       "model": "Brave 7 LE",
-      "package_name": "Brave 7 LE Motorcycle Bundle",
+      "package_name": "Brave 7 LE Full Accessory Bundle",
       "evidence_type": "uk_new",
       "source_name": "eBay UK — HELLO HOMETECH",
       "source_url": "https://www.ebay.co.uk/itm/257504404511",
@@ -68,7 +74,10 @@
         "AKASO Brave 7 LE Motorcycle Bundle Diving Bundle UK price retailer",
         "site:ebay.co.uk/itm AKASO Brave 7 action camera used UK"
       ],
-      "research_notes": "Direct listing confirms Brave 7 LE, but not Motorcycle Bundle accessories; item specifics say BRAVE LE7 4K. Same URL is already linked to two different LIVE package masters; do not duplicate or assume exact bundle."
+      "research_notes": "Direct listing confirms Brave 7 LE, but not Motorcycle Bundle accessories; item specifics say BRAVE LE7 4K. Same URL is already linked to two different LIVE package masters; do not duplicate or assume exact bundle.",
+      "catalogue_package_name": "Brave 7 LE Motorcycle Bundle",
+      "source_kind": "marketplace_listing",
+      "page_access": "opened"
     },
     {
       "product_id": "dc0d7ae6-bf35-44eb-888a-8310cde7c87e",
@@ -84,20 +93,23 @@
       "availability": "Two shops listed; 64GB microSD variant shown in stock; retailer pages not opened; stale crawl",
       "observed_at": "2026-11-12",
       "product_match": "exact",
-      "package_match": "exact_package",
+      "package_match": "same_model_other_package",
       "evidence_role": "comparison_only",
       "source_excerpt": "Brave 7 LE with 64GB microSDXC — £149.99; in stock.",
       "search_queries_used": [
         "AKASO Brave 7 Brave 7 LE Brave 8 Brave 8 Lite UK retailer price standalone bundle diving vlog SD 2026",
         "AKASO Brave 7 LE Diving Bundle UK price retailer"
       ],
-      "research_notes": "PriceSpy product page shows 64GB microSD package, but no retailer product page was opened. Comparison-only."
+      "research_notes": "PriceSpy product page shows 64GB microSD package, but no retailer product page was opened. Comparison-only.",
+      "catalogue_package_name": "Brave 7 LE With SD Bundle",
+      "source_kind": "price_aggregator",
+      "page_access": "opened"
     },
     {
       "product_id": "a736782c-5f3c-4c24-b38e-5a9453840d23",
       "manufacturer": "AKASO",
       "model": "Brave 8",
-      "package_name": "Brave 8 Diving Bundle",
+      "package_name": "Brave 8 with 64GB microSD bundle",
       "evidence_type": "uk_new",
       "source_name": "YPC / Amazon UK price reference",
       "source_url": "https://www.ypc.co.uk/product/akaso-brave-8-action-camera-with-64gb-microsd-memory-card-4k60fps-ultra-hd-video-48mp-photos-waterproof-camera-super-wide-angle-16x-slow-motion-supersmooth-stabilization-underwater-camera/",
@@ -114,13 +126,16 @@
         "AKASO Brave 8 Diving Bundle Vlog Bundle UK price retailer",
         "AKASO Brave 8 action camera used UK eBay sold listing Brave 8 model"
       ],
-      "research_notes": "YPC direct page describes a 64GB card package, not the Diving Bundle. Dated Amazon reference; comparison-only."
+      "research_notes": "YPC direct page describes a 64GB card package, not the Diving Bundle. Dated Amazon reference; comparison-only.",
+      "catalogue_package_name": "Brave 8 Diving Bundle",
+      "source_kind": "price_aggregator",
+      "page_access": "opened"
     },
     {
       "product_id": "000dfd3b-bc36-47e4-865a-7b626b629b40",
       "manufacturer": "AKASO",
       "model": "Brave 8",
-      "package_name": "Brave 8 Standalone",
+      "package_name": "Brave 8 with 64GB microSD bundle",
       "evidence_type": "uk_new",
       "source_name": "YPC / Amazon UK price reference",
       "source_url": "https://www.ypc.co.uk/product/akaso-brave-8-action-camera-with-64gb-microsd-memory-card-4k60fps-ultra-hd-video-48mp-photos-waterproof-camera-super-wide-angle-16x-slow-motion-supersmooth-stabilization-underwater-camera/",
@@ -137,13 +152,16 @@
         "AKASO Brave 8 Diving Bundle Vlog Bundle UK price retailer",
         "AKASO Brave 8 action camera used UK eBay sold listing Brave 8 model"
       ],
-      "research_notes": "64GB card package, not Standalone. Dated price; comparison-only."
+      "research_notes": "64GB card package, not Standalone. Dated price; comparison-only.",
+      "catalogue_package_name": "Brave 8 Standalone",
+      "source_kind": "price_aggregator",
+      "page_access": "opened"
     },
     {
       "product_id": "b8d75a33-7295-4772-aed8-dd977be41904",
       "manufacturer": "AKASO",
       "model": "Brave 8",
-      "package_name": "Brave 8 Vlog Bundle",
+      "package_name": "Brave 8 with 64GB microSD bundle",
       "evidence_type": "uk_new",
       "source_name": "YPC / Amazon UK price reference",
       "source_url": "https://www.ypc.co.uk/product/akaso-brave-8-action-camera-with-64gb-microsd-memory-card-4k60fps-ultra-hd-video-48mp-photos-waterproof-camera-super-wide-angle-16x-slow-motion-supersmooth-stabilization-underwater-camera/",
@@ -160,13 +178,16 @@
         "AKASO Brave 8 Diving Bundle Vlog Bundle UK price retailer",
         "AKASO Brave 8 action camera used UK eBay sold listing Brave 8 model"
       ],
-      "research_notes": "64GB card package, not Vlog Bundle. Dated price; comparison-only."
+      "research_notes": "64GB card package, not Vlog Bundle. Dated price; comparison-only.",
+      "catalogue_package_name": "Brave 8 Vlog Bundle",
+      "source_kind": "price_aggregator",
+      "page_access": "opened"
     },
     {
       "product_id": "c4c0e6b3-7420-4ae4-b745-d559e9215f34",
       "manufacturer": "AKASO",
       "model": "Brave 8",
-      "package_name": "Brave 8 with 64GB SD bundle",
+      "package_name": "Brave 8 with 64GB microSD bundle",
       "evidence_type": "uk_new",
       "source_name": "YPC / Amazon UK price reference",
       "source_url": "https://www.ypc.co.uk/product/akaso-brave-8-action-camera-with-64gb-microsd-memory-card-4k60fps-ultra-hd-video-48mp-photos-waterproof-camera-super-wide-angle-16x-slow-motion-supersmooth-stabilization-underwater-camera/",
@@ -176,20 +197,23 @@
       "availability": "Amazon price recorded as of 29 July 2026; current checkout/stock unconfirmed",
       "observed_at": "2026-11-12",
       "product_match": "exact",
-      "package_match": "exact_package",
+      "package_match": "same_model_other_package",
       "evidence_role": "comparison_only",
       "source_excerpt": "AKASO Brave 8 Action Camera with 64GB microSD — £244.99.",
       "search_queries_used": [
         "AKASO Brave 8 Diving Bundle Vlog Bundle UK price retailer",
         "AKASO Brave 8 action camera used UK eBay sold listing Brave 8 model"
       ],
-      "research_notes": "Card package matches at description level, but the underlying Amazon checkout was not revalidated and the price is dated. Comparison-only."
+      "research_notes": "Card package matches at description level, but the underlying Amazon checkout was not revalidated and the price is dated. Comparison-only.",
+      "catalogue_package_name": "Brave 8 With SD Bundle",
+      "source_kind": "price_aggregator",
+      "page_access": "opened"
     },
     {
       "product_id": "9ac40cdd-1385-4e67-82c7-bea723dcd6dd",
       "manufacturer": "AKASO",
       "model": "Brave 8 Lite",
-      "package_name": "Brave 8 Lite Standalone",
+      "package_name": "",
       "evidence_type": "uk_used",
       "source_name": "eBay UK — lucianvp",
       "source_url": "https://www.ebay.co.uk/itm/168567668482",
@@ -206,13 +230,16 @@
         "AKASO Brave 7 Brave 7 LE Brave 8 Brave 8 Lite UK retailer price standalone bundle diving vlog SD 2026",
         "AKASO Brave 8 Lite action camera UK used retailer sold listings UK"
       ],
-      "research_notes": "Displayed £123.55 is asking price, not known sale price. Package unspecified. Existing LIVE new evidence £199.99 remains active; do not duplicate."
+      "research_notes": "Displayed £123.55 is asking price, not known sale price. Package unspecified. Existing LIVE new evidence £199.99 remains active; do not duplicate.",
+      "catalogue_package_name": "Brave 8 Lite Standalone",
+      "source_kind": "marketplace_listing",
+      "page_access": "opened"
     },
     {
       "product_id": "3d285fd6-39c4-4a29-bffb-8d09decc5795",
       "manufacturer": "AKASO",
       "model": "EK7000",
-      "package_name": "EK7000 Standalone",
+      "package_name": "EK7000 with 60-in-1 accessory kit",
       "evidence_type": "uk_used",
       "source_name": "eBay UK — private seller y736_21",
       "source_url": "https://www.ebay.co.uk/itm/316416275486",
@@ -229,7 +256,10 @@
         "AKASO EK7000 Diving Bundle Vlog Bundle UK price retailer 2026",
         "site:ebay.co.uk/itm AKASO EK7000 action camera UK used"
       ],
-      "research_notes": "Direct page confirms EK7000 but includes 60-in-1 accessory kit, not Standalone. Private seller, no returns; comparison-only."
+      "research_notes": "Direct page confirms EK7000 but includes 60-in-1 accessory kit, not Standalone. Private seller, no returns; comparison-only.",
+      "catalogue_package_name": "EK7000 Standalone",
+      "source_kind": "marketplace_listing",
+      "page_access": "opened"
     }
   ],
   "not_found": [

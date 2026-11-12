@@ -48,3 +48,16 @@ No TEST, Stripe, schema, master-product, tenant/customer or valuation data was c
 The companion JSON was checked against the current LIVE `platform_owner_submit_manual_ai_research_response` validator and corrected before any submission. The original file lacked `catalogue_package_name`, `source_kind` and `page_access`, and several `package_match` values did not agree with the exact LIVE product snapshot. The corrected file now carries the exact catalogue package for every finding, source-kind/page-access metadata, and conservative source-package names/matches. The EK7000 listing is explicitly recorded as the 60-in-1 accessory-kit package; the Brave 8 Lite sold listing remains package-not-stated. All ten findings remain `comparison_only`; none is promoted to catalogue evidence. All 20 selected products are covered by ten findings and ten not-found entries.
 
 This is a production-branch checkpoint correction only. No Supabase write was made: the prompt remains `ready` because the available SQL session has no authenticated owner JWT. If submitted through the owner-authenticated dashboard, this report will stage comparison references for review; it will **not** import records into `shared_market_evidence`. The ten separate queue records and the Kobra 4 / Hubsan import candidates remain unchanged.
+
+
+## Follow-up: Anycubic Kobra 4 queue candidate resolved to existing master — 12 November 2026
+
+The outstanding `needs_research` candidate `5c951409-c951-4f35-be87-884eba7968cc` was rechecked against the current official UK Anycubic page. The page's explicit variant selector separates standalone Kobra 4 (£159) from Kobra 4 Combo (4 colours, £259); GB VAT is included. The standalone printer is estimated to ship within 24 hours and has free express shipping, 14-day no-reason returns, 30-day after-sales guarantee and one-year printer warranty. Do not take the page's top-level £259 Combo price as the Standard Printer price.
+
+Imported and read back against existing LIVE master Kobra 4 / Standard Printer `c673eabf-716d-4ca9-b6eb-9acba6e593a3`:
+- Evidence row `ae7a2f85-ff95-4c22-8bf0-b856ed46142c`
+- £159.00 GBP, UK New, in_stock
+- Source https://uk.anycubic3d.com/products/kobra-4-3d-printer
+- source_record_key `manual-ai-queue-kobra4-standard-anycubic-159-20261112`
+
+The evidence import is complete. The original queue candidate remains `needs_research` because changing its workflow status requires the authenticated owner queue-status route; no direct status mutation, RLS bypass or auth impersonation was used. No master/schema/valuation change. TEST and Stripe untouched.

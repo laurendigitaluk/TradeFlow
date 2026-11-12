@@ -414,3 +414,10 @@ Current global LIVE shared_market_evidence count at this read: 4,802 total, 4,74
 A fresh read-back found one additional inactive Batch 10 row: DigiBroadcast Shure MoveMic Two Receiver Kit £496.80, source_record_key batch10-shure-movemic-two-receiver-digibroadcast-49680. It was deactivated because the direct page currently defaults to EUR and the earlier GBP amount is not supported. The row is retained inactive with availability currency_unverified. Batch 10 therefore has 30 total, 29 active (14 UK New, 15 UK Used), one inactive.
 
 Latest Batches 01–13 totals: 261 rows, 257 active (140 UK New, 117 UK Used), four inactive. Per-batch counts: 01 5/5; 02 4/4; 03 8/8; 04 18/18; 05 18/18; 06 15/15; 07 15/14; 08 17/16; 09 23/23; 10 30/29; 11 32/32; 12 27/26; 13 49/49 (total/active). Current global LIVE shared_market_evidence: 4,803 total, 4,747 active, 56 inactive. This supersedes the previous 260/257 and 4,802/4,747/55 counts.
+
+
+## Latest reconciliation — Batch 13 RM-BR300 import — 12 November 2026
+
+A further Batch 13 UK Used row was added for exact Sony RM-BR300 (not RM-BR300H), N.I. Broadcast £499, stock 2, matched to the separate RM-BR300 master. Batch 13 is now 50 total/active (29 UK New, 21 UK Used).
+
+Latest Batches 01–13 totals: **262 total, 258 active (140 UK New, 118 UK Used), four inactive**. Per-batch counts: 01 5/5; 02 4/4; 03 8/8; 04 18/18; 05 18/18; 06 15/15; 07 15/14; 08 17/16; 09 23/23; 10 30/29; 11 32/32; 12 27/26; 13 50/50 (total/active). Global LIVE shared_market_evidence: 4,804 total, 4,748 active, 56 inactive. This supersedes 261/257 and global 4,803/4,747/56. UK Used remains reference-only; TEST and Stripe untouched.

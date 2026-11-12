@@ -40,3 +40,8 @@ Owner context was null: auth.uid=null, auth.role=null, platform_cloud_ai_owner_c
 
 ## Next run
 Read this checkpoint and the latest production project memory first. Exclude all 20 IDs above plus every earlier checkpoint ID, outstanding LIVE queue candidate and outstanding manual AI prompt. Select the next 20 active LIVE catalogue products with no active shared_market_evidence by anti-join and stable order, never SQL OFFSET. Recheck status immediately before research. Check auth.uid and platform owner context first. Use only the authenticated owner RPC if auth.uid is non-null and owner check succeeds; otherwise create the next detailed checkpoint and project memory. Do not touch TEST, Stripe, master products, schema or valuation logic.
+
+
+## 12 November 2026 — Batch 11 RED VERIFY follow-up
+
+Twelve additional GBP rows imported/read back: Nikon P900 MPB from £319 and LCE £349.99 used; Nikon Df LCE £699.99 used; Nikon Z 50mm f/1.4 Nikon UK £449 new; Nikon Z 26mm f/2.8 Nikon UK £449 new; Pentax HD D FA 28-105mm MPB £244 and SRS £209 used; Pentax HD D FA Macro 100mm Carmarthen £699.99 new; Pentax O-RC1 SCAN £29.99 and Clifton £26 new/awaiting stock; Panasonic FZ1000 II Kamerastore £709 used with zoom lever fault; Panasonic GM5 Wex £929 used body-only Excellent. Batch 11 now has 22 active GBP rows: 8 UK New and 14 UK Used. Used observations remain reference-only. Faults and condition caveats remain explicit.

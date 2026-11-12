@@ -294,3 +294,10 @@ LIVE source_record_key reconciliation confirms 226 total GBP rows across Batches
 | 13 | 47 | 46 | 28 | 18 | 1 |
 
 Four inactive rows: BuzzFlyer DEVO-10 no stock, NEEWER KM19 seller away, Sony UK E35 £225 price-conflict, PowerDolphin Wizard new package unverified. UK Used remains reference-only. Valuation selects latest active GBP uk_new by observed_at/created_at and does not filter availability; sold-out/backorder UK New can affect valuation. No-stock/seller-away and package-unverified row remain inactive. This supersedes the prior 220 total/216 active snapshot. No schema/valuation change; TEST and Stripe untouched.
+
+
+## 12 November 2026 — all 13 batches reconciled
+
+Current LIVE source_record_key counts for Batches 01–13: 255 total observations, 252 active (137 UK New, 115 UK Used), three inactive. Per-batch breakdown is in CHECKPOINTS/2026-11-12-live-market-evidence-import-04-to-13.md, which now extends to Batches 01–13. Batch 01: 5 active (3 new, 2 used); Batch 02: 2 active (0 new, 2 used); Batch 03: 5 active (4 new, 1 used); Batches 04–13 retain their current verified counts. Current global LIVE shared_market_evidence table: 4,797 total, 4,742 active, 55 inactive.
+
+This supersedes earlier 220-row/216-active and 246-row/243-active cumulative snapshots. UK Used remains reference-only; three inactive rows remain audit-retained. No TEST, Stripe, schema or valuation changes.

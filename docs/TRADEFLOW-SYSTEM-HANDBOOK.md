@@ -1,5 +1,13 @@
 ## 12 November 2026 — Batch 08 LIVE evidence follow-up
 
+Batch 08 received six further GBP observations: Hubsan H501A £209.99 new/out of stock; Hubsan H501M £139.99 new/out of stock; Hubsan Zino Pro £389.99 new/supplier stock; NEEWER NL660 2-pack £75 used; GoPro HERO6 Black £119 used Excellent; NEEWER KM19 £47.94 new but seller-away, therefore inactive. Corrected Nikon COOLPIX P7700 MPB to £229 Good/in stock and HOVERAir X1 PROMAX Standard / Very to £609 sale/in stock. Batch 08 total is 14 rows: 13 active (10 UK New, 3 UK Used), one inactive, all GBP.
+
+For current evidence handling, explicit out-of-stock prices can remain active historical observations with status notes; seller-away/no-fulfilment observations are inactive until the seller returns. The automatic valuation uses latest active GBP UK New by observed_at/created_at, so active out-of-stock new evidence can still be selected under current behaviour. Do not change valuation code without approval. TEST and Stripe remain untouched.
+
+---
+
+## 12 November 2026 — Batch 08 LIVE evidence follow-up
+
 Batch 08 gained six records: Hubsan H501A £209.99 sold out, H501M £139.99 sold out, ZINO Pro £389.99 supplier stock (all Elite Models UK); NEEWER NL660 2-pack Gumtree £75 used; GoPro HERO6 Black UsedLens/MPB Excellent £119 used; NEEWER KM19 eBay £47.94 new but seller away, retained inactive. Nikon COOLPIX P7700 MPB was corrected to one Good unit at £229; Very HOVERAir X1 PROMAX Standard confirmed £609 sale (£639 regular), in stock. Batch 08 now has 14 rows, 13 active (10 UK New, 3 UK Used), one inactive.
 
 Cumulative Batches 04–13: 133 GBP rows, 131 active (75 UK New, 56 UK Used), two inactive. Per-batch totals: 04=18, 05=18, 06=12, 07=14 total/13 active, 08=14 total/13 active, 09=11, 10=12, 11=10, 12=12, 13=12. Initial total 107 was correct; earlier summary values for Batches 10–12 were misallocated.

@@ -5806,3 +5806,10 @@ The catalogue's generic GoPro HERO master was confirmed as the original **GoPro 
 Exact GoPro HERO Session evidence was also added against its separate master: Cash Converters Redcar item 053000253199, £54.99, very minor cosmetic wear, good working condition, 12-month warranty, row 490f96fe-0cf6-4290-9a94-7e84afdff731. The separate £49.99 Cash Converters listing was confirmed sold and was not imported. Full URLs are in the Batch 03 checkpoint.
 
 Batch 03 now 12 active (7 UK New, 5 UK Used). Cumulative Batches 01–13: 272 observations, 265 active (142 UK New, 123 UK Used), seven inactive. UK Used remains reference-only. TEST, Stripe, schema, master data and valuation logic untouched.
+
+
+## 12 November 2026 — Casio EX-FR200 historical source handling
+
+A UK Gumtree search result identified an exact Casio Exilim EX-FR200BK at £116 in Bournemouth, described as like new/great condition. The direct listing returned HTTP 410, so it was retained only as an inactive UK Used historical reference (row 0dbc8a9c-a193-4917-bc46-41dd69de214f) against existing EX-FR200 master ab146701-f933-4082-aa7d-794b7da5bda9. Do not use the price in active market comparisons or valuation until a live listing is verified. Source URL and full note are in the Batch 03 checkpoint.
+
+Batch 03: 13 total, 12 active (7 UK New, 5 UK Used), one inactive. Cumulative Batches 01–13: 273 observations, 265 active (142 UK New, 123 UK Used), eight inactive. TEST, Stripe, schema, master data and valuation logic untouched.

@@ -329,3 +329,10 @@ Latest Batches 01–13: 262 total, 258 active (140 UK New, 118 UK Used), four in
 Added exact Visual Impact Sony HDC-3100 camera-head offer £25,066.80 inc VAT, Available to Order, matched to HDC-3100 Standard master. Evidence row 52a8170b-9521-41f0-9f64-6d172408377e; no CCU, lens or viewfinder included. Batch 10 now 31 total, 30 active (15 new, 15 used), one inactive.
 
 Latest Batches 01–13: 263 total, 259 active (141 UK New, 118 UK Used), four inactive. Global LIVE shared_market_evidence: 4,805 total, 4,749 active, 56 inactive. This supersedes 262/258 snapshot. UK Used remains reference-only; TEST and Stripe untouched.
+
+
+## 12 November 2026 — latest duplicate and count correction
+
+Two duplicate captures in Batch 13 were deactivated and retained for audit: Sony FE 12-24mm earlier Sony UK row 0c023277-93cd-47bb-8677-4f005693e738 (later active duplicate fa2cbd78-e707-481c-be3f-e46aa3cf18d5) and Sony ECM-B10 earlier Wex row 9d7a7b65-8a2a-4a28-90b7-2a1c64e38564 (later active duplicate f9bb53b9-c1a1-4983-b0bd-77bdb4f6ccba). Batch 13 now 50 total, 48 active (27 new, 21 used), two inactive.
+
+Latest Batches 01–13: 263 total, 257 active (139 UK New, 118 UK Used), six inactive. Global LIVE shared_market_evidence: 4,805 total, 4,747 active, 58 inactive. This supersedes the prior 263/259 count. UK Used remains reference-only; TEST and Stripe untouched.

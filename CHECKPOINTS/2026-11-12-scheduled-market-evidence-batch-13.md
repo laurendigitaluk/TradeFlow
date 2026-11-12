@@ -434,3 +434,12 @@ N.I. Broadcast direct page verifies exact Sony RM-BR300 PTZ camera remote panel,
 The existing LIVE RM-BR300 / Standard master was used (master 2c8b889e-6afc-429c-b8e6-a0d96c426764), not the separate RM-BR300H product. Evidence row 48d36782-0c1b-42ff-8fd0-938e73779c31, source_record_key batch13-followup-sony-rm-br300-nibroadcast-7389-499-20261112. Direct LIVE read-back confirms £499 GBP, used, in_stock, active and exact RM-BR300 master.
 
 Batch 13 now 50 active rows (29 UK New, 21 UK Used), zero inactive. Batches 01–13 now total 263 observations, 259 active (141 UK New, 118 UK Used), four inactive. UK Used remains reference-only. No master/schema/valuation change; TEST and Stripe untouched.
+
+
+## Duplicate source-capture cleanup — 12 November 2026
+
+A duplicate scan across the batch-keyed evidence found two exact same-source captures in Batch 13. In each case the same existing master, source URL, GBP price, condition and availability were present twice under separate source_record_keys. The earlier captures were preserved but deactivated; the later detailed follow-up rows remain active:
+- Wex Photo Video Sony ECM-B10 £175 new: deactivated duplicate row 9d7a7b65-8a2a-4a28-90b7-2a1c64e38564; retained active row f9bb53b9-c1a1-4983-b0bd-77bdb4f6ccba.
+- Sony UK FE 12-24mm F2.8 GM £2,645 new: deactivated duplicate row 0c023277-93cd-47bb-8677-4f005693e738; retained active row fa2cbd78-e707-481c-be3f-e46aa3cf18d5.
+
+This is duplicate housekeeping only; no price, master or source observation was deleted. Batch 13 now 50 total, 48 active (27 UK New, 21 UK Used), two inactive duplicates. Batches 01–13 corrected cumulative total: 263 observations, 257 active (139 UK New, 118 UK Used), six inactive. Do not use inactive duplicates in market aggregation. TEST, Stripe, schema and valuation logic untouched.

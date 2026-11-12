@@ -5620,3 +5620,10 @@ Cumulative Batches 04–13: 240 rows, 237 active (129 UK New, 108 UK Used), thre
 A source discovered while reviewing the unverified “FE 100-400mm F4.5-5.6 GM OSS II” lead was correctly matched to the existing first-generation Sony FE 100-400mm F4.5-5.6 GM OSS / Lens Only master (69e7a468-cb45-474e-9c28-ca3611514a72), not the separate “II” master. Carmarthen Cameras SKU 4548736058422 / SEL100400GM is £2,149, new, one unit in stock; included items are hood, front/rear caps, case and strap. LIVE evidence row 78d2841a-c109-4933-a786-d5ebe559aaff, source https://carmarthencameras.com/products/sony-fe-100-400mm-f4-5-5-6-gm-oss-super-telephoto-zoom-lens. Read-back verified exact product, price, condition and availability. The catalogue “II” identity remains unresolved; do not substitute SEL100400GM or constant-F4.5 SEL100400MCW for it.
 
 Cumulative Batches 04–13: 241 rows, 238 active (130 UK New, 108 UK Used), three inactive. Batch 10: 29 active (14 new, 15 used). TEST, Stripe, schema, master data and valuation logic untouched.
+
+
+## 12 November 2026 — HVR-Z1E candidate matched to existing catalogue master
+
+A candidate initially labelled HXR-V1E was not assigned to that model because its item specifics identified HVR-Z1E. Two exact N.I. Broadcast UK used listings were matched to existing HVR-Z1E / Standard Package master ef1447f4-5967-44f8-abc0-282f2ecb40d3 and imported: product code 6946 £250 (tested, no battery/charger; seller offers those separately for £30) and product code 6944 £250 (tested, battery and charger included). Both stock level 1. Evidence IDs 6c7ed3f9-4679-4e3b-98f4-5dcc0f1f7688 and 340ca15f-8d26-4c17-8fb2-46aaecb72b6d; source URLs https://www.nibroadcast.com/sony-hvr-z1e-hdv-high-definition-camcorder-81x10-drum-hours.html and https://www.nibroadcast.com/sony-hvr-z1e-hdv-high-definition-camcorder-23x10-drum-hours-battery.html. These remain UK Used reference-only, with accessory differences preserved.
+
+Cumulative Batches 04–13: 243 rows, 240 active (130 UK New, 110 UK Used), three inactive. Batch 13: 49 active (29 new, 20 used). TEST, Stripe, schema, master data and valuation logic untouched.

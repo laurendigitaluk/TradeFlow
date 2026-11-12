@@ -6262,3 +6262,10 @@ Current Batches 01–13: 255 observations, 252 active (137 UK New, 115 UK Used),
 Batches 01–02 were extended with seven direct UK source rows: Pentax 17 new £499 and two used MPB units £389/£354; Blackmagic Pocket Cinema Camera 6K G2 new RCB Logic £1,666.80 inc VAT and Jigsaw24 £1,890 inc VAT; Blackmagic Studio Camera 6K Pro used CVP £1,580.40 ex VAT; URSA Cine 12K LF used MPB £5,509 PL Fit. Preserve source VAT basis, mount, package and condition notes. Batch 03 now also includes AKASO V50 X-U3 / With 64GB microSDXC at £153.99 new from eBay UK Clarkson Direct; row 8c8b32c5-e38d-4c5c-83f9-a0af9ee3aa3d.
 
 Current LIVE batch-keyed reconciliation across Batches 01–13: 255 observations, 252 active (137 UK New, 115 UK Used), three inactive. Per-batch counts are in the consolidated checkpoint. Global LIVE shared_market_evidence table: 4,797 total, 4,742 active, 55 inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Caddx Walnut price-reference handling
+
+Two exact UK Caddx Walnut specialist-retailer pages were imported as UK New price references: FlyingTech £117.90 inc VAT, sold out; Unmanned Tech £129 incl. taxes, sold out/backorder. Keep availability explicitly out_of_stock/backorder; an active evidence row is not a claim that stock is available. Package and direct source details are in the Batch 03 checkpoint. Evidence IDs 3b791f3e-c1ab-455d-946e-add1a4b9e7b8 and 7d57b245-5b93-4c0c-a570-c31639e50c7b.
+
+Current Batches 01–13: 257 observations, 254 active (139 UK New, 115 UK Used), three inactive. TEST, Stripe, schema and valuation logic unchanged.

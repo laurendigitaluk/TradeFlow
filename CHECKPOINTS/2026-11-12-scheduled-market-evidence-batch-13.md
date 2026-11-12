@@ -443,3 +443,12 @@ A duplicate scan across the batch-keyed evidence found two exact same-source cap
 - Sony UK FE 12-24mm F2.8 GM £2,645 new: deactivated duplicate row 0c023277-93cd-47bb-8677-4f005693e738; retained active row fa2cbd78-e707-481c-be3f-e46aa3cf18d5.
 
 This is duplicate housekeeping only; no price, master or source observation was deleted. Batch 13 now 50 total, 48 active (27 UK New, 21 UK Used), two inactive duplicates. Batches 01–13 corrected cumulative total: 263 observations, 257 active (139 UK New, 118 UK Used), six inactive. Do not use inactive duplicates in market aggregation. TEST, Stripe, schema and valuation logic untouched.
+
+
+## Duplicate evidence rows deactivated — 12 November 2026
+
+A fresh LIVE reconciliation identified two duplicate captures in Batch 13 and deactivated the earlier rows while retaining the later follow-up rows and all independent retailer offers:
+- Sony FE 12-24mm F2.8 GM, earlier Sony UK row 0c023277-93cd-47bb-8677-4f005693e738 (source_record_key batch13-sony-fe1224gm-sony-2645) deactivated; later exact same Sony UK source row fa2cbd78-e707-481c-be3f-e46aa3cf18d5 remains active. Other active sources (Sony Centre Direct, CameraWorld, LCE) are independent offers.
+- Sony ECM-B10, earlier Wex row 9d7a7b65-8a2a-4a28-90b7-2a1c64e38564 (source_record_key batch13-sony-ecmb10-wex-175) deactivated; later exact same Wex source row f9bb53b9-c1a1-4983-b0bd-77bdb4f6ccba remains active. Other active sources (CameraWorld, Harrison, MPB, Bristol and Park) are independent offers.
+
+Both inactive rows remain retained for audit; no active evidence was deleted. Batch 13 now 50 total, 48 active (27 UK New, 21 UK Used), two inactive duplicate captures. The earlier row notes were corrected so each points to its own retained duplicate, not to the other product's source.

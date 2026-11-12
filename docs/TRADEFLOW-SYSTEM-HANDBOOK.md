@@ -5543,3 +5543,10 @@ A further UK New observation was added for the exact Hubsan Zino Mini Pro Refine
 A further UK Used observation was imported for the Sony HDC-1500 Standard Package: N.I. Broadcast Ltd (eBay UK), £8,010 or Best Offer, 10 available, used and full working order. The seller description confirms one HDC-1500 fibre camera head, one HDCU-1500 half-rack CCU with extra HDSDI output board, one tripod plate and one RCP-920 with Ethernet option per channel. Lenses and viewfinders are extra-cost items; UK domestic shipping quote is not confirmed. Source: https://www.ebay.co.uk/itm/198054902757. The record was read back successfully and remains UK Used reference evidence only.
 
 Batch 09 now has 21 active GBP rows (9 UK New, 12 UK Used). Cumulative Batches 04–13 now contain 234 GBP observations: 230 active (126 UK New, 104 UK Used), four inactive.
+
+
+## 12 November 2026 — Batch 09 Shure SM81 package verified
+
+A further UK New observation was imported for the Shure SM81 microphone from Stage Supply: £405.00 inc VAT (£337.50 ex VAT), retailer code 4736, manufacturer SKU SM81-LC, eight available online and further supplier stock in 1–3 weeks, with a two-year manufacturer warranty. Source: https://stagesupply.co.uk/product/shure-sm81-cardioid-condenser-instrument-microphone/. Shure UK's official page confirms SM81 SKU SM81-LC and £439 RRP; the Shure user guide confirms the supplied microphone clip, attenuator lock, carrying bag and windscreen. LC means the package is supplied without an XLR cable. Imported against the existing SM81 master and read back successfully.
+
+Batch 09 now has 22 GBP rows, all active: 10 UK New and 12 UK Used. Cumulative Batches 04–13 now contain 235 GBP observations: 231 active (127 UK New, 104 UK Used), four inactive. UK Used remains excluded from automatic valuation; TEST, Stripe, schema and valuation logic unchanged.

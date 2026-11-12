@@ -5550,3 +5550,12 @@ Batch 09 now has 21 active GBP rows (9 UK New, 12 UK Used). Cumulative Batches 0
 A further UK New observation was imported for the Shure SM81 microphone from Stage Supply: £405.00 inc VAT (£337.50 ex VAT), retailer code 4736, manufacturer SKU SM81-LC, eight available online and further supplier stock in 1–3 weeks, with a two-year manufacturer warranty. Source: https://stagesupply.co.uk/product/shure-sm81-cardioid-condenser-instrument-microphone/. Shure UK's official page confirms SM81 SKU SM81-LC and £439 RRP; the Shure user guide confirms the supplied microphone clip, attenuator lock, carrying bag and windscreen. LC means the package is supplied without an XLR cable. Imported against the existing SM81 master and read back successfully.
 
 Batch 09 now has 22 GBP rows, all active: 10 UK New and 12 UK Used. Cumulative Batches 04–13 now contain 235 GBP observations: 231 active (127 UK New, 104 UK Used), four inactive. UK Used remains excluded from automatic valuation; TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Batch 09 HXC-D70 UK used channel evidence
+
+A further UK Used observation was imported for the Sony HXC-D70 Standard master from N.I. Broadcast Ltd: £4,000, product code 9509, stock level 3, Add to Basket, fully working and used in one studio from new. One channel comprises HXC-D70 camera head, HXCU-D70 CCU, approximately 25m multicore cable, modified Sony DVF-L700 7-inch Full HD monitor/viewfinder and RM-B150 remote RCP. RCP cable, VCT14 tripod plate and lenses are optional extras. Source: https://www.nibroadcast.com/1x-sony-hxc-d70-hdsdi-high-definition-multicore-camera-channel-with-cable-rcp-ccu-etc..html. Imported against the existing HXC-D70 Standard master and read back successfully. UK Used remains reference-only.
+
+The Sony HDC-3000 lead remains RED VERIFY: Sony UK support's model list does not identify an exact HDC-3000 camera model; Sony's “HDC-3000 series” wording is not sufficient to identify a distinct sellable product or package. Do not attach HDC-3500/HDC-3200/HSC-300 or HDCU prices to it.
+
+Batch 09 now has 23 GBP rows, all active: 10 UK New and 13 UK Used. Cumulative Batches 04–13 now contain 236 GBP observations: 232 active (127 UK New, 105 UK Used), four inactive.

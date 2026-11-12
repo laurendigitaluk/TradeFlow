@@ -92,6 +92,11 @@
 <div class="panel-head"><div><div class="eyebrow">Manual web research</div><h2>Catalogue research workspace</h2></div><button id="manual-ai-refresh" type="button">Refresh batches</button></div>
 <p class="muted">This workspace does not require an API key. TradeFlow writes the research instructions from the selected catalogue records and existing evidence, creates prompts in batches, and saves each pasted response. The assistant must search the live web and open the original product/listing pages; answers based on memory or search snippets are not accepted as exact catalogue evidence. Same-model alternative bundles, standard-camera prices, aggregators and blocked/snippet-only sources are retained as comparison-only references, clearly labelled and never counted against the selected catalogue package.</p>
 <div id="manual-ai-status" class="action-message" role="status" aria-live="polite"></div>
+<div class="plan-editor" style="margin-top:14px">
+ <div class="panel-head" style="margin:0 0 8px"><div><div class="eyebrow">AI-to-owner updates</div><h3>ChatGPT research updates</h3></div><button id="manual-ai-chatgpt-refresh" type="button">Refresh updates</button></div>
+ <p class="muted">ChatGPT posts batch progress and verified completion notices here. You do not need to copy research reports into this dashboard.</p>
+ <div id="manual-ai-chatgpt-updates" class="plan-admin-list" role="log" aria-live="polite"><p class="muted">Loading ChatGPT updates…</p></div>
+</div>
 
 <div class="plan-editor" style="margin-top:16px">
  <h3>1. Choose the AI assistant and batch size</h3>

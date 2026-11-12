@@ -357,3 +357,10 @@ Latest Batches 01–13: 264 total, 258 active (139 UK New, 119 UK Used), six ina
 Added Shure MoveMic Two standard (no receiver) sources: Shure UK £221 sale, Canford £305 ex VAT on demand, Clifton £335 awaiting stock. Exact IDs, sources and package details in Batch 10 checkpoint. Previous Shure UK £258.30 row deactivated as superseded. Keep standard package distinct from Receiver Kit.
 
 Latest Batches 01–13: 267 total, 260 active (141 UK New, 119 UK Used), seven inactive. Global LIVE: 4,812 total, 4,753 active, 59 inactive. TEST and Stripe untouched.
+
+
+## 12 November 2026 — Batch 04 Camix follow-up and latest counts
+
+Imported Camix exact Sony FE 85mm F1.4 GM II Lens Only £1,325 (ex VAT £1,104.17), new/in stock, with full lens/cap/hood/case contents; evidence row e1d4ebb0-ccb2-4a27-b4c7-06b3f9ab32af. Cotswold £1,049 page redirected and was not imported. Batch 04: 19 active (9 new, 10 used).
+
+Latest Batches 01–13: 268 total, 261 active (142 UK New, 119 UK Used), seven inactive. Global LIVE: 4,813 total, 4,754 active, 59 inactive. TEST and Stripe untouched.

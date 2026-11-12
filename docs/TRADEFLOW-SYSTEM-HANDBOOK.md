@@ -5690,3 +5690,10 @@ Latest Batches 01–13 read-back: 261 batch-keyed rows, 257 active (140 UK New, 
 The exact Shure MoveMic Two Receiver Kit was reverified against Shure UK and Canford. Shure UK SKU MV-TWO-KIT-Z6 displays £519 RRP, not the £311.40 search-only offer; existing official evidence row b5e0c19c-179a-465e-954c-b1dab8da9286 was corrected to £519 with RRP status stated. Canford stock code 74-5422 / MV-TWO-KIT-Z6 confirms £431 ex VAT, on demand 3–4 weeks, with two lavaliers, receiver, windscreens, charging case, cables and roll bag; imported as UK New GBP/backorder, LIVE row 1c662613-7d5f-40e3-84eb-5ed2b84b5962. DigiBroadcast's page now defaults to EUR, so the prior £496.80 row dee5cf7a-27cb-4097-84a1-a918764c0cf2 was deactivated as currency_unverified. Sources: https://www.shure.com/en-GB/products/wireless-systems/movemic-wireless/movemic-two-kit and https://www.canford.co.uk/Products/2031431/74-5422_SHURE-MOVEMIC-TWO-RECEIVER-KIT-2x-lavalier-1x-MoveMic-Receiver-with-charge-case.
 
 Batches 01–13: 261 observations, 257 active (140 UK New, 117 UK Used), four inactive. Batch 10: 30 total, 29 active. TEST, Stripe, schema, master data and valuation logic untouched.
+
+
+## 12 November 2026 — Batch 02 Blackmagic used-market source follow-up
+
+Four additional UK Used source observations were verified from direct CVP/MPB pages and read from LIVE: URSA Cine 12K LF Body CVP Open Box £4,989.40 ex VAT / £5,987.28 inc, Like New; Studio Camera 6K Pro CVP £1,580.40 ex VAT, Excellent; URSA Cine 17K 65 + EVF CVP £16,199.10 ex VAT, Excellent, full EVF/8TB package; and URSA Cine 12K LF PL Fit MPB £5,509, Excellent, PL-fit with EF mount included. Exact row IDs, package contents and source URLs are documented in the Batch 02 checkpoint. Preserve ex-VAT basis and package/mount details. UK Used records remain reference-only and do not feed automatic valuation.
+
+Batches 01–13 now total 261 observations, 257 active (140 UK New, 117 UK Used), four inactive. TEST, Stripe, schema, master catalogue and valuation logic untouched.

@@ -27,3 +27,26 @@ TradeFlow LIVE only. Supabase project gxsrajtqzdjvmceqcpgv.
 
 ## Documentation path note
 The expected handbook paths docs/GEARCASHOUT-SYSTEM-HANDBOOK.md and docs/GEARCASHOUT-AI-OPERATING-MANUAL.md returned 404 on production during this update. Do not create guessed duplicate manuals. Locate the actual paths before updating both manuals.
+
+
+## 12 November 2026 — current verified import state
+
+The initial import of batches 04–13 was 107 GBP rows. Twenty additional observations have since been imported from RED VERIFY reviews in batches 04–07. Direct LIVE read-back now confirms 127 total rows, 126 active, 1 inactive; all GBP. Active totals are 72 UK New and 54 UK Used. One inactive record is BuzzFlyer DEVO-10 + RX1002 £149.95, because the current page shows Notify Me/no stock; it remains in the table for audit but is excluded from active evidence.
+
+Verified per-batch totals:
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 8 | 8 | 7 | 1 | 0 |
+| 09 | 11 | 11 | 5 | 6 | 0 |
+| 10 | 12 | 12 | 7 | 5 | 0 |
+| 11 | 10 | 10 | 3 | 7 | 0 |
+| 12 | 12 | 12 | 8 | 4 | 0 |
+| 13 | 12 | 12 | 7 | 5 | 0 |
+
+The initial overall total of 107 was correct, but the earlier message misallocated the per-batch counts for Batches 10–12. The correct database totals are Batch 10=12, Batch 11=10, Batch 12=12. Follow-up additions were Batch 04 +4, Batch 05 +9, Batch 06 +3, Batch 07 +4.
+
+LIVE valuation uses the latest active GBP uk_new observation by observed_at then created_at, and does not filter availability. UK Used is reference-only. Sold-out/backorder UK New evidence remains active with status/notes under current behaviour; a Notify Me/no-stock row was made inactive. No schema or valuation logic changes. Actual manuals are docs/TRADEFLOW-SYSTEM-HANDBOOK.md and docs/TRADEFLOW-AI-OPERATING-MANUAL.md; both updated. TEST and Stripe untouched.

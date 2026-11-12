@@ -5704,3 +5704,12 @@ Batches 01–13 now total 261 observations, 257 active (140 UK New, 117 UK Used)
 A direct N.I. Broadcast UK Used listing for exact Sony RM-BR300 (not RM-BR300H), £499, stock 2, was matched to the separate existing RM-BR300 / Standard master and imported. Evidence row 48d36782-0c1b-42ff-8fd0-938e73779c31; source https://www.nibroadcast.com/sony-rm-br300-ptz-camera-remote-panel.html. Do not attach it to the RM-BR300H master. Accessories are not enumerated, so note panel-only.
 
 Latest Batches 01–13: 262 rows, 258 active (140 UK New, 118 UK Used), four inactive. Global LIVE shared_market_evidence: 4,804 total, 4,748 active, 56 inactive. Batch 13: 50 active (29 new, 21 used). TEST, Stripe, schema, master data and valuation logic untouched.
+
+
+## 12 November 2026 — Sony HDC-3100 and RM-BR300 evidence follow-up
+
+Sony HDC-3100 Visual Impact exact SKU HDC-3100 was imported at £25,066.80 inc VAT (£20,889 ex), available to order but not held in stock. In The Box lists only camera-head accessories; no CCU, lens or viewfinder. Record as camera head only; HDCU-3100/HDCU-2000 CCU is separate. LIVE row 52a8170b-9521-41f0-9f64-6d172408377e against existing HDC3100 Standard Package master. Source https://www.visuals.co.uk/hdc-3100-camera.html.
+
+Sony RM-BR300 exact N.I. Broadcast panel, product code 7389, £499 used, stock 2, was matched to existing RM-BR300 master (not RM-BR300H), panel-only. LIVE row 48d36782-0c1b-42ff-8fd0-938e73779c31. Source https://www.nibroadcast.com/sony-rm-br300-ptz-camera-remote-panel.html. UK Used remains reference-only.
+
+Batches 01–13 now 263 observations, 259 active (141 UK New, 118 UK Used), four inactive. TEST, Stripe, schema, master data and valuation logic untouched.

@@ -409,3 +409,10 @@ The RED VERIFY lead named “Sony FE 100-400mm F4.5-5.6 GM OSS II” was not mat
 - LIVE row ID 78d2841a-c109-4933-a786-d5ebe559aaff; source_record_key batch10-followup-sony-fe100400gm-firstgen-carmarthen-2149-20261112. Direct read-back confirmed exact master/package, source URL, £2,149 GBP, new condition and in_stock.
 
 Batch 10 now has 29 active GBP rows (14 UK New, 15 UK Used). Cumulative Batches 04–13 now contain 241 GBP observations: 238 active (130 UK New, 108 UK Used), three inactive. No catalogue master was changed; the inaccurate “II” catalogue identity remains RED VERIFY for a separate catalogue correction decision. TEST, Stripe, schema and valuation logic untouched.
+
+
+## Shure MoveMic currency correction — 12 November 2026
+
+The earlier DigiBroadcast Shure MoveMic Two Receiver Kit £496.80 row was deactivated after reopening the direct page. DigiBroadcast currently defaults to EUR and displays €593.29 / €494.41, with RRP €617.65 / €514.71; the prior £496.80 capture is not supported by the page as currently rendered. Existing row dee5cf7a-27cb-4097-84a1-a918764c0cf2 remains retained but inactive with availability currency_unverified. The exact package contents are confirmed (two MoveMic lavaliers, charging case, receiver, two USB-C cables, 3.5mm cable and roll bag); use separately verified Canford GBP evidence instead. No duplicate or foreign-currency conversion.
+
+Batch 10 now 30 total, 29 active (14 UK New, 15 UK Used), one inactive currency-unverified record.

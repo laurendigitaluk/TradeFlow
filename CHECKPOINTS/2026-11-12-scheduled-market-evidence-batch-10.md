@@ -456,3 +456,16 @@ A direct KitPlus listing from UK premium dealer N.I. Broadcast Ltd verifies the 
 The listing explicitly prices one channel and lists HDC1500R R-series camera head, HDCU-1000 full-rack fibre CCU, HDVF20A 2-inch viewfinder and RCP750 remote panel. RCP1500 is an extra-cost option; 7-inch HDVF-C730/L750 viewfinder is extra cost; lens is not included. Matched to existing LIVE HDC1500R / Standard Package master 90917fa8-dbc3-4aed-9650-e73d8e35692f, not the similar HDC1500 model without R. Imported as UK Used GBP / listed; LIVE evidence row afd9e40d-fabb-4e28-b797-2e2b8f877948. Read-back confirmed exact master/package, price, source and notes.
 
 Batch 10 now 32 total, 31 active (15 UK New, 16 UK Used), one inactive. Batches 01–13 now 264 total, 258 active (139 UK New, 119 UK Used), six inactive. Global LIVE shared_market_evidence 4,809 total, 4,751 active, 58 inactive. UK Used remains reference-only. No master/schema/valuation change; TEST and Stripe untouched.
+
+
+## Shure MoveMic Two standard package — three UK source refresh — 12 November 2026
+
+Kept the standard MoveMic Two package distinct from the MoveMic Two Receiver Kit. Exact standard SKU MV-TWO-Z6 contains two MoveMic wireless lavaliers, charging case and USB-C charging cable; the MoveMic Receiver is sold separately.
+
+- Shure UK: £221.00 special offer against £369.00 RRP, Add to Cart and free shipping. Direct page confirms two lavaliers, case and cable; receiver sold separately. Imported as active UK New GBP / listed, row 54592afe-1b24-4abf-aee9-8405f95f5ac5. https://www.shure.com/en-GB/products/microphones/movemic-two.
+- Canford: £305.00 ex VAT, stock code 74-5421 / MV-TWO-Z6, ordered on demand 3–4 weeks. Exact kit contents: two lav transmitters, two foam windscreens, USB-C cable and charging case; no receiver. Imported as active UK New GBP / backorder, row a8eb0b34-4882-471d-88de-1c71ccc7be42. https://www.canford.co.uk/Products/2031431/74-5421_SHURE-MOVEMIC-TWO-RADIOMIC-TRANSMITTER-Lavalier-two-channel-with-charge-case.
+- Clifton Cameras: £335.00 displayed, awaiting stock, orders accepted, usually 5–7 days. SKU 37891 / MPN SHUMOVEMIC2 / EAN 42406772891; box contains two lavaliers, charging case and USB-C cable; receiver sold separately. VAT basis not explicit on visible page. Imported as active UK New GBP / backorder, row cee333d8-55fe-4536-93f6-a3fe11644744. https://www.cliftoncameras.co.uk/shure-movemic-two-two-channel-wireless-lavalier-microphones.
+
+The previous Shure UK £258.30 row e8a60443-aef8-4e3f-ada1-ca6183292f05 was deactivated as superseded by the current official £221 special offer; retained inactive for price history. The £519 Shure official RRP and £431 Canford ex-VAT evidence for the separate Receiver Kit remain on its own master.
+
+Batch 10 now 35 total, 33 active (17 UK New, 16 UK Used), two inactive. Batches 01–13 now 267 total, 260 active (141 UK New, 119 UK Used), seven inactive. Global LIVE shared_market_evidence 4,812 total, 4,753 active, 59 inactive. TEST, Stripe, schema, master data and valuation logic untouched.

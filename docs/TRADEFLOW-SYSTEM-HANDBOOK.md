@@ -5586,3 +5586,9 @@ LIVE SQL returned `auth.uid() = NULL`; the checkpoint write gate requires authen
 - Sony HDC-3000: no exact sellable model established; continue not to substitute HDC-3500, HDC-3200, HSC-300 or CCU prices.
 
 No evidence rows were inserted or changed. LIVE auth remains `auth.uid() = NULL`; do not bypass the authenticated-owner write gate. No TEST, Stripe, schema, master-product, tenant/customer or valuation data changed. Cumulative evidence remains 236 GBP observations, 232 active (127 UK New, 105 UK Used), four inactive.
+
+## Manual AI response validator contract — 12 November 2026
+
+The LIVE structured response RPC validates the exact catalogue snapshot and requires every finding to include: `product_id`, `manufacturer`, `model`, `catalogue_package_name`, source-observed `package_name`, `package_match`, `evidence_role`, `product_match`, `evidence_type`, `source_name`, `source_url`, `source_kind`, `page_access`, `price_gbp`, `currency`, `item_condition`, `availability`, `observed_at`, `source_excerpt`, `search_queries_used` and `research_notes`. Package matching is checked against the saved LIVE product snapshot; do not use the catalogue package label as the observed source package when the source shows a different bundle. Use `package_not_stated` only when the source does not identify the package. Keep comparison-only sources explicitly labelled `comparison_only`.
+
+A ready prompt created before the 11 November V2 prompt update may not contain the full V2 output contract. Refresh such prompts through the owner-authenticated dashboard before researching, or validate and repair a saved response against the current LIVE RPC contract before submission. Submission only stages review references/candidates; it does not import shared market evidence. Owner JWT is mandatory; never simulate it in SQL.

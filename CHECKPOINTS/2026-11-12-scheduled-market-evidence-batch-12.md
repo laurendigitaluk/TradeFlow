@@ -333,3 +333,14 @@ The existing £789.99 eBay UK used observation (row a92bb4e6-7fb1-436f-bb26-19f4
 Corrected the existing evidence row's master_product_id to the exact HXR-MC2500E master; no duplicate inserted and no price/condition/source data changed. Direct listing: https://www.ebay.co.uk/itm/318668491967. LIVE read-back confirms the row now joins to model HXR-MC2500E / Standard at £789.99 GBP, UK Used, active. The non-E HXR-MC2500 master no longer receives this row.
 
 Batch 12 counts are unchanged: 27 total, 26 active (17 UK New, 9 UK Used), one inactive price-conflict row. Cumulative Batches 03–13 now 246 observations, 243 active (133 UK New, 110 UK Used), three inactive. No master product, schema or valuation logic changed; TEST and Stripe untouched.
+
+
+## Camera-head package scope re-verification — UHC-8300 and HDC-3200 — 12 November 2026
+
+Direct Visual Impact pages were reopened to resolve the remaining package-scope RED VERIFY notes. Existing evidence rows were updated in place; no duplicate observations were inserted:
+- UHC-8300 row 1b7ae87f-0944-44d2-ab66-128d462fe934: exact UHC-8300 8K portable studio camera head, £396,117.94 inc VAT (£330,098.28 ex), available to order but not held in stock. Page explicitly says the complete system is UHC-8300 head + separate UHCU-8300 CCU. In The Box lists manual, cable clamp belt, camera number label, screws and lens mount cap; no CCU, lens or viewfinder. Source https://www.visuals.co.uk/uhc-8300.html.
+- HDC-3200 row 337cdfd8-3967-413b-b61c-7d64c4381df5: exact HDC-3200/DF camera head with dual-filter option, £37,651.84 inc VAT (£31,376.53 ex), available to order but not held in stock. HDCU-3500/3100 CCU or HDCE extension adaptor are separate system components; lens/viewfinder not listed as included. Source https://www.visuals.co.uk/sony-hdc-3200-4k-hd-smpte-fibre-interface.html.
+
+Both observations are explicitly camera-head-only, not complete camera systems. This resolves the package-scope question for their existing Standard masters without changing master catalogue data.
+
+MKS-R3210 remains RED VERIFY: no exact UK GBP source found. Sony UK/Europe pages confirm the 32-button NS-BUS remote panel but no price; Pro-Media/Videolinea prices are EUR; eBay UK £61.75 is for 2 × BKS-R3210, a different model. Do not map that price to MKS-R3210. Batch 12 counts unchanged at 27 total, 26 active (17 UK New, 9 UK Used), one inactive. No master/schema/valuation changes; TEST and Stripe untouched.

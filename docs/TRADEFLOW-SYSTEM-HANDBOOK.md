@@ -1,3 +1,13 @@
+## 12 November 2026 — Batch 07 and cumulative LIVE evidence reconciliation
+
+Batch 07 follow-up added four direct-source rows: Hubsan H501S sold eBay UK £67.65 item price (buyer total £70.63 incl fee, historical); Sony PMW-F55 eBay UK £1,099 used body-only; Manfrotto MVK500XAM Wex £419 new limited stock; Leica M11 Monochrom Park Cameras £8,500 new in stock. Camera Centre Leica M11 was refreshed to £8,450 in stock; CVP Manfrotto £369 inc VAT was rechecked after Wex and remains the latest source; MPB Nikon 18-55mm VR used price refreshed to £37 (16 available, £37–£72); BuzzFlyer DEVO-10 £149.95 was marked Notify Me and inactive because the page has no stock. Batch 07 has 14 total rows, 13 active (9 UK New, 4 UK Used), one inactive.
+
+Cumulative batches 04–13 now contain 127 GBP rows: 126 active (72 UK New, 54 UK Used) and one inactive. Per-batch actual counts: 04=18; 05=18; 06=12; 07=14 total/13 active; 08=8; 09=11; 10=12; 11=10; 12=12; 13=12. The initial 107-row total was correct; earlier per-batch summary values for 10–12 were misallocated. Follow-up additions in 04–07 were +4, +9, +3 and +4 respectively.
+
+Important current behaviour: calculate_buying_item_valuation(uuid,uuid) selects the latest active GBP uk_new row by observed_at then created_at and does not filter availability. UK Used rows are reference-only. A no-stock Notify Me record was made inactive so it cannot remain the current valuation source. Sold-out/backorder UK New observations remain active with explicit status/notes under the existing policy; this can still affect automatic valuation. Do not change valuation logic without an explicit decision. TEST and Stripe remain untouched.
+
+---
+
 ## 12 November 2026 — Batch 06 LIVE evidence follow-up and source-order control
 
 Batch 06 gained three direct-source observations in LIVE shared_market_evidence: Aputure LS 600d Pro / eBay UK £1,225.58 used; Benro GH2N / CameraWorld £342 new; Benro GH2N / Harrison Cameras £299 new. The existing Clifton Cameras GH2N £289 page was re-opened after those two retailer pages and its observed_at refreshed; read-back confirms £289 Clifton is the latest active UK New source for that product. Batch 06 totals 12 active GBP rows (8 uk_new, 4 uk_used).

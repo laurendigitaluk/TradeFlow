@@ -241,3 +241,17 @@ The preceding conversation had already reported this AKASO batch, but those IDs 
 7. Keep uncertain links and use \`RED VERIFY\`; do not invent prices or convert foreign currencies to GBP.
 8. Stage only through the supported authenticated platform-owner RPC. If \`auth.uid()\` is null or owner check fails, do not write directly; create the next checkpoint and PROJECT-MEMORY file instead.
 9. Do not change master products, schema, valuation logic, TEST or Stripe.
+
+
+## Verified UK source follow-up imports — 12 November 2026
+
+Four of the outstanding RED VERIFY candidates were resolved to exact existing LIVE catalogue masters and imported:
+
+1. Sony Alpha A7C / Body Only, master 9d83dbc2-cd8d-4d8b-8307-faafbc94b44a — E-Infinity UK £799.00, new, in stock, 12-month warranty, free shipping and import tax included. Exact black body-only variant, EAN 027242920576; box lists body cap, battery, AC adapter, USB cable and strap; memory card not included. Evidence ID 3a302f1a-67e6-4ed0-8b2b-4c71ed4c7fac. Source https://www.e-infin.com/uk/item/4170/sony_a7c_mirrorless_camera_body_only_%28black%29.
+2. Parrot ANAFI Work / Standard, master 55138955-6661-49f3-828f-0695244ec90a — Sunbelt Sales SKU PF728100AA £1,040.00 GBP ex VAT, new, in stock. Exact kit includes ANAFI, Skycontroller 3, compact shoulder bag, four smart batteries, multi-port USB charger, eight propellers, 16GB SD card, USB-C cables and one-year Pix4Dmodel subscription. The database amount is the source's ex-VAT price; it is not VAT-inclusive. Evidence ID f3b537ef-4eb1-4d3c-93a4-2618f1630b49. Source https://www.sunbeltsales.co.uk/parrot-anafi-work-uav.
+3. AKASO Brave 4 / With SD Bundle, master fa12fe2d-7f85-49a4-a38a-2bb3d5fd5d71 — Desertcart UK £147.22, new, in stock, duties/taxes included, sold by Amazon UK and delivered by Desertcart. Exact Brave 4 model with 64GB U3 microSD; listing also states two 1050mAh batteries and bicycle/helmet accessory kit, so retain the extra-accessory note because it is a richer bundle than the bare With SD variant. Evidence ID bfae9943-66a3-47bc-a76c-a65b0753fc54. Source https://www.desertcart.co.uk/products/538890770-akaso-brave-4-4k30fps-20mp-wifi-action-camera-with-64gb.
+4. Sony Alpha SLT-A68 / Body Only, master 76ae42da-da35-40bf-bb03-7a317303bab0 — MPB SKU 4297151 £279.00, one available, Good, 5,410 shutter count, 12-month warranty and 14-day returns. Slight smoke odour; third-party battery, charger, cap, strap, box and eyecup included; Sony-branded original battery and USB cable not included. UK Used reference only. Evidence ID 3e426a85-bab4-4f84-bd20-8d5d5b599125. Source https://www.mpb.com/en-uk/product/sony-alpha-slt-a68/sku-4297151.
+
+All four rows were read back from LIVE and match their exact master/package IDs. Batch 03 now has four active GBP rows (3 UK New, 1 UK Used). Cumulative Batches 03–13 now contain 246 observations: 243 active (133 UK New, 110 UK Used), three inactive.
+
+The remaining Batch 03 RED VERIFY leads are not being forced into mismatched catalogue entries: foreign-currency-only Casio/Sony sources, the Sony TR50 mixed TR50/TR500 seller title, model/package uncertainties in AKASO V50/Brave variants, the original GoPro HERO generation, Freefly US-only prices, ANAFI charger compatibility, ANAFI Extended bundle mismatch, and BVP-9500WSP vs BVP-9500W suffix difference. Keep those source links and notes for follow-up; do not convert foreign currencies or invent a GBP price. No master product, schema or valuation change; TEST and Stripe untouched.

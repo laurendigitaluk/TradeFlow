@@ -5779,3 +5779,10 @@ Batches 01–13: 267 total, 260 active (141 UK New, 119 UK Used), seven inactive
 Existing Visual Impact evidence was reverified: UHC-8300 £396,117.94 inc VAT is the 8K camera head only; the UHCU-8300 CCU is separate, with lens/viewfinder not included. HDC-3200/DF £37,651.84 inc VAT is the camera head with dual-filter option; HDCU-3500/3100 CCU or HDCE extension adaptor are separate, lens/viewfinder not included. Existing rows 1b7ae87f-0944-44d2-ab66-128d462fe934 and 337cdfd8-3967-413b-b61c-7d64c4381df5 were updated in place; no duplicate or master change. Source links and detailed notes are in the Batch 12 checkpoint.
 
 MKS-R3210 remains without an exact UK GBP price; do not map the BKS-R3210 eBay listing to it. Batch 12 counts unchanged. TEST, Stripe, schema and valuation logic untouched.
+
+
+## 12 November 2026 — Batch 04 Sony FE 85mm GM II Camix evidence
+
+Verified Camix direct UK source for Sony FE 85mm F1.4 GM II Lens Only: £1,325 (from £1,849), £1,104.17 ex VAT, new, in stock, one-year warranty, free UK delivery; exact lens/caps/hood/case package. Camix Ltd company no. 12830683, Batley WF17 9NE. LIVE row e1d4ebb0-ccb2-4a27-b4c7-06b3f9ab32af against existing Lens Only master. Source https://camix.co.uk/product/sony-fe-85mm-f1-4-gm-ii-lens/. Cotswold £1,049 page redirects to homepage and was not imported.
+
+Current Batches 01–13: 268 total, 261 active (142 UK New, 119 UK Used), seven inactive. Global LIVE: 4,813 total, 4,754 active, 59 inactive. TEST, Stripe, schema, master data and valuation logic untouched.

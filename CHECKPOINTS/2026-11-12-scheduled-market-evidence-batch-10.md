@@ -66,8 +66,22 @@ No price was invented. No non-GBP price was converted to GBP. Where no reliable 
 | 17 | 94bb730e-b137-4778-b335-173aca953d99 | Sony FE 28-135mm F4 G OSS — Standard | Sony UK page shows £1,799 sale / £1,999 original in bundle-offer section. Cotswold £1,499. Park £1,999. Camera Centre £1,999. MPB used £514-£1,099. eBay Japan listing £1,152.87. |
 | 18 | 95c66087-a0b7-4682-b96c-705706295858 | Sony PDW-U1 — Standard | eBay used £155.58; £208.63; £1,459.95. Google Shopping cards also showed £114 Visual Impact, £299 eBay and £334.12 VCRShop, not directly verified. |
 | 19 | 9709e49e-c48a-41b8-abcd-cbf4599d09e9 | Shure MoveMic Two Receiver Kit — MoveMic Two Receiver Kit | Shure official RRP £519.00; official search result showed a £311.40 offer but the opened page shows £519.00. DigiBroadcast £496.80 inc VAT / £414 ex; Canford £517.20 inc / £431 ex; Leisuretec £517.20 inc; Bax search/page lead £439 inc (Shopping card £419); Clifton £474. |
+| 20 | 992a246f-db39-44e6-9c07-c25a82175e98 | Sony HDC3100 — Standard Package | £25,066.80 inc VAT (£20,889.00 ex VAT) at Visual Impact; available to order, not currently held in stock. |
 
 ## Detailed product records
+
+### 20. Sony HDC3100 — Standard Package
+- **LIVE master product ID:** 992a246f-db39-44e6-9c07-c25a82175e98
+- **Catalogue category:** Video Cameras / Cinema Camera
+- **Research date:** 2026-11-12
+- **Observed GBP price:** £25,066.80 inc VAT (£20,889.00 ex VAT) at Visual Impact.
+- **Condition:** New listing.
+- **Availability:** Available to order; Visual Impact says it is not currently held in stock and must be ordered from the supplier.
+- **Notes:** RED VERIFY — exact HDC-3100 SKU and price confirmed on the opened Visual Impact page. The page's In The Box list only names the operating instructions, cable clamp belt, screws and labels; it does not list a CCU, lens or viewfinder. The description says the camera connects to an HDCU-3100/HDCU-2000 series CCU. Confirm whether the catalogue Standard Package is camera head only and whether any CCU/viewfinder/lens are excluded. Do not assume the £25,066.80 includes the complete camera channel.
+- **Google Shopping:** Exact HDC-3100 result appeared at Visual Impact for £25,066.80. Merchant page was opened and verified; Shopping result and direct page align.
+- **Google Shopping query:** https://www.google.com/search?tbm=shop&q=Sony%20HDC3100%20Standard%20Package%20UK
+- **Sources opened / retained:** [Visual Impact — Sony HDC-3100, £25,066.80 inc VAT / £20,889 ex VAT, available to order](https://www.visuals.co.uk/hdc-3100-camera.html)
+
 
 ### 1. Sony HDC-5500 — Standard
 - **LIVE master product ID:** 75fabe8a-7cd8-4419-9cc3-235443d881a3

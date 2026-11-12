@@ -328,3 +328,8 @@ Exact Sony HDC-3100 camera head, Visual Impact SKU HDC-3100, £25,066.80 inc VAT
 ## 12 November 2026 — Cumulative count correction after duplicate cleanup
 
 HDC-3100 remains active camera-head-only evidence (LIVE row 52a8170b-9521-41f0-9f64-6d172408377e). After two exact duplicate captures in Batch 13 were deactivated, cumulative Batches 01–13 are 263 total, 257 active (139 UK New, 118 UK Used), six inactive. Batch 10 remains 31 total, 30 active (15 new, 15 used), one inactive. No TEST, Stripe, schema, master or valuation changes.
+
+
+## 12 November 2026 — Sony HDC1500R exact used camera channel
+
+Imported exact KitPlus/N.I. Broadcast UK listing for one Sony HDC1500R fibre camera channel at £8,650 used. Includes HDC1500R camera head, HDCU-1000 full-rack CCU, HDVF20A 2-inch viewfinder and RCP750; RCP1500 and 7-inch viewfinder cost extra; lens excluded. Listing published March 2025 but remains in dealer current listings; seller says listings are in stock, buyer to confirm current terms. Matched existing LIVE HDC1500R / Standard Package master 90917fa8-dbc3-4aed-9650-e73d8e35692f; row afd9e40d-fabb-4e28-b797-2e2b8f877948. Source and notes in Batch 10 checkpoint. Batch 10 now 32 total, 31 active (15 new, 16 used), one inactive. Batches 01–13: 264 total, 258 active (139 UK New, 119 UK Used), six inactive. Global LIVE: 4,809 total, 4,751 active, 58 inactive. No master/schema/valuation changes; TEST and Stripe untouched.

@@ -310,6 +310,17 @@ Existing observations were also rechecked and corrected:
 
 Batch 07 now has **14 database rows: 13 active (9 UK New, 4 UK Used) and one inactive UK New Notify Me row; all 14 are GBP**. Used observations remain reference-only. The Hubsan sold listing is historical, not current stock; the PMW-F55 is body-only and must not be compared with a complete accessory package.
 
-Other leads remain RED VERIFY and were not promoted: Hubsan range-extender and two-drone lots are different packages; Gumtree H501S returned 410; Sony SRG-XB25 white suffix/stock/price conflict remains unresolved; Nikon 18-55 Clifton page returned 404; Sony HXC-D70 includes a CCU package; PMW-F55 ES Broadcast page returned 503 and package/condition differs; RedDot Cameras' Leica M11 Monochrom product page displays £6,916.67 while its search snippet says £8,300 inc VAT and the page's VAT wording conflicts, so it was not imported; Park Cameras' Manfrotto page displays £299 while its price-comparison listing says £419, so it remains RED VERIFY. No foreign-currency or package-mismatch leads were promoted as exact new UK evidence.
+Other leads remain RED VERIFY and were not promoted: Hubsan range-extender and two-drone lots are different packages; Gumtree H501S returned 410; Sony SRG-XB25 white suffix/stock/price conflict remains unresolved; Nikon 18-55 Clifton page returned 404; Sony HXC-D70 includes a CCU package; PMW-F55 ES Broadcast page returned 503 and package/condition differs; RedDot Cameras' Leica M11 Monochrom VAT discrepancy has since been resolved: £8,300 inc VAT / £6,916.67 ex VAT, last items in stock; the exact L20208 body observation has been imported; Park Cameras' Manfrotto page displays £299 while its price-comparison listing says £419, so it remains RED VERIFY. No foreign-currency or package-mismatch leads were promoted as exact new UK evidence.
 
 LIVE calculate_buying_item_valuation(uuid,uuid) selects the latest active GBP uk_new observation by observed_at then created_at. It does not filter by availability. UK Used is not selected. The BuzzFlyer Notify Me record was therefore deactivated to prevent a stale unobtainable price from remaining active; sold_out/backorder UK New observations from other batches remain active with their explicit status notes, as already recorded. No schema or valuation code was changed.
+
+
+## 8. Further RED VERIFY follow-up — 12 November 2026
+
+One additional exact UK New observation was imported into LIVE and read back:
+
+| Product | Source | Price | Verification |
+|---|---|---:|---|
+| Leica M11 Monochrom Body (stock code L20208) | RedDot Cameras | £8,300.00 inc VAT (£6,916.67 ex VAT) | Direct UK product page identifies the exact M11 Monochrom body, says Last items in stock / Last product, and displays both VAT-inclusive and VAT-exclusive prices. The apparent discrepancy was only VAT presentation. [Source](https://www.reddotcameras.co.uk/m-bodies/18839-leica-m11-monochrom-body.html) |
+
+The RedDot observation is active UK New evidence and is separate from the existing Camera Centre £8,450 and Park Cameras £8,500 records. Batch 07 now has 15 rows: 14 active (10 UK New, 4 UK Used) and one inactive UK New Notify Me record. UK Used remains reference-only and excluded from automatic valuation. No valuation logic, schema, TEST or Stripe data was changed.

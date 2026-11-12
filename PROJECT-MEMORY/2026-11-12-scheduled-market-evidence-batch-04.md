@@ -55,3 +55,10 @@ No master products, schema, valuation logic or automatic valuation prices were c
 ## Next scheduled run
 
 Read batch 04 checkpoint and this project-memory file first. Exclude these 20 product IDs and all IDs from earlier scheduled checkpoints. Exclude products covered by outstanding LIVE queue candidates and outstanding manual AI prompts. Recheck evidence and candidate status immediately before researching the next 20; use no fixed OFFSET. If owner auth remains null or owner check false, record the next batch in new checkpoint and project-memory files without writing directly to the queue.
+
+
+## 12 November 2026 — Batch 04 RED VERIFY follow-up
+
+Four additional exact UK GBP used-market observations were imported and read back from LIVE shared_market_evidence: Olympus VF-4 / MPB £146; Nikon AF-S DX 18-200mm VR II / eBay Fivercam £170.10; Nikon AF-S DX 18-200mm VR II / London Camera Exchange £149.99; RØDE Wireless GO II dual-channel / eBay DR Beauties £99.99 (out of stock, historical reference). All four use uk_used and are reference-only. The LIVE valuation function was inspected: shared automatic valuation selects GBP uk_new evidence only, so these used rows do not affect automatic valuation.
+
+Batch 04 now has 18 active evidence rows (8 UK New, 10 UK Used), all GBP. Exact URLs, conditions and notes are in the checkpoint. The Cotswold low-price offer, Production Gear stock conflict, Ubuy landed-cost uncertainty, on-order DSR-PD175P and unresolved package/variant matches remain RED VERIFY and were not promoted. No master data, schema, valuation logic, TEST or Stripe changes.

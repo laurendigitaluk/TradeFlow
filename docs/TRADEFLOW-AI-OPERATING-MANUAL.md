@@ -6248,3 +6248,10 @@ Batch 03 now has four LIVE verified source rows: Sony Alpha A7C Body Only £799 
 A previous HXR-MC2500E £789.99 used observation was incorrectly attached to the non-E HXR-MC2500 master. The exact HXR-MC2500E / Standard master already exists; the existing row was reassigned to it after verifying current eBay item specifics. Evidence row a92bb4e6-7fb1-436f-bb26-19f4795ed61f; no duplicate or price change. Full details are in the Batch 12 checkpoint.
 
 Current Batches 03–13: 246 observations, 243 active (133 UK New, 110 UK Used), three inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — AKASO V50 X With SD current-source match
+
+For AKASO V50 X / With SD Bundle master d763014a-70e2-4a0e-a7ce-bf8e0afdb0e1, a direct eBay UK listing was verified at £153.99, new, two available / one sold. Listing title and item specifics confirm V50 X-U3 and 64GB microSD; seller description confirms V50 X and two 1350mAh batteries. The existing master was used; no new catalogue product created. LIVE evidence row 8c8b32c5-e38d-4c5c-83f9-a0af9ee3aa3d was read back successfully. Source: https://www.ebay.co.uk/itm/326424455596. The YPC £109.99 lead is a dated 22 October snapshot only.
+
+Current Batches 01–13: 255 observations, 252 active (137 UK New, 115 UK Used), three inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.

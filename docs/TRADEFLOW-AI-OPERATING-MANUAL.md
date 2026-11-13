@@ -6651,3 +6651,14 @@ TradeFlow LIVE only. Batch 17 reviewed 20 active Drone master products that stil
 Eighteen held without import: BetaFPV Pavo20 Pocket, Pavo30, Pavo35; DJI Matrice 350 RTK; FIMI A3, X6, X8 Pro, X8 SE 2022, Mi Drone 1080P, Mitu Mini Drone, X8 Mini, X8 Mini V2, X8 Pro 2025, X8 SE, X8 SE 2022 V2, X8 Tele, X8T V384; Freefly Alta X. No exact UK GBP/package match was sufficiently established, or source pages had ambiguous receiver/VTX/package selection, regional origin, or no reliable UK sale price.
 
 LIVE read-back after batch 17: shared_market_evidence 4,949 total rows / 4,887 active; 2,400 active UK New and 2,487 active UK Used. Drones: 540 active products; 311 lack active UK New evidence, 351 lack active UK Used evidence, and 190 have no active evidence. UK Used remains reference-only and does not affect automatic valuation. No master catalogue products/packages changed. TEST and Stripe untouched. Dashboard checkpoint recorded in platform_ai_agent_messages, thread tradeflow-research, pass 2 batch 17.
+
+
+## 13 November 2026 — Free Business Tools page (LIVE production)
+
+Added subscriber-only `free-tools.html`, linked from production subscriber dashboard navigation. It uses the existing `subscriber-auth.js` and `subscriber-tenant-context.js`; no new authentication path or customer data access is introduced.
+
+Available browser-local tools: profit/margin calculator; VAT calculator; factual product listing template builder; manual canvas logo/banner designer with PNG download; printable invoice/receipt template; SKU/stock label maker. All calculations, graphic rendering and document generation execute in the browser. Inputs are not sent to AI services or stored in Supabase.
+
+The canvas designer is a manual text/colour layout tool, not AI image generation. TradeFlow AI Image Studio is shown as planned/unavailable until local AI hardware is upgraded and costs can be controlled. No OpenAI or other AI API, external image service, database object, RLS, RPC, Edge Function, Storage bucket, tenant data, Stripe or billing setting changed. TEST and Stripe remain untouched.
+
+Verification: browser JavaScript syntax parse passed before commit. Production browser verification remains required for auth, active tenant identity, calculations, PNG download, print layouts, mobile layout and sign-out.

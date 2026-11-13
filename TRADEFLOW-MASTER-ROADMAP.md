@@ -1292,3 +1292,15 @@ A customer may submit multiple products within one buying request. The request i
 5. Check per-item shipping, receipt, inspection, final offer, payment and inventory for accepted items; confirm refused items do not advance.
 6. Test error handling if one per-item submission fails. Replace sequential submissions with an atomic batch RPC before treating bulk submission as transaction-safe.
 7. Repeat visual and regression checks on TEST before confirming LIVE behavior. Do not use LIVE customer transactions as test fixtures.
+
+
+## 13 November 2026 — Free Business Tools (production branch)
+
+- Entry: `subscriber-dashboard.html` → Tools → Free Business Tools.
+- Page/style/logic: `free-tools.html`, `free-tools.css`, `free-tools.js`.
+- Auth boundary: existing `subscriber-auth.js`; tenant context: existing `subscriber-tenant-context.js`.
+- Page awaits the established subscriber auth and tenant-context promises before displaying active business identity. It does not read customer/Test Lab session state.
+- Profit/margin and VAT calculations, listing template, canvas brand graphic, invoice/receipt and SKU label generation run locally in the browser. PNG export uses canvas; print uses browser print/save-to-PDF. No Supabase REST/RPC or Storage calls and no persistence.
+- AI Image Studio is a planned placeholder only; no AI API or paid image service is called. Manual canvas brand design is not AI.
+- No DB/schema/RLS/RPC/Edge Function/Storage/billing/Stripe changes. No additional AI or storage cost. TEST remains untouched.
+- JS syntax parsed before commit. Browser verification after deployment remains open: auth gate, tenant identity, calculators, PNG export, print layouts, mobile and sign-out.

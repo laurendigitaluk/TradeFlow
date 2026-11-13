@@ -6694,3 +6694,23 @@ The active, customer-visible Drone scope includes both `Drones` and `Drone` main
 UK New remains the only automatic valuation evidence. UK Used remains inspection-only. Use UK sources and GBP; prefer exact model/package matches and disclose seller location, condition, package differences, extras and whether the listing is current or sold. Confirmed discontinued variants must be labelled Discontinued in UK New evidence; retain a historical price only where a reliable UK listed price exists. Never invent a price or insert £0 to force a discontinued status. No catalogue master/package rows, schema, valuation logic, RLS, RPCs, Edge Functions, tenant/customer/transaction data, TEST, Stripe or deployments were changed.
 
 Full checkpoint: `CHECKPOINTS/2026-11-13-live-evidence-review-3d-printers-and-drone-batch-39.md`.
+
+
+## 13 November 2026 — 3D-printer UK Used evidence review 02
+
+A 20-product gap review produced six additional UK Used observations in TradeFlow LIVE, each inserted into `public.shared_market_evidence` and read back successfully:
+
+- Anycubic Kobra S1, Standard Printer — £220.00, active Gumtree UK listing, Lewisham, London. Seller says used only a few times, original packaging, printer only/no combo; condition “As good as new”. Evidence `a8a1127b-4499-4735-9901-f3ffcd91e66a`.
+- Elegoo Centauri Carbon 2, CANVAS Combo — £230.00, ELEGOO UK Pre-Owned, Good Used, Add to Cart. Official page says inspected, cleaned and repaired to full working order, with possible cosmetic wear; pre-owned machines carry no warranty. Evidence `2ad00f2c-be15-477b-86bd-24d47a0d275b`.
+- Elegoo Neptune 4 Pro, Standard Printer — £138.80, eBay UK sold 11 July 2026, Lichfield. Displayed £144.14 included £5.34 Buyer Protection fee; stored item amount excludes the fee. Evidence `6fd22ef7-3ccc-49d4-b296-8d47b9c997ae`.
+- Flashforge Creator 5 Pro, Standard Printer — £560.00, eBay UK sold 11 August 2026, Skipton. Exact model and four independent extruders confirmed. Displayed £578.05 included £18.05 Buyer Protection fee; stored item amount excludes the fee. Evidence `19add863-304c-43b4-b0c0-2e9019ae1055`.
+- FLSUN T1-PRO, Standard Printer — £200.00, eBay UK sold 26 October 2026, Slough. Displayed £208.77 included £8.77 Buyer Protection fee; Best Offer accepted, so the accepted amount may differ. Evidence `a7cc0226-91d1-47c5-970f-2904d64b3166`.
+- Bambu Lab A1 Mini, AMS Lite Combo — £211.06, eBay UK auction sold 16 September 2026, Chertsey, 8 bids. Displayed £218.68 included £7.62 Buyer Protection fee; stored item amount excludes the fee. Evidence `53f03b7c-ed14-4a6c-8d3e-80d07d00a7d2`.
+
+The other candidates were held where the exact package/condition could not be verified, the listing had ended or become inaccessible, or no exact UK listing was found. Examples include Kobra S1 ACE Pro versus ACE 2 Pro mismatch, generic Kobra X item specifics, ended Creator 5 listing, inaccessible H2S Gumtree listing, sold-out Vector 3D listing, and an ended Kobra 4 auction.
+
+Current active + customer-visible 3D-printer snapshot: 199 products; 176 UK New only; 22 with both UK New and UK Used; 1 UK Used only; 0 with neither; 176 missing UK Used. This may include parallel worker imports. Across the previous 3D review and this review, 10 UK Used observations now cover 9 unique products.
+
+UK Used remains inspection/reference only and never affects automatic valuation; UK New remains the only automatic valuation evidence. Use UK GBP and UK sources, exact package matching, and disclose seller location, condition, fee treatment, sold/current status and uncertainty. Do not treat buyer-protection-inclusive totals as underlying item prices; disclose when Best Offer accepted amount is unknown. No schema, catalogue master, valuation, RLS, RPC, Edge Function, TEST, Stripe or deployment changes were made.
+
+Full checkpoint: `CHECKPOINTS/2026-11-13-live-3d-printer-uk-used-review-02.md`.

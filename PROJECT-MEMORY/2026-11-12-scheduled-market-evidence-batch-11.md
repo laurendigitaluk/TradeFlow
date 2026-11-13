@@ -59,3 +59,8 @@ Batch 11 now has 29 active GBP rows: 8 UK New and 21 UK Used. All seven new reco
 Three direct UK used offers were imported and read back against LIVE Nikon D60 master d52bf262-7a5b-407c-8066-c548cfc06b24: MPB SKU 4158743 £52 Good (flash fault, LCD scratches, 5,777 shutter count, charger/battery, 12-month warranty); MPB SKU 4174829 £67 Excellent (minor LCD dust/marks, 13,533 shutter count, charger/battery, 12-month warranty); LCE item 259873 £59.99 Good (Southampton, in store, two batteries, charger, box, strap, guides, six-month warranty). Source URLs and exact row IDs are in CHECKPOINTS/2026-11-12-scheduled-market-evidence-batch-11.md. All three are active UK Used GBP comparison-only observations; faults and condition are retained. No valuation effect.
 
 Batch 11 now 32 active (8 UK New, 24 UK Used). Cumulative Batches 04–13 now 240 rows, 236 active (128 UK New, 108 UK Used), four inactive. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — NIKKOR Z 50mm f/1.4 retailer comparison added
+
+Wilkinson Cameras direct page confirms exact NIKKOR Z 50mm f/1.4, MPN JMA004DA / EAN 4960759915979, £459, new and in stock. Imported/read back as evidence 44ddeb36-b25c-4d1f-941f-5ca673c88f90 against existing master beb389f1-c53e-4166-9cf6-2b07148df339. The search snippet showed a conflicting lower amount; direct page was authoritative. Nikon UK direct page still shows £449 in stock; that existing record remains unchanged. Batch 11 now 33 active (9 UK New, 24 UK Used). No master or valuation changes.

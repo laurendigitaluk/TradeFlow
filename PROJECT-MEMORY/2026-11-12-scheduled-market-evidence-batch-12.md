@@ -92,3 +92,8 @@ MKS-R3210 remains without exact UK GBP evidence; Sony official pages have no pri
 ## 13 November 2026 — HDCE-TX30 second source and MKS-R3210 disposition
 
 Added CVP exact Sony HDCE-TX30 at £11,347.13 inc VAT (£9,455.94 ex), new, available for backorder with 1–2 week typical delivery and one-year warranty. Evidence 0dc2b59c-fbc4-4eb8-9da5-cc1d2a5f7247. This corroborates Visual Impact's direct price/status. MKS-R3210 remains RED VERIFY: exact 32-button routing panel is confirmed, but no UK GBP retail price; 2x BKS-R3210 at £61.75 is the wrong model/quantity and excluded. Batch 12 now 28 total, 27 active (18 New, 9 Used), one inactive.
+
+
+## 13 November 2026 — HDC-3200 base and /DF variant price separation
+
+Added Visual Impact base SKU HDC-3200 at £35,588.72 inc VAT (£29,657.27 ex), new, available to order but not held in stock, camera head only. Evidence 0741e38c-7347-475a-8fea-21b0b99809d1. Existing HDC-3200/DF at £37,651.84 inc VAT remains a separate dual-filter configuration. Do not merge or overwrite variant evidence. Search result supplied price/SKU/availability; direct page open returned cache miss. Batch 12 now 29 total, 28 active (19 New, 9 Used), one inactive. MKS-R3210 remains unpriced/RED VERIFY; BKS-R3210 eBay result is not a match.

@@ -6151,3 +6151,19 @@ Current active + customer-visible 3D-printer snapshot: 199 products; 170 UK New 
 UK Used remains inspection/reference only and never affects automatic valuation; UK New remains the only automatic valuation evidence. Use UK GBP and UK sources, exact package match, and disclose location, condition, print hours, missing accessories, package contents and current/sold status. Asking prices are not completed-sale prices. No catalogue master, schema, valuation, RLS, RPC, Edge Function, TEST, Stripe or deployment changes were made.
 
 Full checkpoint: `CHECKPOINTS/2026-11-13-live-creality-k2-uk-used-review-01.md`.
+
+
+## 13 November 2026 — 3D-printer UK Used evidence continuation
+
+Two additional UK Used observations were inserted into LIVE `public.shared_market_evidence` and read back successfully after reviewing the next 25 active/customer-visible 3D-printer product/package candidates:
+
+- Bambu Lab P1S — AMS Combo: £400.00 GBP, Gumtree UK active listing, Snettisham, Norfolk; seller says barely used, excellent condition and working perfectly; standard AMS unit included. Asking price, open to offers, no print-hour count. Evidence `3d9945b0-7a84-464b-ac58-c55163c0616a`, source key `gumtree:1804851357`.
+- Flashforge AD5X — Standard Printer: £300.00 GBP, Gumtree UK active listing, Leicester; seller reports more than 900 operating hours and good condition. Listing includes enclosure, LED, camera, cool plate, textured plate (one side scratched), extra nozzle, rear poop bin and original box; these extras are not part of the standard package and have no separate values. Asking price, open to offers. Evidence `da99d21c-2831-4f18-b8dd-7d818b3e6851`, source key `gumtree:1803371377`.
+
+Other candidate results were held rather than forced into evidence: Bambu H2D listings included AMS bundles and did not match the Standard Printer package; H2D combo products already had used evidence; P2S result was AMS 2 Pro rather than the Standard Printer; Ender-3 V3 SE Gumtree detail pages returned HTTP 410; Dremel 3D45 and Sovol SV07 had no exact active/customer-visible master product row in this 3D catalogue scope; an ELEGOO Mars 4 Ultra result was brand new, not used. No master catalogue rows were created or modified.
+
+Current LIVE 3D scope snapshot: 199 active/customer-visible products; 198 with UK New; 30 with UK Used; 169 UK New only; 1 UK Used only; 0 neither; 169 missing UK Used. This snapshot may include parallel worker activity.
+
+UK Used remains reference/inspection only and never affects automatic valuation; UK New remains the only automatic valuation evidence. UK GBP and UK sources only; exact model/package match; disclose condition, location, print hours, extras, listing status and asking-versus-sold uncertainty. No schema, valuation, RLS, RPC, Edge Function, TEST, Stripe or deployment changes.
+
+Supabase structured project-memory message: `1469764a-808e-4f68-bcad-d097e03614d6`.

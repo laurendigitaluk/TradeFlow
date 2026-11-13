@@ -4694,3 +4694,17 @@ Other sources reviewed for context: MPB has multiple individually graded Mini 4 
 Coverage remains 541 active customer-visible drone products: 173 neither, 143 UK New only, 118 UK Used only, 107 both; missing UK New 291; missing UK Used 316. Both additions deepen Used evidence on a product already covered, so coverage counts do not change.
 
 UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows, valuation logic, schema, RLS or functions changed.
+
+
+## 13 November 2026 — Retrospective UK Used nearest-match review 11
+
+Four new UK Used GBP observations were inserted into LIVE and verified:
+
+- Parrot ANAFI standard package — £150, Gumtree, Neasden, London. Seller describes a fully functional kit with Skycontroller 3, FPV goggles, hard case, two batteries and spare propellers. FPV goggles/accessories are additional bundle contents. Evidence `6e7832fd-35a0-46aa-864b-6d0ffd7492bc`; listing https://www.gumtree.com/p/drones/parrot-anafi-drone-with-controller-and-fpv-goggles/1804442304.
+- Parrot ANAFI standard package — £250, Gumtree, Erith, London. Two batteries and carry case; original controller is faulty and needs replacement. The drone is described as working, but this is not a fully working ready-to-fly package. Evidence `4e7d0bb7-ae10-4f30-ae28-e467e7fe57fc`; listing https://www.gumtree.com/p/drones/parrot-anafi-drone-with-controller-and-batteries-good-condition/1804014774.
+- Parrot ANAFI Thermal — £1,100, Gumtree, Rugby, Warwickshire. Exact thermal model; Skycontroller 3, three original batteries (two recently unboxed, third about 1.5 hours flight time), hard case, powered USB hub, car charger, cables, spare blades and unopened OEM tool kit. Seller states tested working. Evidence `3deca4bf-b0a9-4270-bd3b-7031d4832ba5`; listing https://www.gumtree.com/p/drones/thermal-drone-parrot-anafi-very-good-condition-hardly-flown/1804341548.
+- Parrot ANAFI standard package — £370, eBay UK, seller located Chester-le-Street, UK; sold 9 October 2026. Displayed total £381.75 included £11.75 Buyer Protection, subtracted to record £370 item price. Listing title states controller, battery and carry case; other contents not established. Evidence `77c7ea1e-2b7a-476b-a514-86b677758521`; listing https://www.ebay.co.uk/itm/158338254007.
+
+Coverage remains 541 active customer-visible drone products: 173 neither, 143 UK New only, 118 UK Used only, 107 both; missing UK New 291; missing UK Used 316. Counts are unchanged because these observations deepen evidence for Parrot models already represented in Used research.
+
+UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows, valuation logic, schema, RLS or functions changed.

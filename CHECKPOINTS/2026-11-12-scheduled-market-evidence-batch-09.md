@@ -459,3 +459,11 @@ Two additional direct UK retailer records were imported into LIVE and read back 
 - HD PENTAX-FA 31mm f/1.8 Limited, black — Park Cameras £1,099.00, new, listed; product code 5241030E. Direct page shows price, Add to Basket and delivery information but requires product options and store selection before basket; stock is not confirmed. Evidence ID 9cfa3efe-4363-4269-8062-a0a3e7527ead. [Direct source](https://www.parkcameras.com/shop/hd-pentax-fa-31mm-f18-limited-lens-black_5241030e). Existing Clifton £999 awaiting-stock observation remains active and unchanged.
 
 Batch 09 now has 27 active GBP rows (14 UK New, 13 UK Used). This supersedes the earlier 25-row count in this checkpoint. UK Used remains reference-only. Park availability is recorded as listed, not in_stock. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — Nikon F55 additional UK used retailer source
+
+One additional exact Nikon F55 body-only UK Used observation was imported into LIVE against master 66fc5073-932f-4c70-95f4-35012d6f7b1a:
+- Bristol Cameras — £24.00, used Good, in stock, silver body only (no lens), supplied with 2x CR2 batteries and body cap, 3-month guarantee. Evidence ID 39529bb2-e229-4a4d-a739-4a198222bf82. [Direct source](https://www.bristolcameras.co.uk/product/nikon-f55-body-only-35mm-film-camera-used/)
+
+Search result exposed full product details and UK stock; opening the direct page returned HTTP 520. This retrieval limitation is retained in the evidence notes for dashboard click-through recheck. Existing eBay ColinsCameras £28.60 body-only source remains active, with its unusually high £35 shipping separately flagged. Batch 09 now has 28 active GBP rows (14 UK New, 14 UK Used), superseding earlier 27-row total. UK Used remains reference-only. No master/schema/valuation changes; TEST and Stripe untouched.

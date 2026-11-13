@@ -3145,3 +3145,20 @@ LIVE Drone category verification after Batch 19: 541 active customer-visible pro
 Environment boundary: LIVE was updated and read back. TEST, Stripe, automatic valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments were not changed. UK Used evidence remains reference-only and must not influence automatic valuation.
 
 The next batch is Batch 20. Its initial 20-product selection is recorded in the Batch 19 checkpoint. Continue in batches of 20, exclude already reviewed product IDs from second-pass Batches 16–19, and keep Pokémon cards excluded.
+
+
+## 13 November 2026 — Drone second-pass research Batch 20
+
+Batch 20 reviewed 20 previously unreviewed active Drone masters from the LIVE zero-evidence pool. No observation met the strict UK-market source and exact-product criteria, so no evidence was inserted and no catalogue products/packages were changed.
+
+Key exclusions:
+- iFlight's UK-localised storefront displayed GBP and stated UK VAT/duties are included, but also stated that products ship from Austria. This pass did not classify it as a UK domestic seller or import those observations.
+- Parrot ANAFI FPV UK pages (Currys Business and Drones Direct) were unavailable/out of stock or no longer available, with no current usable price.
+- Parrot ANAFI USA standard bundle pricing was not treated as ANAFI USA GOV or MIL evidence. UKR product sources were quote-only or technical/specification pages; battery/service prices were not drone prices.
+- Parrot Mambo Fly marketplace results were active listings, not completed sales. Other legacy Parrot model searches did not produce direct qualifying UK offers.
+- Potensic A20 marketplace result was stale/cached and not a reliable current offer; A20 Mini's three-battery listing was out of stock and package-mismatched. No exact current UK A30 offer was confirmed.
+- No used observation qualified as a direct UK completed sale with exact model/package and reliable seller.
+
+Post-research LIVE metrics were unchanged: 541 active visible Drone products; 184 with no active evidence; 306 missing UK New; 351 missing UK Used; 68 with both evidence types. No evidence write occurred in Batch 20. TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments were untouched. Pokémon cards remain excluded.
+
+Batch 21 candidate list is recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-20.md`. It consists of the next 20 zero-evidence Potensic masters, selected after excluding all second-pass Batches 16–20. Recheck evidence and exact package identity before writing.

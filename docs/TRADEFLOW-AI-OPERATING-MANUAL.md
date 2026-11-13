@@ -6446,3 +6446,10 @@ Latest Batches 09–13: 173 total, 168 active (84 UK New, 84 UK Used), five inac
 Added a Colins Cameras Sony HVR-V1E used Very Good £260 observation in Batch 13. The listing explicitly says sold out; record availability as out_of_stock and do not present it as purchasable stock. Search results exposed exact product/price/package details, but the direct page open returned cache miss; retain that retrieval limitation with the source URL. UK Used remains excluded from automatic buying valuation.
 
 Latest Batches 09–13: 174 total, 169 active (84 UK New, 85 UK Used), five inactive. Latest Batches 01–13: 282 total, 274 active (147 UK New, 127 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,827 total, 4,765 active, 62 inactive. No schema, master catalogue, valuation logic, TEST or Stripe changes.
+
+
+## 13 November 2026 — exact Sony FE 100-400 model identity
+
+Added a direct ProAV UK source for first-generation Sony FE 100-400mm F4.5-5.6 GM OSS, exact SEL100400GM.SYX / EAN 4548736058422, £2,149 inc VAT and one in stock. Keep it separate from the newer SEL100400MCW constant-F4.5 lens. Evidence ID 40d60e8f-0f40-44ff-baa5-e29121b4a916.
+
+Latest Batches 09–13: 175 total, 170 active (85 UK New, 85 UK Used), five inactive. Latest Batches 01–13: 283 total, 275 active (148 UK New, 127 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,828 total, 4,766 active, 62 inactive. No schema, master catalogue, valuation logic, TEST or Stripe changes.

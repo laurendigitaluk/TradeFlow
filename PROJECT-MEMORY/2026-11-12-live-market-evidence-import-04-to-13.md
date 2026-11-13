@@ -411,3 +411,8 @@ Added two LCE Panasonic Lumix DC-FZ1000 II records at £699.99: Bristol item 145
 ## 13 November 2026 — Batch 11 Pentax price comparison added
 
 Added Camera Centre UK exact black Pentax HD PENTAX-D FA 100mm f/2.8 ED AW Macro Lens at £699, MPN 20320 / SKU YA1728:27003679. Evidence 6bd70951-d492-4512-b488-9ae6fe384bec. Its current deals page marks the product out of stock, so preserve availability out_of_stock; do not present it as available to buy. Existing Carmarthen £699.99 with two in stock remains active. Batch 11 now 37 total, 37 active (10 New, 27 Used). Batches 09–13 now 180 total, 175 active (87 New, 88 Used), five inactive. Batches 01–13 now 288 total, 280 active (150 New, 130 Used), eight inactive. Global LIVE 4,833 total, 4,771 active, 62 inactive. UK Used remains reference-only; TEST and Stripe untouched.
+
+
+## 13 November 2026 — HDC-3100 CVP source added with exact master mapping
+
+Added CVP exact Sony HDC-3100 System Camera for Fiber Operation at £24,757.37 inc VAT (£20,631.14 ex), new, backorder, typical 1–2 weeks, 2 Years PrimeSupportPro warranty. Camera body only. Evidence b2e3898d-3df4-4332-817c-e9537fc64cf3. Mapped to exact Studio/Broadcast master 5882070e-3add-4bfa-b477-9a516f676333. The earlier Visual Impact evidence is on a separate HDC3100 Cinema Camera branch master; leave it untouched and do not merge automatically. Batch 10 now 37 total, 35 active (19 New, 16 Used), two inactive. Batches 09–13 now 181 total, 176 active (88 New, 88 Used), five inactive. Batches 01–13 now 289 total, 281 active (151 New, 130 Used), eight inactive. Global LIVE 4,834 total, 4,772 active, 62 inactive. UK Used remains reference-only; TEST and Stripe untouched.

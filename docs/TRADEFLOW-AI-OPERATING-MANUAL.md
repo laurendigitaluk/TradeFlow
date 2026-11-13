@@ -6474,3 +6474,10 @@ Latest Batches 09–13: 177 total, 172 active (86 UK New, 86 UK Used), five inac
 Added two London Camera Exchange Panasonic Lumix DC-FZ1000 II used listings at £699.99: Bristol item 145185 Excellent and boxed; Bath item 139564 Good. Both were listed in store now with six-month warranty. The search results contained the direct item details, but opening the source URLs returned cache miss; preserve this retrieval limitation and source links. Keep both distinct from Kamerastore's £709 unit with zoom-lever fault. UK Used remains excluded from automatic buying valuation.
 
 Latest Batches 09–13: 179 total, 174 active (86 UK New, 88 UK Used), five inactive. Latest Batches 01–13: 287 total, 279 active (149 New, 130 Used), eight inactive. Global LIVE shared_market_evidence: 4,832 total, 4,770 active, 62 inactive. No schema, master catalogue, valuation logic, TEST or Stripe changes.
+
+
+## 13 November 2026 — sold-out UK New price reference handling
+
+Added Camera Centre UK's exact black Pentax HD PENTAX-D FA 100mm f/2.8 ED AW Macro Lens at £699.00, MPN 20320 / SKU YA1728:27003679. The product page shows the amount, while the retailer's current deals page marks it Out of stock; store availability must remain out_of_stock. Do not present it as a currently available offer. Existing Carmarthen £699.99 with two in stock remains distinct. This is consistent with retaining sold-out new retail prices as evidence when status is explicit.
+
+Latest Batches 09–13: 180 total, 175 active (87 UK New, 88 UK Used), five inactive. Latest Batches 01–13: 288 total, 280 active (150 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,833 total, 4,771 active, 62 inactive. No schema, master catalogue, valuation logic, TEST or Stripe changes.

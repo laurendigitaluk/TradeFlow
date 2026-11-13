@@ -386,3 +386,12 @@ One additional exact Nikon COOLPIX S7000 used UK dealer listing was imported int
 - CameraWorld — £179.10, Used Excellent, one unique item in stock, SKU C-911912; supplied with battery, cable and strap; 12-month warranty and free UK delivery. Evidence ID 9d74d5d1-992b-4864-9b95-175bb9303081. [Direct source](https://www.cameraworld.co.uk/nikon-coolpix-s7000-compact-camera.html)
 
 The search result exposed the direct product listing details; opening the URL returned a cache miss. This limitation is retained in the evidence notes for dashboard click-through recheck. Existing Kamerastore £158 certified-used observation remains active. UK Used is reference-only. Batch 11 now has 34 active GBP records (9 UK New, 25 UK Used), superseding the earlier 33-row count. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — Panasonic FZ1000 II two additional LCE used listings
+
+Two additional exact Panasonic Lumix DC-FZ1000 II UK Used listings were imported into LIVE against master af3f3ed9-ad6c-4aad-9015-2de49810e0b2:
+- London Camera Exchange, Bristol — £699.99, Excellent, in store now; boxed with strap, cap, hood, instructions and USB lead; six-month warranty; item 145185. Evidence ID 48402a9e-16b9-4787-931b-592e0a4cb0ef. [Direct source](https://www.lcegroup.co.uk/Used/Panasonic-FZ1000-II-Boxed_496911.html)
+- London Camera Exchange, Bath — £699.99, Good, in store now; six-month warranty; item 139564. Evidence ID dfa96b33-7559-47df-8696-bac36f1b3fec. [Direct source](https://www.lcegroup.co.uk/Used/Panasonic-Lumix-FZ1000-MKII_500223.html)
+
+Search results exposed exact item details, branch, price and stock; opening both direct URLs returned cache miss. This limitation is retained for dashboard click-through recheck. Existing Kamerastore £709 certified-used item with zoom-lever fault remains active and clearly distinguished. Batch 11 now 36 active GBP rows (9 UK New, 27 UK Used), superseding prior 34-row count. UK Used remains reference-only. No master/schema/valuation changes; TEST and Stripe untouched.

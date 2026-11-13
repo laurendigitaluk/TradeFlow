@@ -4586,3 +4586,23 @@ Held:
 Coverage remains 541 total; 173 neither; 146 UK New only; 118 UK Used only; 104 both; missing UK New 291; missing UK Used 319. New observations add depth within already-covered ATOM 2 products; they do not change product-level coverage.
 
 UK Used remains inspection-only; automatic valuation uses UK New only. No catalogue master/package rows, schema, RLS, RPC, Edge Functions, TEST, Stripe, tenant/customer/transaction data or deployment changed.
+
+
+## 13 November 2026 — Retrospective UK Used nearest-match review 04
+
+Seven previously held candidates reviewed. Four new UK Used observations inserted into LIVE and read back.
+
+- DJI Mini 5 Pro Standard Package (DJI RC-N3) — £534, MPB UK, Excellent, exact model/controller package; included battery, storage cover, RC-N3, manual, cables, packaging and 12-month warranty. Current used retailer asking price. Evidence `c23486bc-debc-4671-bff0-7f9e2c10db27`.
+- DJI Mini 5 Pro Standard Package (DJI RC-N3) — £700, Gumtree, Crieff, Scotland, As good as new. Exact model/controller but seller-assembled larger bundle with three batteries, charging hub, two RC-N3 controllers (one sealed), ND filters and extras; not official Fly More Combo. Full bundle price retained. Evidence `90bee40d-4c0b-4d06-ac6d-5c5b7fbd552c`.
+- HOVERAir AQUA — £950, Gumtree, Baglan, Neath Port Talbot, As good as new, flown three times. Related Fly More Bundle; listing itemises AQUA, base battery, Lighthouse/armband, repair kit, two extra batteries, waterproof battery bags and charging hub. Base AQUA master; bundle difference disclosed. Evidence `38ee6297-967a-4874-a4b9-848e4c4a4097`.
+- DJI Lito X1 Fly More Combo (DJI RC-N3) — £294, Camera Price Buster / MPB UK, Like New, one used copy listed. Exact model/controller, but full Fly More accessory contents not confirmed; related package/controller reference. Evidence `74ece22a-7ef5-4800-b041-8dce51e60045`.
+
+Held:
+- FIMI Mini 3 £260 Gumtree result: category page only, no individual listing URL.
+- BetaFPV Cetus Pro sold £85 base item price: seller location and full goggles/FPV kit contents unverified.
+- DJI Lito X1 eBay sold listing £240 base price: seller location not established.
+- MPB Mini 5 Pro Fly More Combo with RC-N3 was not mapped to Standard Package.
+
+Coverage: 541 total; 173 neither; 144 UK New only; 118 UK Used only; 106 both; missing UK New 291; missing UK Used 317. Two products moved from New-only to both; remaining observations add depth.
+
+UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows or valuation logic changed.

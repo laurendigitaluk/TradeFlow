@@ -421,3 +421,8 @@ Added CVP exact Sony HDC-3100 System Camera for Fiber Operation at £24,757.37 i
 ## 13 November 2026 — Batch 12 HDC-3200 variant detail preserved
 
 Added Visual Impact's exact HDC-3200 base SKU at £35,588.72 inc VAT (£29,657.27 ex), new, available to order but not held in stock, camera head only. Evidence 0741e38c-7347-475a-8fea-21b0b99809d1. Existing HDC-3200/DF £37,651.84 inc VAT is a separate dual-filter SKU; preserve the distinction and do not treat it as duplicate. Direct page open returned cache miss; the search result contained the price and SKU. Batch 12 now 29 total, 28 active (19 New, 9 Used), one inactive. MKS-R3210 remains RED VERIFY; no exact UK GBP offer, and the BKS-R3210 listing is not a match. Batches 09–13 now 182 total, 177 active (89 New, 88 Used), five inactive. Batches 01–13 now 290 total, 282 active (152 New, 130 Used), eight inactive. Global LIVE 4,835 total, 4,773 active, 62 inactive. UK Used remains reference-only; TEST and Stripe untouched.
+
+
+## 13 November 2026 — HVR-V1E false-positive source exclusion
+
+Plan B Retro eBay item 117069480914 was rejected: title says HVR-V1E, item specifics say HVR-Z1E. Smart_With_Media £259.99 search result was not confirmed as a current listing in the seller's store. No rows imported; existing exact HVR-V1E evidence remains unchanged. Counts unchanged.

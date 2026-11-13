@@ -4568,3 +4568,21 @@ Use this rule consistently in future research and when revisiting previously rec
 The purpose of the **Discontinued** label is to warn the customer that the recorded new price may no longer represent a realistic current replacement cost. A discontinued model may have been superseded by a newer model with different features, specifications and market pricing. Therefore, a customer comparing a buyback offer against the old discontinued new price should not assume the comparison is like-for-like or that the old price is still achievable.
 
 Where a replacement model is known, show it as contextual information separately; do not silently substitute its price for the discontinued model's price. The customer-facing wording should explain that the reference is historical and may be misleading for current replacement-value comparisons. This is an information/warning requirement, not a request to change automatic valuation logic.
+
+
+## 13 November 2026 — Retrospective UK Used nearest-match review 03
+
+Five further held candidates reviewed; two additional UK Used observations added to LIVE and read back. Both are Potensic ATOM 2 variants and add package-specific references to existing product masters that already had UK Used evidence, so product coverage counts are unchanged.
+
+- Potensic ATOM 2 Standard Package — £219 GBP, eBay UK item 358916809528, seller item location Coatbridge, Scotland. Used a couple of times; box, one battery, charging cable and two rotor-blade sets described. Grelly item mirror reports one sold/zero remaining; historical/ended inspection reference. Postage £8.95 separate. Evidence `b8723f76-8dd0-4660-a93e-84cdd93fdc2a`.
+- Potensic ATOM 2 PTD 1 Fly More Combo — £238.99 GBP, eBay UK item 389927611088, seller item location Birmingham. Used, more than 10 available and 10 sold at capture. Potensic Care unavailable for used units; full bundle contents should be checked on source listing. Current asking price. Evidence `f6ec8337-1242-48e2-8d10-44378822d024`.
+
+Held:
+- FIMI Mini 3 £260 Gumtree, Stoke-on-Trent: exact model and extra battery/case/landing pad described, but no stable individual listing URL was exposed, so no category/search URL was imported.
+- BetaFPV Cetus Pro sold listing £88.42 includes £3.42 Buyer Protection (base £85); seller UK location and complete goggles/FPV kit contents unconfirmed.
+- Potensic ATOM 2 PTD 1 Standard Kit £270.82 listing was Opened – never used, not Used, and out of stock.
+- Holy Stone HS900 £169.92 eBay result did not expose seller item location; eBay UK domain alone is insufficient.
+
+Coverage remains 541 total; 173 neither; 146 UK New only; 118 UK Used only; 104 both; missing UK New 291; missing UK Used 319. New observations add depth within already-covered ATOM 2 products; they do not change product-level coverage.
+
+UK Used remains inspection-only; automatic valuation uses UK New only. No catalogue master/package rows, schema, RLS, RPC, Edge Functions, TEST, Stripe, tenant/customer/transaction data or deployment changed.

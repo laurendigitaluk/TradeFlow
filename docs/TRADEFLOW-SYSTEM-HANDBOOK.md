@@ -3325,3 +3325,24 @@ No active asking prices, stale search snapshots, new-other items, retailer stock
 LIVE metrics remain: 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 346 missing UK Used; 73 with both types; zero active evidence integrity failures. Batch 32 made no database writes. Batch 33 contains the remaining 12 New-only Drone masters in the current LIVE selection; see `CHECKPOINTS/2026-11-13-drone-second-pass-batch-32.md`.
 
 TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded. UK Used remains reference-only and does not affect automatic valuation.
+
+
+## 13 November 2026 — Drone second-pass research Batch 33 (final UK Used gap queue)
+
+Batch 33 reviewed the remaining 12 active visible Drone products with UK New evidence but no UK Used evidence. No exact package-matched UK Used observation qualified for import. All 12 were read back and confirmed New-only.
+
+Key findings:
+- DJI Lito X1 Fly More Combo (RC-N3): eBay listing 327386515757 was a used UK sale for an RC-N3 controller, but listing title/description referred to a case, ND filters and DJI Refresh; it did not establish the exact Fly More battery/charger package. Held.
+- DJI Lito X1 Fly More Combo (RC 2): eBay listing 206474492553 sold Used with three batteries, bag and spare propellers, but did not identify the controller type; package cannot be assigned to RC 2 with confidence. Held.
+- Another Lito X1 Fly More sale (item 128048846968) was Used and UK-based but did not establish the controller model; held.
+- Lito X1 RC 2 sold lead 327401878157 had Best Offer accepted and the actual accepted price was hidden; held.
+- DJI Lito 1 sale 307060416425 was a two-battery combo, not Standard Package. A different Lito 1 sold listing 128128944531 did not establish exact standard package contents.
+- DJI Matrice 4E forum listing was later confirmed sold, but the £3,000 was the asking price and no final sale price was stated. Matrice 400/4T did not yield qualifying sold evidence.
+- DJI Mini 5 Pro sold listing 336816979574 was drone-only with no battery or controller, not Standard Package.
+- Avata 360 sold listing was a Fly More combo but did not establish the specific 140W GaN Charging Combo package; RC 2-only package not matched.
+- HoverAir AQUA had no exact UK completed sale found.
+- No qualifying evidence for Lito 1 standard, Lito X1 140W GaN combo or remaining selected masters.
+
+Post-research LIVE metrics remain: 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 346 missing UK Used; 73 with both types; zero active evidence integrity failures. All 12 selected New-only products were reviewed. A fresh LIVE query excluding second-pass Batches 16–33 returned **zero remaining New-only products**. This closes the UK Used-gap research queue for products already holding UK New evidence. It does not mean all 346 missing UK Used products are resolved: 182 have no evidence at all, and 122 are Used-only. The next pass should address the Used-only products that lack UK New evidence, while the zero-evidence products remain their own separate group.
+
+TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded. UK Used remains reference-only and does not affect automatic valuation.

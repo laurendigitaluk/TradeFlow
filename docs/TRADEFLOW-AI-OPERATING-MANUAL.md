@@ -6439,3 +6439,10 @@ Latest Batches 09–13: 172 total, 167 active (84 UK New, 83 UK Used), five inac
 Added the CameraWorld Nikon COOLPIX S7000 used Excellent listing at £179.10, one unique item in stock, to Batch 11 after the direct search result supplied the item, condition, price, SKU C-911912 and included accessories. The page itself returned a cache miss when opened, so the database note and checkpoint explicitly preserve this limitation and direct URL for owner click-through recheck. Do not silently present the page as opened/fully re-verified. UK Used remains excluded from automatic valuation.
 
 Latest Batches 09–13: 173 total, 168 active (84 UK New, 84 UK Used), five inactive. Latest Batches 01–13: 281 total, 273 active (147 UK New, 126 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,826 total, 4,764 active, 62 inactive. No schema, master catalogue, valuation logic, TEST or Stripe changes.
+
+
+## 13 November 2026 — sold-out UK used evidence retained transparently
+
+Added a Colins Cameras Sony HVR-V1E used Very Good £260 observation in Batch 13. The listing explicitly says sold out; record availability as out_of_stock and do not present it as purchasable stock. Search results exposed exact product/price/package details, but the direct page open returned cache miss; retain that retrieval limitation with the source URL. UK Used remains excluded from automatic buying valuation.
+
+Latest Batches 09–13: 174 total, 169 active (84 UK New, 85 UK Used), five inactive. Latest Batches 01–13: 282 total, 274 active (147 UK New, 127 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,827 total, 4,765 active, 62 inactive. No schema, master catalogue, valuation logic, TEST or Stripe changes.

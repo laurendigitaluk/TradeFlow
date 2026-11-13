@@ -563,3 +563,22 @@ Latest Batches 09–13: 182 total, 177 active (89 UK New, 88 UK Used), five inac
 ## 13 November 2026 — Batch 13 HVR-V1E model-mismatch rejection
 
 Rejected eBay UK item 117069480914 from Plan B Retro. Its title says HVR-V1E, but item specifics identify HVR-Z1E; this is not an exact HVR-V1E source and no evidence was imported. A Smart_With_Media £259.99 search result was not present in the seller's current store page and remains unverified. Retain only the exact HVR-V1E Camera City £399 in-stock record and Colins Cameras £260 sold-out Very Good reference added earlier. Counts unchanged.
+
+
+## 13 November 2026 — consolidated completion status for Batches 09–13
+
+A further 15 direct UK GBP observations were imported and read back during this continuation across Batches 09, 10, 11, 12 and 13. Details and evidence IDs are appended to the individual batch checkpoints and project-memory files. New records preserve exact master/package/variant, VAT basis, condition and availability. No existing evidence rows were deactivated or overwritten during this continuation. Direct-page retrieval limitations (cache miss/HTTP 520) are explicitly retained where search-result detail was sufficient to record a source, with the direct URL preserved for owner click-through recheck.
+
+Latest LIVE source_record_key counts:
+| Batch | Total | Active | UK New | UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 09 | 28 | 28 | 14 | 14 | 0 |
+| 10 | 37 | 35 | 19 | 16 | 2 |
+| 11 | 37 | 37 | 10 | 27 | 0 |
+| 12 | 29 | 28 | 19 | 9 | 1 |
+| 13 | 51 | 49 | 27 | 22 | 2 |
+| **09–13** | **182** | **177** | **89** | **88** | **5** |
+
+Batches 01–13: 290 total, 282 active (152 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,835 total, 4,773 active, 62 inactive (2,310 active UK New GBP; 2,463 active UK Used GBP).
+
+Remaining true RED VERIFY: Batch 12 Sony MKS-R3210 — exact model is valid, but no exact UK GBP retailer price found. Do not substitute the £61.75 eBay listing for 2x BKS-R3210. Batch 09 HDC-3000 is closed as invalid product identity (family label, not distinct sellable camera model). Batch 13 Plan B Retro eBay item 117069480914 is excluded because item specifics say HVR-Z1E despite HVR-V1E title; Smart_With_Media £259.99 lead not confirmed current. UK Used remains reference-only and excluded from automatic valuation. TEST, Stripe, schema, master catalogue and valuation logic untouched. This supersedes earlier 13 Nov counts/status in this consolidated checkpoint.

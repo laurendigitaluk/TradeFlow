@@ -4723,3 +4723,16 @@ Review also checked a used Potensic ATOM 3 listing in South Shields, but did not
 Coverage remains 541 active customer-visible drone products: 173 neither, 143 UK New only, 118 UK Used only, 107 both; missing UK New 291; missing UK Used 316. These additions deepen existing Mini 2 SE, Mavic 2 Pro and Avata Used records; no coverage-count change.
 
 UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows, valuation logic, schema, RLS or functions changed.
+
+
+## 13 November 2026 — Retrospective UK Used nearest-match review 13
+
+One new UK Used GBP observation was inserted into LIVE and read back successfully:
+
+- DJI Mini 3 Pro — £380, Gumtree, West End, Glasgow. Seller describes the drone as in great condition, never crashed or dropped, supplied with its original DJI box; lens hood is absent. The catalogue generic Standard Package was used as the nearest match because controller type, battery count, charging hub and other package contents are not stated. Customers should confirm controller and accessories before purchase. This is a current asking price, not a completed sale. Evidence `1edb4a59-375c-42ff-964d-f731e931e770`; listing https://www.gumtree.com/p/drones/dji-mini-3-pro-drone-/1804815846.
+
+Other current Mini 3 Pro listings were reviewed but not imported where the controller/package variant or exact contents were unclear. Drone Atlas reports seven recent UK Mini 3 Pro sales at a £320 median (typical £299.99–£334.98), but this aggregate is context only and was not imported as a product-level listing observation.
+
+LIVE drone catalogue coverage remains 541 active customer-visible products; 316 have no active UK Used evidence and 291 have no active UK New evidence. This review adds depth to one product previously missing Used evidence; exact aggregate counts should be re-read after the evidence import before further batch planning.
+
+UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows, valuation logic, schema, RLS or functions changed.

@@ -426,3 +426,12 @@ Added Visual Impact's exact HDC-3200 base SKU at £35,588.72 inc VAT (£29,657.2
 ## 13 November 2026 — HVR-V1E false-positive source exclusion
 
 Plan B Retro eBay item 117069480914 was rejected: title says HVR-V1E, item specifics say HVR-Z1E. Smart_With_Media £259.99 search result was not confirmed as a current listing in the seller's store. No rows imported; existing exact HVR-V1E evidence remains unchanged. Counts unchanged.
+
+
+## 13 November 2026 — final continuation summary and unresolved research
+
+15 additional evidence rows were inserted into LIVE and read back across Batches 09–13. Individual checkpoints record each product, retailer, GBP price, exact SKU/package, availability and source URL. No existing evidence rows were deactivated or overwritten in this continuation. Search-result-derived records retain an explicit note where opening the direct page returned cache miss or HTTP 520; never claim those pages were successfully opened.
+
+Current counts: Batches 09–13 = 182 total, 177 active (89 UK New, 88 UK Used), five inactive. Batches 01–13 = 290 total, 282 active (152 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence = 4,835 total, 4,773 active, 62 inactive (2,310 active UK New GBP; 2,463 active UK Used GBP).
+
+Only genuine outstanding RED VERIFY lead across 09–13: Sony MKS-R3210 exact 32-button routing panel, with no verified UK GBP retailer offer. Do not use £61.75 2x BKS-R3210. HDC-3000 is closed as invalid identity because Sony uses “HDC-3000 series” as a family label, not a separate sellable camera. Plan B Retro HVR-V1E title was rejected because item specifics identify HVR-Z1E. Smart_With_Media lead not confirmed current. UK Used remains reference-only. TEST, Stripe, schema, master catalogue and valuation logic untouched.

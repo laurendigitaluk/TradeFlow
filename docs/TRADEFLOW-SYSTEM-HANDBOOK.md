@@ -5869,3 +5869,10 @@ Latest Batches 09–13: 176 total, 171 active (86 UK New, 85 UK Used), five inac
 Batch 09 added Bristol Cameras Nikon F55 body-only at £24, Used Good, in stock, with two CR2 batteries, body cap and three-month guarantee. Search result contained full details; opening the direct page returned HTTP 520. Retain the direct URL and limitation for dashboard recheck; do not claim the page was successfully opened. UK Used remains reference-only.
 
 Latest Batches 09–13: 177 total, 172 active (86 UK New, 86 UK Used), five inactive. Latest Batches 01–13: 285 total, 277 active (149 UK New, 128 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,830 total, 4,768 active, 62 inactive. No schema/master/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — Panasonic FZ1000 II listing detail and condition separation
+
+Batch 11 added two LCE Panasonic Lumix DC-FZ1000 II used units at £699.99: Bristol item 145185 Excellent, boxed, and Bath item 139564 Good. Both were shown in store now with six-month warranty. The direct listing pages returned cache miss, so the search-result-derived item details and retrieval limitation are retained in notes and checkpoint. Keep these fully working dealer units distinct from Kamerastore's £709 certified-used unit with a zoom-lever fault. UK Used remains reference-only.
+
+Latest Batches 09–13: 179 total, 174 active (86 UK New, 88 UK Used), five inactive. Latest Batches 01–13: 287 total, 279 active (149 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,832 total, 4,770 active, 62 inactive. No schema/master/valuation changes; TEST and Stripe untouched.

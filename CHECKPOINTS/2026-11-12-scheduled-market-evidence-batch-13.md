@@ -452,3 +452,11 @@ A fresh LIVE reconciliation identified two duplicate captures in Batch 13 and de
 - Sony ECM-B10, earlier Wex row 9d7a7b65-8a2a-4a28-90b7-2a1c64e38564 (source_record_key batch13-sony-ecmb10-wex-175) deactivated; later exact same Wex source row f9bb53b9-c1a1-4983-b0bd-77bdb4f6ccba remains active. Other active sources (CameraWorld, Harrison, MPB, Bristol and Park) are independent offers.
 
 Both inactive rows remain retained for audit; no active evidence was deleted. Batch 13 now 50 total, 48 active (27 UK New, 21 UK Used), two inactive duplicate captures. The earlier row notes were corrected so each points to its own retained duplicate, not to the other product's source.
+
+
+## 13 November 2026 — Sony HVR-V1E additional UK used-market price reference
+
+One additional exact HVR-V1E UK Used observation was imported into LIVE against master f2b5f83e-680f-49e5-9729-8aebba707850:
+- Colins Cameras — £260.00, Very Good, fully tested and working; includes NP-F960 battery, charger, cables and remote. The direct product result marks the listing Sold out, so availability is recorded as out_of_stock, not in_stock. Evidence ID 20b25a7e-2959-4387-bfcd-cb3e9ca0c577. [Direct source](https://colinscameras.co.uk/products/sony-hvr-v1e)
+
+The search result exposed the exact product, price, condition, package and sold-out status; opening the direct URL returned cache miss. This limitation is recorded for dashboard click-through recheck. Existing Camera City £399 in-stock item remains active; its no-charger and non-original-battery condition is distinct. UK Used remains reference-only. Batch 13 now has 51 total, 49 active (27 UK New, 22 UK Used), two inactive. No master/schema/valuation changes; TEST and Stripe untouched.

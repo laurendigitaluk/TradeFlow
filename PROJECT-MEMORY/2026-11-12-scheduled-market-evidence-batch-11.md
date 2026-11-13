@@ -69,3 +69,8 @@ Wilkinson Cameras direct page confirms exact NIKKOR Z 50mm f/1.4, MPN JMA004DA /
 ## 13 November 2026 — Batch 11 Nikon COOLPIX S7000 used source
 
 Added CameraWorld exact Nikon COOLPIX S7000 used listing £179.10, Excellent, one unique item in stock, SKU C-911912, battery/cable/strap and 12-month warranty; evidence 9d74d5d1-992b-4864-9b95-175bb9303081. Direct URL retained; the search result supplied the listing detail but page opening returned cache miss. Existing Kamerastore £158 remains active. Batch 11 now 34 active (9 UK New, 25 UK Used). UK Used remains valuation-excluded.
+
+
+## 13 November 2026 — Panasonic FZ1000 II used-market comparisons
+
+Added two London Camera Exchange Panasonic Lumix DC-FZ1000 II listings: Bristol item 145185 £699.99 Excellent, boxed, in store now, six-month warranty (evidence 48402a9e-16b9-4787-931b-592e0a4cb0ef); Bath item 139564 £699.99 Good, in store now, six-month warranty (evidence dfa96b33-7559-47df-8696-bac36f1b3fec). Search results supplied full item details, but direct page opens returned cache miss; source URLs and limitation retained for recheck. Existing Kamerastore £709 zoom-lever fault item remains distinct. Batch 11 now 36 active (9 New, 27 Used). UK Used is reference-only.

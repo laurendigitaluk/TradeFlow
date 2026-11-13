@@ -399,3 +399,8 @@ Two new UK New direct retailer observations were added and read back: SmallRig R
 ## 13 November 2026 — Batch 09 Nikon F55 second UK used source
 
 Added Bristol Cameras exact Nikon F55 body-only £24.00, used Good, in stock; silver body, 2x CR2 batteries, body cap and 3-month guarantee. Evidence 39529bb2-e229-4a4d-a739-4a198222bf82. Search result supplied full item detail and UK stock, but direct page open returned HTTP 520; URL and limitation retained for dashboard recheck. Existing ColinsCameras eBay £28.60 remains. Batch 09 now 28 active (14 New, 14 Used). UK Used is reference-only.
+
+
+## 13 November 2026 — HDC-3000 no longer a pending price candidate
+
+Close HDC-3000 as invalid product identity: Sony uses “HDC-3000 series” as a family label, not a standalone sellable model. Do not create a master or substitute HDC-3500/HDC-3300. Only true unresolved exact-price lead remaining across 09–13 is MKS-R3210; no UK GBP offer found and the 2x BKS-R3210 listing is not a match. No evidence rows changed.

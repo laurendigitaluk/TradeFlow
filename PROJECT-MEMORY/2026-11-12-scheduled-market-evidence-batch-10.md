@@ -345,3 +345,8 @@ Batch 10: 35 total, 33 active (17 new, 16 used), two inactive. Batches 01–13: 
 ## 13 November 2026 — Sony FE 100-400mm first-generation source
 
 Added ProAV exact Sony FE 100-400mm F4.5-5.6 GM OSS first generation, MPN SEL100400GM.SYX / EAN 4548736058422, £2,149 inc VAT (£1,790.83 ex), new, one in stock. Evidence 40d60e8f-0f40-44ff-baa5-e29121b4a916. This is not the newer SEL100400MCW constant-F4.5 lens. Batch 10 now 36 total, 34 active (18 New, 16 Used), two inactive. No master or valuation changes.
+
+
+## 13 November 2026 — HDC-3100 CVP source and master-branch separation
+
+Added CVP exact Sony HDC-3100, p/n HDC-3100, at £24,757.37 inc VAT (£20,631.14 ex), new, available for backorder with 1–2 week typical delivery and 2 Years PrimeSupportPro. Camera body only; lens/viewfinder excluded. Evidence b2e3898d-3df4-4332-817c-e9537fc64cf3. Attached to exact HDC-3100 Studio/Broadcast master 5882070e-3add-4bfa-b477-9a516f676333. Existing Visual Impact row remains on separate HDC3100 Cinema Camera branch master; no merge/reassignment. Batch 10 now 37 total, 35 active (19 New, 16 Used), two inactive.

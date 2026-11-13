@@ -5862,3 +5862,10 @@ Latest Batches 09–13: 175 total, 170 active (85 UK New, 85 UK Used), five inac
 Batch 12 added CVP's direct UK HDCE-TX30 offer at £11,347.13 inc VAT (£9,455.94 ex VAT), with a one-year warranty and availability explicitly marked Available for Backorder, normally 1–2 weeks. Evidence ID 0dc2b59c-fbc4-4eb8-9da5-cc1d2a5f7247. This matches Visual Impact's price and status. Keep MKS-R3210 out of LIVE pricing evidence until an exact UK GBP source appears; do not substitute the 2x BKS-R3210 listing.
 
 Latest Batches 09–13: 176 total, 171 active (86 UK New, 85 UK Used), five inactive. Latest Batches 01–13: 284 total, 276 active (149 UK New, 127 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,829 total, 4,767 active, 62 inactive. No schema/master/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — used evidence and retrieval limitation
+
+Batch 09 added Bristol Cameras Nikon F55 body-only at £24, Used Good, in stock, with two CR2 batteries, body cap and three-month guarantee. Search result contained full details; opening the direct page returned HTTP 520. Retain the direct URL and limitation for dashboard recheck; do not claim the page was successfully opened. UK Used remains reference-only.
+
+Latest Batches 09–13: 177 total, 172 active (86 UK New, 86 UK Used), five inactive. Latest Batches 01–13: 285 total, 277 active (149 UK New, 128 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,830 total, 4,768 active, 62 inactive. No schema/master/valuation changes; TEST and Stripe untouched.

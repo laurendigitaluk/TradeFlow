@@ -74,3 +74,8 @@ Added CameraWorld exact Nikon COOLPIX S7000 used listing £179.10, Excellent, on
 ## 13 November 2026 — Panasonic FZ1000 II used-market comparisons
 
 Added two London Camera Exchange Panasonic Lumix DC-FZ1000 II listings: Bristol item 145185 £699.99 Excellent, boxed, in store now, six-month warranty (evidence 48402a9e-16b9-4787-931b-592e0a4cb0ef); Bath item 139564 £699.99 Good, in store now, six-month warranty (evidence dfa96b33-7559-47df-8696-bac36f1b3fec). Search results supplied full item details, but direct page opens returned cache miss; source URLs and limitation retained for recheck. Existing Kamerastore £709 zoom-lever fault item remains distinct. Batch 11 now 36 active (9 New, 27 Used). UK Used is reference-only.
+
+
+## 13 November 2026 — Pentax 100mm Macro second UK New source
+
+Added Camera Centre UK exact black Pentax HD PENTAX-D FA 100mm f/2.8 ED AW Macro Lens at £699.00, MPN 20320 / SKU YA1728:27003679, evidence 6bd70951-d492-4512-b488-9ae6fe384bec. The product page shows £699; current retailer Pentax deals page says Out of stock, so availability is out_of_stock. Existing Carmarthen £699.99 / 2 in stock remains. Batch 11 now 37 active (10 New, 27 Used). Sold-out price is retained as a UK New reference with status explicit.

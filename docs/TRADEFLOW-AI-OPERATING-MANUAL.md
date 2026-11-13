@@ -12,7 +12,7 @@
 > **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
 
 **Status:** Living operational document  
-**Version:** 5.4  
+**Version:** 5.5  
 **Date:** 13 November 2026  
 **Project:** TradeFlow
 
@@ -4331,3 +4331,17 @@ Other candidate leads were excluded: Autel V2 640T is not the V3 rugged bundle; 
 Post-write LIVE metrics: 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 350 missing UK Used; 69 with both evidence types; zero active evidence integrity failures. Gap breakdown: 182 neither, 168 UK New only (missing Used), 122 UK Used only (missing New), 69 both. This used observation moved one product from New-only to both; no product or package master changed. UK Used remains reference-only and must not affect automatic valuation.
 
 Batch 27 continues the UK Used gap, selecting 20 further products with exactly one UK New observation and no UK Used. Exact IDs are in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-26.md`. TEST, Stripe, valuation logic, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded.
+
+
+## 13 November 2026 — Drone second-pass research Batch 27 (UK Used gap)
+
+Batch 27 reviewed 20 products with UK New but no UK Used evidence. Three qualifying UK completed-sale observations were inserted into LIVE and read back:
+- DJI Avata 2 Fly More Combo (Three Batteries): eBay UK item 147598281695, £588.25 including £18.25 Buyer Protection; sold 2 October 2026; seller in Morpeth, UK, 100% positive with about 1.7K items sold. Evidence ID `e436d2c9-de3a-4640-8ca9-25306a4c8819`.
+- DJI Neo Fly More Combo: eBay UK item 407148524724, £159.99 including Buyer Protection; sold 6 September 2026; seller Cash Converters South Yorkshire, Manchester, UK, 98.6% positive and about 30K items sold. Listing explicitly includes three batteries. Evidence ID `fce8f7f1-99c5-4eef-a572-4e62e01ca798`.
+- EMAX Tinyhawk II Freestyle RTF FPV Drone Kit: eBay UK item 198568376404, £183.70 including £6.49 Buyer Protection; sold 15 August 2026; seller in Oxted, UK, 100% positive with 420 items sold. Seller description confirms five LiPo batteries, goggles, transmitter and two cases. Evidence ID `aa3c4e7e-8056-44bd-aeb3-59d4e49b04e3`.
+
+Seventeen products were held. Avata 360 Fly More listing showed Best Offer acceptance and the page had been relisted/current, so its displayed price was not treated as the completed price. Avata 360 Drone Only sold listing was marked Opened–Never Used and classified as Gimbal, so it was not used-market drone evidence. Mini 4K sale leads did not match the exact Fly More package battery count. Matrice 4D result was a battery, not the drone. Other DJI, BetaFPV, CaddxFPV, EMAX, FIMI, GEPRC and Holy Stone products did not produce exact qualifying UK completed sales. No active listings or hidden Best Offer prices were substituted.
+
+Post-write LIVE metrics: 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 347 missing UK Used; 72 with both types; zero active evidence integrity failures. Gap breakdown: 182 neither, 165 UK New only (missing Used), 122 UK Used only (missing New), 72 both. Three products moved from New-only to both. No master/package records changed. UK Used evidence remains reference-only and does not affect automatic valuation.
+
+Batch 28 continues UK Used research on 20 further products with UK New but no UK Used. IDs are in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-27.md`. TEST, Stripe, valuation logic, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded.

@@ -469,3 +469,11 @@ Kept the standard MoveMic Two package distinct from the MoveMic Two Receiver Kit
 The previous Shure UK £258.30 row e8a60443-aef8-4e3f-ada1-ca6183292f05 was deactivated as superseded by the current official £221 special offer; retained inactive for price history. The £519 Shure official RRP and £431 Canford ex-VAT evidence for the separate Receiver Kit remain on its own master.
 
 Batch 10 now 35 total, 33 active (17 UK New, 16 UK Used), two inactive. Batches 01–13 now 267 total, 260 active (141 UK New, 119 UK Used), seven inactive. Global LIVE shared_market_evidence 4,812 total, 4,753 active, 59 inactive. TEST, Stripe, schema, master data and valuation logic untouched.
+
+
+## 13 November 2026 — first-generation Sony FE 100-400mm additional retailer source
+
+One further exact UK New observation was imported into LIVE against the first-generation Sony FE 100-400mm F4.5-5.6 GM OSS / Lens Only master 69e7a468-cb45-474e-9c28-ca3611514a72:
+- ProAV — £2,149.00 inc VAT (£1,790.83 ex VAT), new, one in stock for immediate dispatch; MPN SEL100400GM.SYX / EAN 4548736058422; free UK delivery over £75. Evidence ID 40d60e8f-0f40-44ff-baa5-e29121b4a916. [Direct source](https://proav.co.uk/sony-100-400mm-f4-5-5-6-lens)
+
+This is the first-generation constant-aperture F4.5–5.6 SEL100400GM, not the newer constant-F4.5 SEL100400MCW. Existing Carmarthen Cameras £2,149 remains active. Batch 10 now has 36 total / 34 active (18 UK New, 16 UK Used), two inactive. UK Used remains reference-only. No master/schema/valuation changes; TEST and Stripe untouched.

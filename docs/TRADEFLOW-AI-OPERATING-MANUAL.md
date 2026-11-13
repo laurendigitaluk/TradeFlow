@@ -4622,3 +4622,17 @@ Held:
 Coverage: 541 total; 173 neither; 143 UK New only; 118 UK Used only; 107 both; missing UK New 291; missing UK Used 316. Cetus Pro moved from New-only to both; Lito X1 adds depth to an existing Used-covered product.
 
 UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows or valuation logic changed.
+
+
+## 13 November 2026 — Retrospective UK Used nearest-match review 06
+
+Five further candidate listings reviewed; two new UK Used observations inserted into LIVE and read back. Both deepen existing product coverage and do not change product-level coverage counts.
+
+- DJI Mini 5 Pro Standard Package (DJI RC-N3) — £575, Gumtree, seller Isle of Dogs / Canary Wharf, London. Good condition; RC-N3 controller explicitly stated. Listing does not itemise all original accessories; package completeness should be checked by customer. Current asking price. Evidence `cb36b232-0e5c-49b2-94b4-bc50657b6ccd`.
+- Potensic ATOM 2 PTD 1 Fly More Combo — £170, Gumtree, Epsom, Surrey. As good as new, seller estimates 60 minutes total flight; three spare batteries, spare propellers, screws, carry case and memory card. Fly More configuration identified; original battery/charger details to be confirmed. Current asking price. Evidence `ca14a0cd-1e3f-44dc-93be-4246f5f3347c`.
+
+MPB UK current DJI Mini 5 Pro Fly More Combo RC-N3 stock from £579 was checked but not mapped to the Standard Package because it is a different package. eBay aggregate pages contain mixed bundles, non-UK sellers and uncertain listing conditions/locations; not used as individual evidence rows. Aggregated UK used medians remain contextual, not direct observations.
+
+Coverage remains 541 total; 173 neither; 143 UK New only; 118 UK Used only; 107 both; missing UK New 291; missing UK Used 316.
+
+UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows or valuation logic changed.

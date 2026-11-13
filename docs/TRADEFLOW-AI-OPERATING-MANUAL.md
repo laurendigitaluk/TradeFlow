@@ -12,7 +12,7 @@
 > **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
 
 **Status:** Living operational document  
-**Version:** 5.1  
+**Version:** 5.2  
 **Date:** 13 November 2026  
 **Project:** TradeFlow
 
@@ -4290,3 +4290,15 @@ Skydio's official shop pages for 2+ batteries, Beacon, Sports Upgrade and Cinema
 LIVE Drone metrics remain 541 active visible products; 184 with no active evidence; 306 missing UK New; 351 missing UK Used; 68 with both types. No writes occurred in Batch 23. TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments untouched. Pokémon cards remain excluded.
 
 Batch 24 candidate selection is recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-23.md`. It contains the next 20 zero-evidence masters across Skydio and Walkera; verify whether each is a drone or accessory and confirm exact package before any evidence write.
+
+
+## 13 November 2026 — Drone second-pass research Batch 24
+
+Batch 24 reviewed 20 previously unreviewed Skydio and Walkera masters. One qualifying UK-new observation was inserted into LIVE and read back:
+- Walkera F210 3D package: RCHobby-Avenues UK, £250.37 GBP, exact F210 3D Edition RTF listing, Birmingham seller address, in stock, with camera, OSD, DEVO 7 transmitter, battery and charger. Evidence ID: `5eab3c4d-9950-4b74-9e5b-ad10ddb8a88d`.
+
+Nineteen other masters were held. Skydio pages showed USD/US fulfilment or sales-quoted pricing only. Walkera F210 3D at BuzzFlyer was out of stock; the exact RCHobby-Avenues offer was used instead. Walkera F210 standard at BuzzFlyer was out of stock, the CheapDrone category fetch timed out and did not provide a direct product page, and the Walkera official Goggle 4 listing was USD with US/CN dispatch. MINI X had no current UK offer; PERI was marked no longer available. Used eBay results were ended/relisted or accessory-only, not completed sales of exact products.
+
+Post-write LIVE Drone metrics: 541 active visible products; 183 with no active evidence; 305 missing UK New; 351 missing UK Used; 68 with both types; 0 active evidence integrity failures. One zero-evidence product gained UK New evidence; missing UK Used is unchanged. TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments untouched. Pokémon cards remain excluded.
+
+Batch 25 candidate list is recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-24.md`. It is the next 20 zero-evidence masters across Walkera and Yuneec. Recheck active evidence and exact package before any write.

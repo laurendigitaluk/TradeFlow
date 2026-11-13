@@ -340,3 +340,8 @@ Imported exact KitPlus/N.I. Broadcast UK listing for one Sony HDC1500R fibre cam
 Three direct UK sources verified for the separate standard MoveMic Two (SKU MV-TWO-Z6; two lav mics + case + USB-C cable, no receiver): Shure UK £221 sale / £369 RRP (Add to Cart), Canford £305 ex VAT (on demand 3–4 weeks), Clifton £335 displayed (awaiting stock 5–7 days; VAT basis not explicit). Rows 54592afe-1b24-4abf-aee9-8405f95f5ac5, a8eb0b34-4882-471d-88de-1c71ccc7be42 and cee333d8-55fe-4536-93f6-a3fe11644744. Previous Shure £258.30 row e8a60443-aef8-4e3f-ada1-ca6183292f05 deactivated as superseded. Keep separate from Receiver Kit master.
 
 Batch 10: 35 total, 33 active (17 new, 16 used), two inactive. Batches 01–13: 267 total, 260 active (141 UK New, 119 UK Used), seven inactive. Global LIVE: 4,812 total, 4,753 active, 59 inactive. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — Sony FE 100-400mm first-generation source
+
+Added ProAV exact Sony FE 100-400mm F4.5-5.6 GM OSS first generation, MPN SEL100400GM.SYX / EAN 4548736058422, £2,149 inc VAT (£1,790.83 ex), new, one in stock. Evidence 40d60e8f-0f40-44ff-baa5-e29121b4a916. This is not the newer SEL100400MCW constant-F4.5 lens. Batch 10 now 36 total, 34 active (18 New, 16 Used), two inactive. No master or valuation changes.

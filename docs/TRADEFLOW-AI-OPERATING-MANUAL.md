@@ -12,7 +12,7 @@
 > **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
 
 **Status:** Living operational document  
-**Version:** 5.3  
+**Version:** 5.4  
 **Date:** 13 November 2026  
 **Project:** TradeFlow
 
@@ -4319,3 +4319,15 @@ Important transition: the zero-evidence queue has now been exhausted for this se
 Current LIVE Drone totals: 541 active customer-visible products; 182 with no active evidence; 304 missing UK New; 351 missing UK Used; 68 with both evidence types. The next phase is not another zero-evidence sweep: Batch 26 starts the UK Used gap, selecting 20 products with exactly one UK New observation and no UK Used. Seek direct UK completed sales only; preserve model/package and seller quality rules. Batch 26 candidate IDs are recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-25.md`.
 
 TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded.
+
+
+## 13 November 2026 — Drone second-pass Batch 26 (UK Used gap)
+
+The zero-evidence sweep is complete; Batch 26 began the one-sided evidence-gap phase. Twenty products with UK New evidence but no UK Used evidence were reviewed. One qualifying UK completed-sale observation was inserted into LIVE and read back:
+- BetaFPV Air65 II, Brushless Whoop Quadcopter: eBay UK sold listing 206498703346, £81.98 including £3.33 Buyer Protection, used condition, seller located Abingdon, UK, 100% positive with 943 feedback. The listing specifies Air65 II (2) Freestyle ELRS PNF. Evidence ID: `709f2d09-1a5c-44bc-aa31-ff04f9cbae39`.
+
+Other candidate leads were excluded: Autel V2 640T is not the V3 rugged bundle; V3/Enterprise listings found were US or overseas sellers with USD/EUR prices. Meteor75 Pro search result was relisted/current rather than a completed sale. Cetus Pro sold listing did not establish the FPV goggles included in the FPV Kit package. Cetus X Pro is a different variant. Aquila16 appeared only in buyer feedback without a price-bearing sold page. No other product yielded a qualifying exact UK completed sale.
+
+Post-write LIVE metrics: 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 350 missing UK Used; 69 with both evidence types; zero active evidence integrity failures. Gap breakdown: 182 neither, 168 UK New only (missing Used), 122 UK Used only (missing New), 69 both. This used observation moved one product from New-only to both; no product or package master changed. UK Used remains reference-only and must not affect automatic valuation.
+
+Batch 27 continues the UK Used gap, selecting 20 further products with exactly one UK New observation and no UK Used. Exact IDs are in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-26.md`. TEST, Stripe, valuation logic, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded.

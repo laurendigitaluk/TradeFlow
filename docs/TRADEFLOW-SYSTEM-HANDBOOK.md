@@ -3263,3 +3263,12 @@ eBay searches surfaced active/pre-owned HoverAir X1/X1 PRO/X1 PROMAX listings, b
 Post-research LIVE metrics are unchanged: 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 347 missing UK Used; 72 with both types; zero active evidence integrity failures. Gap breakdown remains 182 neither, 165 UK New only, 122 UK Used only, 72 both. No writes occurred in Batch 28. Batch 29 continues UK Used research with 20 more New-only Hubsan products; IDs are recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-28.md`.
 
 TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded. UK Used remains reference-only and does not affect automatic valuation.
+
+
+## 13 November 2026 — Drone second-pass research Batch 29 (UK Used gap)
+
+Batch 29 reviewed 20 products with UK New evidence but no UK Used evidence, all Hubsan models. No qualifying exact UK completed-sale observation was found, so no evidence was imported. eBay search results surfaced current asking prices for Zino/Zino Mini products and H501S-family drones, but these were active listings, not completed sales, and several were accessories or mismatched variants. Hubsan Zino 2 used offers were active listings; Zino Mini SE listings lacked a completed transaction. Hubsan H111D sold-out product pages and Hubsan product feedback pages were not transaction evidence. No matching used stock appeared on Cash Converters/Cash Generator in the prior pass.
+
+All 20 products remain UK New only. LIVE totals remain 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 347 missing UK Used; 72 with both types; zero active evidence integrity failures. Gap breakdown unchanged: 182 neither, 165 UK New only, 122 UK Used only, 72 both. No writes occurred in Batch 29.
+
+Batch 30 continues the UK Used gap with the next 20 New-only masters across Hubsan, iFlight, Parrot and Potensic. IDs are recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-29.md`. TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded. UK Used remains reference-only and does not affect automatic valuation.

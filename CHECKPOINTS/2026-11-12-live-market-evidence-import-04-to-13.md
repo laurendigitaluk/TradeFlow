@@ -558,3 +558,8 @@ Latest Batches 09–13: 181 total, 176 active (88 UK New, 88 UK Used), five inac
 Added Visual Impact exact Sony HDC-3200 base SKU (no /DF dual-filter option) at £35,588.72 inc VAT (£29,657.27 ex), new, available to order but not held in stock, camera head only. Evidence ID 0741e38c-7347-475a-8fea-21b0b99809d1. Keep separate from the existing HDC-3200/DF £37,651.84 inc VAT dual-filter observation; both are recorded against the exact HDC-3200 Studio/Broadcast master. Search result provided the direct product detail; page open returned cache miss and this is retained in notes. MKS-R3210 remains RED VERIFY; no exact UK GBP price, and 2x BKS-R3210 is not a valid substitute.
 
 Latest Batches 09–13: 182 total, 177 active (89 UK New, 88 UK Used), five inactive. Latest Batches 01–13: 290 total, 282 active (152 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,835 total, 4,773 active, 62 inactive; 2,310 active UK New GBP and 2,463 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes prior 13 Nov counts.
+
+
+## 13 November 2026 — Batch 13 HVR-V1E model-mismatch rejection
+
+Rejected eBay UK item 117069480914 from Plan B Retro. Its title says HVR-V1E, but item specifics identify HVR-Z1E; this is not an exact HVR-V1E source and no evidence was imported. A Smart_With_Media £259.99 search result was not present in the seller's current store page and remains unverified. Retain only the exact HVR-V1E Camera City £399 in-stock record and Colins Cameras £260 sold-out Very Good reference added earlier. Counts unchanged.

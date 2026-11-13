@@ -6453,3 +6453,10 @@ Latest Batches 09–13: 174 total, 169 active (84 UK New, 85 UK Used), five inac
 Added a direct ProAV UK source for first-generation Sony FE 100-400mm F4.5-5.6 GM OSS, exact SEL100400GM.SYX / EAN 4548736058422, £2,149 inc VAT and one in stock. Keep it separate from the newer SEL100400MCW constant-F4.5 lens. Evidence ID 40d60e8f-0f40-44ff-baa5-e29121b4a916.
 
 Latest Batches 09–13: 175 total, 170 active (85 UK New, 85 UK Used), five inactive. Latest Batches 01–13: 283 total, 275 active (148 UK New, 127 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,828 total, 4,766 active, 62 inactive. No schema, master catalogue, valuation logic, TEST or Stripe changes.
+
+
+## 13 November 2026 — Batch 12 source coverage and exact-model exclusion
+
+Added a CVP UK source for Sony HDCE-TX30 at £11,347.13 inc VAT (£9,455.94 ex VAT), new, available for backorder with typical 1–2 week delivery and one-year warranty. This confirms the same exact model and price as Visual Impact. Keep Sony MKS-R3210 RED VERIFY: Sony confirms the exact 32-button routing panel, but no UK GBP retailer offer was verified. The £61.75 eBay listing is 2x BKS-R3210, a different model and quantity, so it must not be used as a proxy.
+
+Latest Batches 09–13: 176 total, 171 active (86 UK New, 85 UK Used), five inactive. Latest Batches 01–13: 284 total, 276 active (149 UK New, 127 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,829 total, 4,767 active, 62 inactive. UK Used remains excluded from automatic valuation. No schema, master catalogue, valuation logic, TEST or Stripe changes.

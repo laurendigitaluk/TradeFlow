@@ -364,3 +364,10 @@ Latest Batches 01–13: 267 total, 260 active (141 UK New, 119 UK Used), seven i
 Imported Camix exact Sony FE 85mm F1.4 GM II Lens Only £1,325 (ex VAT £1,104.17), new/in stock, with full lens/cap/hood/case contents; evidence row e1d4ebb0-ccb2-4a27-b4c7-06b3f9ab32af. Cotswold £1,049 page redirected and was not imported. Batch 04: 19 active (9 new, 10 used).
 
 Latest Batches 01–13: 268 total, 261 active (142 UK New, 119 UK Used), seven inactive. Global LIVE: 4,813 total, 4,754 active, 59 inactive. TEST and Stripe untouched.
+
+
+## 13 November 2026 — Nikon UK retailer evidence additions
+
+Three exact UK New observations were added to LIVE shared market evidence and read back: Nikon MB-N12 Standard Item from Clifton Cameras £349 in stock (one available) and London Camera Exchange £349 in stock; Nikon NIKKOR Z 50mm f/1.4 from Wilkinson Cameras £459 in stock. Exact master/package matches, direct product pages, GBP amounts, condition and availability are retained. Nikon UK's existing 50mm £449 direct offer remains unchanged after recheck; a lower search snippet conflicted with the opened retailer page. Carmarthen MB-N12 was excluded because the direct page says sold out.
+
+Batch 09: 25/25 active (12 New, 13 Used). Batch 11: 33/33 active (9 New, 24 Used). Batches 01–13: 278 total, 270 active (145 New, 125 Used), eight inactive. Global LIVE shared_market_evidence: 4,823 total, 4,761 active, 62 inactive. UK Used remains reference-only. No schema/master/valuation changes; TEST and Stripe untouched.

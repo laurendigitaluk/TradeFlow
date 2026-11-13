@@ -441,3 +441,12 @@ Matched to the existing HXC-D70 Standard master. This is used reference evidence
 Sony UK support's model list does not identify an exact HDC-3000 camera model. Sony press material uses “HDC-3000 series” wording but enumerates HDC-P50, HDC-3500, HDC-3100 and HDC-3170 as actual models. HDC-3500, HDC-3200, HSC-300 and HDCU-3500 are not interchangeable with an exact HDC-3000 camera listing. No price was imported; exact catalogue identity remains unresolved. [Sony UK model support](https://www.sony.co.uk/electronics/support/professional-cameras-studio-and-broadcast-cameras) · [Sony HDC family announcement](https://www.sony.co.uk/presscentre/unveils-new-generation-live-production-system-cameras).
 
 Batch 09 now has 23 active GBP rows: 10 UK New and 13 UK Used. Cumulative Batches 04–13 now contain 236 GBP observations: 232 active (127 UK New, 105 UK Used), four inactive.
+
+
+## 13 November 2026 — Nikon MB-N12 additional UK retailer observations
+
+Two further direct UK retailer offers for the exact Nikon MB-N12 Power Battery Pack / Standard Item were imported into LIVE and read back against master product 67905d4d-0261-4189-a519-44a0e591a4c0:
+- Clifton Cameras — £349.00, new, in stock, only one available; MPN VFC01001 / EAN 4960759910356; free shipping available. Evidence ID e9100020-f077-4c35-b3d5-f1d74a2bdbec. [Direct source](https://www.cliftoncameras.co.uk/nikon-power-battery-pack-mb-n12)
+- London Camera Exchange — £349.00, new, in stock for free delivery; exact Nikon MB-N12 Battery/Portrait Grip for Z8. Evidence ID 53a62053-3a9a-4c27-9d64-98c43ad1048e. [Direct source](https://www.lcegroup.co.uk/New/Nikon-MB-N12-BatteryPortrait-Grip-for-the-Z-8_141195.html)
+
+Existing Harrison Cameras £329 observation remains active. Carmarthen Cameras' direct page currently showed Sold out at £349 and was not imported. Batch 09 now has 25 active GBP rows (12 UK New, 13 UK Used). Used observations remain reference-only. No master/schema/valuation changes; TEST and Stripe untouched.

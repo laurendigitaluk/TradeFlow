@@ -467,3 +467,10 @@ One additional exact Nikon F55 body-only UK Used observation was imported into L
 - Bristol Cameras — £24.00, used Good, in stock, silver body only (no lens), supplied with 2x CR2 batteries and body cap, 3-month guarantee. Evidence ID 39529bb2-e229-4a4d-a739-4a198222bf82. [Direct source](https://www.bristolcameras.co.uk/product/nikon-f55-body-only-35mm-film-camera-used/)
 
 Search result exposed full product details and UK stock; opening the direct page returned HTTP 520. This retrieval limitation is retained in the evidence notes for dashboard click-through recheck. Existing eBay ColinsCameras £28.60 body-only source remains active, with its unusually high £35 shipping separately flagged. Batch 09 now has 28 active GBP rows (14 UK New, 14 UK Used), superseding earlier 27-row total. UK Used remains reference-only. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — HDC-3000 candidate closed as invalid model label
+
+Sony documentation uses “HDC-3000 series” as a family label, not as a distinct sellable camera model. The family includes separate identifiable products such as HDC-P50, HDC-3500, HDC-3100 and HDC-3170. Close the HDC-3000 candidate as invalid/non-product, not as an outstanding RED VERIFY price lead. Do not substitute HDC-3300/HDC-3500 or create a master product. The remaining genuine unresolved price lead across Batches 09–13 is Batch 12 Sony MKS-R3210: exact 32-button routing panel model is valid, but no exact UK GBP retail price has been verified. The £61.75 eBay listing is 2x BKS-R3210 and excluded.
+
+Latest Batch 09 remains 28 total / 28 active (14 UK New, 14 UK Used). No data rows changed by this disposition.

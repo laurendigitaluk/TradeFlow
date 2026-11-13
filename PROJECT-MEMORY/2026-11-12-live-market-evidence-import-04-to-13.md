@@ -406,3 +406,8 @@ Added Bristol Cameras £24 Nikon F55 body-only, Used Good, in stock, 2x CR2 batt
 ## 13 November 2026 — Batch 11 Panasonic used-market evidence expanded
 
 Added two LCE Panasonic Lumix DC-FZ1000 II records at £699.99: Bristol item 145185 Excellent boxed, Bath item 139564 Good; both in store now with six-month warranty. Evidence IDs 48402a9e-16b9-4787-931b-592e0a4cb0ef and dfa96b33-7559-47df-8696-bac36f1b3fec. The direct page opens returned cache miss after search results supplied full listing details; preserve the limitation. Existing Kamerastore £709 zoom-lever fault observation remains distinct. Batch 11 now 36 active (9 New, 27 Used). Batches 09–13 now 179 total, 174 active (86 New, 88 Used), five inactive. Batches 01–13 now 287 total, 279 active (149 New, 130 Used), eight inactive. Global LIVE 4,832 total, 4,770 active, 62 inactive. UK Used remains reference-only; TEST and Stripe untouched.
+
+
+## 13 November 2026 — Batch 11 Pentax price comparison added
+
+Added Camera Centre UK exact black Pentax HD PENTAX-D FA 100mm f/2.8 ED AW Macro Lens at £699, MPN 20320 / SKU YA1728:27003679. Evidence 6bd70951-d492-4512-b488-9ae6fe384bec. Its current deals page marks the product out of stock, so preserve availability out_of_stock; do not present it as available to buy. Existing Carmarthen £699.99 with two in stock remains active. Batch 11 now 37 total, 37 active (10 New, 27 Used). Batches 09–13 now 180 total, 175 active (87 New, 88 Used), five inactive. Batches 01–13 now 288 total, 280 active (150 New, 130 Used), eight inactive. Global LIVE 4,833 total, 4,771 active, 62 inactive. UK Used remains reference-only; TEST and Stripe untouched.

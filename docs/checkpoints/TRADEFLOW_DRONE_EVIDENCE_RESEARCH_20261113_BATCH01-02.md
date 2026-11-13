@@ -62,3 +62,12 @@
 - Keep historical source observations separate; do not overwrite good existing evidence or deactivate records without a verified reason.
 - Record all reviewed master product UUIDs in each dashboard message's `metadata.reviewed_product_ids` so subsequent batches cannot reselect the same products.
 - Before Batch 03, use these UUIDs to exclude Batch 01 and 02 products; continue with the next 20 active Drone products without active evidence.
+
+
+
+## Batch 03 — 20 products reviewed (13 November 2026)
+
+- 3 verified GBP observations inserted and read back across 2 exact LIVE master products: EMAX Tinyhawk Lite RTF — Unmanned Tech UK £134.95 New/out of stock; HobbyRC UK £140.90 New/out of stock; FIMI X8 SE 2020 — eBay UK completed Used sale £47.40 (underlying item price, excluding £2.16 Buyer Protection fee), ended 25 September 2026. The used record is reference-only.
+- 18 products held: BetaFPV Air65 (Racing/Freestyle variant not resolved), Air75 (ELRS/TBS variant not resolved), FIMI A3, FIMI X6, FIMI X8 Pro, FIMI X8 SE 2022, Mi Drone 1080P, Mitu Mini Drone, X8 Mini, X8 Mini V2, X8 Pro 2025, X8 SE, X8 SE 2022 V2, X8 Tele, X8T V384 (no exact UK GBP source), X8T V640 (conflicting current/cached price snapshots; live price/availability recheck required), Freefly Alta 6 (manufacturer discontinued; old sold-out new price not used as an active valuation reference), and Freefly Alta 8 (eBay listing's item specifics say Remote Control and do not confirm the standard drone package).
+- Dashboard status message: `Drones — 20-product research batch 03: 3 verified observations added to LIVE`. Reviewed UUIDs are saved in metadata to prevent duplicate selection.
+- LIVE after Batch 03: 4,862 evidence rows total / 4,800 active / 62 inactive; 2,332 active UK New and 2,468 active UK Used. Drones remain 541 active products; 377 without active UK New and 367 without active UK Used.

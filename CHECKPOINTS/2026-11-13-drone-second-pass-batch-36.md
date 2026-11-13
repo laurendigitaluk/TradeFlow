@@ -11,3 +11,6 @@ Date: 2026-11-13 | Phase: Used-only → UK New | Reviewed: 20 | Imports: 2
 18 held: OnBuy HS720G was out of stock when opened; H501S offers out of stock/BNF/uncertain UK delivery; ANAFI USA not SE and out of stock; remaining old models lacked exact current UK new stock.
 
 LIVE totals: 541 active visible; 182 neither; 117 New-only; 122 Used-only; 80 both; missing New 297; missing Used 346; integrity failures 0. TEST, Stripe, valuation, master records, tenant/customer/transaction data and deployments untouched.
+
+## Count clarification
+Correction: group breakdown after this batch is 182 neither, 164 UK New-only, 115 UK Used-only, 80 both. The dashboard status message had transposed the New-only/Used-only labels; missing UK New 297 and missing UK Used 346 were correct.

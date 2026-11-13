@@ -544,3 +544,10 @@ Latest Batches 09–13: 179 total, 174 active (86 UK New, 88 UK Used), five inac
 Added Camera Centre UK direct UK price for exact black HD PENTAX-D FA 100mm f/2.8 ED AW Macro Lens at £699.00, MPN 20320 / SKU YA1728:27003679. Evidence ID 6bd70951-d492-4512-b488-9ae6fe384bec. Current retailer deals page marks it Out of stock; availability is explicitly recorded out_of_stock. Existing Carmarthen £699.99 / two units in stock remains active.
 
 Latest Batches 09–13: 180 total, 175 active (87 UK New, 88 UK Used), five inactive. Latest Batches 01–13: 288 total, 280 active (150 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,833 total, 4,771 active, 62 inactive; 2,308 active UK New GBP and 2,463 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes prior 13 Nov totals.
+
+
+## 13 November 2026 — Batch 10 HDC-3100 CVP source added
+
+Added CVP exact Sony HDC-3100 System Camera for Fiber Operation, p/n HDC-3100, £20,631.14 ex VAT / £24,757.37 inc VAT, new, available for backorder (normally 1–2 weeks), 2 Years PrimeSupportPro warranty. Camera body only; lens and viewfinder not included. Evidence ID b2e3898d-3df4-4332-817c-e9537fc64cf3. Attached to exact HDC-3100 Studio/Broadcast master 5882070e-3add-4bfa-b477-9a516f676333. The older Visual Impact HDC3100 record remains on its separate Cinema Camera branch master; no merge or reassignment was made.
+
+Latest Batches 09–13: 181 total, 176 active (88 UK New, 88 UK Used), five inactive. Latest Batches 01–13: 289 total, 281 active (151 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,834 total, 4,772 active, 62 inactive; 2,309 active UK New GBP and 2,463 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes prior 13 Nov totals.

@@ -103,3 +103,7 @@ Next 20 Used-only active visible Drone products selected from LIVE:
 | Holy Stone | HS720 | Holy Stone HS720 GPS Starter Drone | 591ae257-ab56-4438-b3a1-14623a5aa8f7 |
 
 Candidate selection only; not researched yet. Search exact UK new product/variant/package and preserve controller/bundle differences.
+
+
+## Count clarification
+Correction: group breakdown after this batch is 182 neither, 164 UK New-only, 120 UK Used-only, 75 both. The dashboard status message had transposed the New-only/Used-only labels; missing UK New 302 and missing UK Used 346 were correct.

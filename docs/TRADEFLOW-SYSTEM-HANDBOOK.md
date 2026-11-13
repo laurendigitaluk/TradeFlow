@@ -5897,3 +5897,8 @@ Latest Batches 09–13: 181 total, 176 active (88 UK New, 88 UK Used), five inac
 Batch 12 added Visual Impact's base HDC-3200 camera-head SKU at £35,588.72 inc VAT (£29,657.27 ex), available to order but not held in stock. Existing HDC-3200/DF at £37,651.84 inc VAT includes the dual-filter option and remains separate. Preserve SKU and included-component distinctions in the evidence notes; do not collapse variants or overwrite the existing row. The direct page returned cache miss after search results exposed the price/SKU; retrieval limitation is recorded.
 
 Latest Batches 09–13: 182 total, 177 active (89 UK New, 88 UK Used), five inactive. Latest Batches 01–13: 290 total, 282 active (152 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,835 total, 4,773 active, 62 inactive. No schema/master/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — HVR model matching rejection
+
+Batch 13 rechecked eBay item 117069480914 from Plan B Retro. The title says HVR-V1E, but item specifics say HVR-Z1E; reject it as a model mismatch. A Smart_With_Media £259.99 result could not be confirmed as a current item in the seller's store. No evidence was imported. Keep exact model/MPN/item-specific checks ahead of title matching for Sony HVR camcorders.

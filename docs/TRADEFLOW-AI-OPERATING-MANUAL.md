@@ -12,7 +12,7 @@
 > **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
 
 **Status:** Living operational document  
-**Version:** 5.0  
+**Version:** 5.1  
 **Date:** 13 November 2026  
 **Project:** TradeFlow
 
@@ -4279,3 +4279,14 @@ Skydio results did not yield a qualifying UK New offer. A Skydio 2 used listing 
 No UK Used completed-sale observation met the exact model/package, UK seller and reliable price-capture requirements. No records were written. LIVE Drone metrics remain 541 active visible products; 184 with no active evidence; 306 missing UK New; 351 missing UK Used; 68 with both types. TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments untouched. Pokémon cards remain excluded.
 
 Batch 23 candidate list is recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-22.md`, containing the next 20 zero-evidence Skydio masters. Recheck evidence and exact package identity before any write.
+
+
+## 13 November 2026 — Drone second-pass research Batch 23
+
+Batch 23 reviewed 20 previously unreviewed Skydio master products/accessories. No qualifying UK GBP retail source or direct UK completed-sale capture was found, so no evidence was imported. LIVE read-back confirms all 20 reviewed masters remain at zero active evidence.
+
+Skydio's official shop pages for 2+ batteries, Beacon, Sports Upgrade and Cinema Upgrade display USD and ship from the US; these prices were not converted or classified as UK evidence. X10/X10D starter and solution kits are sales-quoted, with Skydio stating it does not publish X10 pricing. The 2+ Enterprise Kit remains sales-enquiry-only; consumer 2+ kits are discontinued. A UK public tender showing X10D procurement value is not a per-unit retail offer and its delivery region is Bulgaria, so it was excluded. Used-market searches did not find a qualifying completed UK sale for the exact masters; a sold Skydio listing found was an accessory/part, not one of the drone masters. No used evidence imported.
+
+LIVE Drone metrics remain 541 active visible products; 184 with no active evidence; 306 missing UK New; 351 missing UK Used; 68 with both types. No writes occurred in Batch 23. TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments untouched. Pokémon cards remain excluded.
+
+Batch 24 candidate selection is recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-23.md`. It contains the next 20 zero-evidence masters across Skydio and Walkera; verify whether each is a drone or accessory and confirm exact package before any evidence write.

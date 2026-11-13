@@ -1,0 +1,3 @@
+# Project memory — Drone Batch 38
+Batch 38 reviewed 20 Used-only products. Two UK New observations inserted: DJI Mavic 3 Pro Fly More Combo RC Pro £2,844 Drone-Sales UK (49fbe91e-21c3-4339-a5f7-288d72d2ac51); DJI Mavic 3 Enterprise Standard Package £3,079 Drone-Sales UK (6fccb1ab-cb3f-4b72-8dfb-1249f1ce4276). Both new, one in stock, official manufacturer stock/full UK warranty/free UK delivery. 18 held. See CHECKPOINTS/2026-11-13-drone-second-pass-batch-38.md for product IDs and Batch 39 queue.
+LIVE totals 541 active visible, 182 neither, 112 New-only, 122 Used-only, 85 both; missing New 292, missing Used 346; integrity failures zero. TEST/Stripe/valuation/deployments untouched.

@@ -396,3 +396,8 @@ Added ProAV first-generation Sony FE 100-400mm F4.5-5.6 GM OSS at £2,149 inc VA
 ## 13 November 2026 — Batch 12 additional CVP evidence
 
 Added CVP exact Sony HDCE-TX30 at £11,347.13 inc VAT (£9,455.94 ex VAT), new, available for backorder, normally 1–2 weeks, one-year warranty; evidence 0dc2b59c-fbc4-4eb8-9da5-cc1d2a5f7247. Direct source confirms exact product and independently matches Visual Impact's price. MKS-R3210 remains RED VERIFY because no exact UK GBP offer exists; the £61.75 eBay result is 2x BKS-R3210, not MKS-R3210. Batch 12 now 28 total, 27 active (18 New, 9 Used), one inactive. Batches 09–13 now 176 total, 171 active (86 New, 85 Used), five inactive. Batches 01–13 now 284 total, 276 active (149 New, 127 Used), eight inactive. Global LIVE 4,829 total, 4,767 active, 62 inactive. UK Used remains reference-only; TEST and Stripe untouched.
+
+
+## 13 November 2026 — Batch 09 Nikon F55 source coverage expanded
+
+Added Bristol Cameras £24 Nikon F55 body-only, Used Good, in stock, 2x CR2 batteries and body cap, 3-month guarantee. Evidence 39529bb2-e229-4a4d-a739-4a198222bf82. The search result exposed the direct item details and UK stock, but direct page open returned HTTP 520; source URL and limitation remain recorded. Batch 09 now 28 active (14 New, 14 Used). Batches 09–13 now 177 total, 172 active (86 New, 86 Used), five inactive. Batches 01–13 now 285 total, 277 active (149 New, 128 Used), eight inactive. Global LIVE 4,830 total, 4,768 active, 62 inactive. UK Used remains reference-only; TEST and Stripe untouched.

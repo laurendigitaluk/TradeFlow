@@ -394,3 +394,8 @@ Two independently opened UK retailer product pages confirm the exact MB-N12 / St
 ## 13 November 2026 — Batch 09 follow-up totals corrected
 
 Two new UK New direct retailer observations were added and read back: SmallRig RC100B Pro Version / Wex £242.90, limited stock (evidence 9c451b25-6d50-48fe-b433-b9a6d0f6b36b); HD PENTAX-FA 31mm f/1.8 Limited black / Park Cameras £1,099, listed but stock not confirmed (evidence 9cfa3efe-4363-4269-8062-a0a3e7527ead). Batch 09 now 27 active (14 UK New, 13 UK Used). This supersedes the previous 25-active snapshot. No master or valuation changes.
+
+
+## 13 November 2026 — Batch 09 Nikon F55 second UK used source
+
+Added Bristol Cameras exact Nikon F55 body-only £24.00, used Good, in stock; silver body, 2x CR2 batteries, body cap and 3-month guarantee. Evidence 39529bb2-e229-4a4d-a739-4a198222bf82. Search result supplied full item detail and UK stock, but direct page open returned HTTP 520; URL and limitation retained for dashboard recheck. Existing ColinsCameras eBay £28.60 remains. Batch 09 now 28 active (14 New, 14 Used). UK Used is reference-only.

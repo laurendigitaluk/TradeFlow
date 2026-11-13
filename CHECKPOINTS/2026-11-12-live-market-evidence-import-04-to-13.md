@@ -516,3 +516,10 @@ Latest Batches 09–13: 174 total, 169 active (84 UK New, 85 UK Used), five inac
 Added ProAV exact first-generation Sony FE 100-400mm F4.5-5.6 GM OSS / SEL100400GM.SYX / EAN 4548736058422 at £2,149 inc VAT (£1,790.83 ex VAT), new, one in stock for immediate dispatch. Evidence ID 40d60e8f-0f40-44ff-baa5-e29121b4a916. It is distinct from newer constant-F4.5 SEL100400MCW. Existing Carmarthen Cameras £2,149 remains active.
 
 Latest Batches 09–13: 175 total, 170 active (85 UK New, 85 UK Used), five inactive. Latest Batches 01–13: 283 total, 275 active (148 UK New, 127 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,828 total, 4,766 active, 62 inactive; 2,306 active UK New GBP and 2,460 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes prior 13 Nov cumulative counts.
+
+
+## 13 November 2026 — Batch 12 HDCE-TX30 CVP offer added
+
+Added CVP direct UK source for Sony HDCE-TX30 IP Camera Extension Adapter at £11,347.13 inc VAT (£9,455.94 ex VAT), new, available for backorder, normally 1–2 weeks subject to variation, one-year standard warranty. Evidence ID 0dc2b59c-fbc4-4eb8-9da5-cc1d2a5f7247. This independently corroborates Visual Impact's direct UK listing at the same price. MKS-R3210 remains unimported: exact model confirmed by Sony, but no exact UK GBP retail price found; the £61.75 eBay result is 2x BKS-R3210 and excluded.
+
+Latest Batches 09–13: 176 total, 171 active (86 UK New, 85 UK Used), five inactive. Latest Batches 01–13: 284 total, 276 active (149 UK New, 127 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,829 total, 4,767 active, 62 inactive; 2,307 active UK New GBP and 2,460 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes prior 13 Nov cumulative counts.

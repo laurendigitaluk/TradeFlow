@@ -3468,3 +3468,10 @@ When the manufacturer has confirmed that a product is no longer manufactured, ma
 - This status is distinct from the UK Used inspection-only policy. UK Used remains customer inspection/click-through only; UK New remains the only automatic valuation reference, subject to accurate availability/status and existing valuation rules.
 
 Use this rule consistently in future research and when revisiting previously recorded UK New observations. No schema change or valuation-code change is authorised by this rule.
+
+
+### End-user warning rationale
+
+The purpose of the **Discontinued** label is to warn the customer that the recorded new price may no longer represent a realistic current replacement cost. A discontinued model may have been superseded by a newer model with different features, specifications and market pricing. Therefore, a customer comparing a buyback offer against the old discontinued new price should not assume the comparison is like-for-like or that the old price is still achievable.
+
+Where a replacement model is known, show it as contextual information separately; do not silently substitute its price for the discontinued model's price. The customer-facing wording should explain that the reference is historical and may be misleading for current replacement-value comparisons. This is an information/warning requirement, not a request to change automatic valuation logic.

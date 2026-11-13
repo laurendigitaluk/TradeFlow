@@ -64,3 +64,8 @@ Batch 11 now 32 active (8 UK New, 24 UK Used). Cumulative Batches 04–13 now 24
 ## 13 November 2026 — NIKKOR Z 50mm f/1.4 retailer comparison added
 
 Wilkinson Cameras direct page confirms exact NIKKOR Z 50mm f/1.4, MPN JMA004DA / EAN 4960759915979, £459, new and in stock. Imported/read back as evidence 44ddeb36-b25c-4d1f-941f-5ca673c88f90 against existing master beb389f1-c53e-4166-9cf6-2b07148df339. The search snippet showed a conflicting lower amount; direct page was authoritative. Nikon UK direct page still shows £449 in stock; that existing record remains unchanged. Batch 11 now 33 active (9 UK New, 24 UK Used). No master or valuation changes.
+
+
+## 13 November 2026 — Batch 11 Nikon COOLPIX S7000 used source
+
+Added CameraWorld exact Nikon COOLPIX S7000 used listing £179.10, Excellent, one unique item in stock, SKU C-911912, battery/cable/strap and 12-month warranty; evidence 9d74d5d1-992b-4864-9b95-175bb9303081. Direct URL retained; the search result supplied the listing detail but page opening returned cache miss. Existing Kamerastore £158 remains active. Batch 11 now 34 active (9 UK New, 25 UK Used). UK Used remains valuation-excluded.

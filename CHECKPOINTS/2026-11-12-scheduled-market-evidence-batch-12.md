@@ -352,3 +352,11 @@ One further exact UK New GBP observation was imported into LIVE against HDCE-TX3
 - CVP — £11,347.13 inc VAT (£9,455.94 ex VAT), new, available for backorder, normally delivered in 1–2 weeks subject to variation; one-year standard warranty. Evidence ID 0dc2b59c-fbc4-4eb8-9da5-cc1d2a5f7247. [Direct source](https://cvp.com/product/sony-hdce-tx30-adapter)
 
 The direct CVP page confirms exact model HDCE-TX30 and package contents. Its price and backorder status corroborate Visual Impact's direct page at the same GBP inc-VAT price. Batch 12 now 28 total / 27 active (18 UK New, 9 UK Used), one inactive. MKS-R3210 remains RED VERIFY: exact Sony model confirmed but no UK GBP retailer price; the £61.75 eBay result is 2x BKS-R3210 and excluded. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — Sony HDC-3200 base SKU price observation
+
+One additional exact UK New observation was imported into LIVE against the HDC-3200 Studio/Broadcast Camera master c7422817-2dfd-4837-8d75-d7a092d2a8b3:
+- Visual Impact — base SKU HDC-3200 (without /DF dual-filter option), £35,588.72 inc VAT (£29,657.27 ex VAT), new, available to order but not held in stock. Camera head only; no CCU, lens or viewfinder. Evidence ID 0741e38c-7347-475a-8fea-21b0b99809d1. [Direct source](https://www.visuals.co.uk/hdc-3200.html)
+
+This is a separate SKU/configuration from the existing HDC-3200/DF observation at £37,651.84 inc VAT. Preserve the /DF dual-filter distinction; do not collapse package details. Search result supplied the price, SKU and availability; opening the direct page returned cache miss, recorded for owner recheck. Batch 12 now 29 total / 28 active (19 UK New, 9 UK Used), one inactive. MKS-R3210 remains RED VERIFY because no exact UK GBP retailer price was found; the £61.75 eBay result is 2x BKS-R3210 and excluded. No master/schema/valuation changes; TEST and Stripe untouched.

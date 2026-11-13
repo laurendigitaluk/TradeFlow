@@ -5902,3 +5902,12 @@ Latest Batches 09–13: 182 total, 177 active (89 UK New, 88 UK Used), five inac
 ## 13 November 2026 — HVR model matching rejection
 
 Batch 13 rechecked eBay item 117069480914 from Plan B Retro. The title says HVR-V1E, but item specifics say HVR-Z1E; reject it as a model mismatch. A Smart_With_Media £259.99 result could not be confirmed as a current item in the seller's store. No evidence was imported. Keep exact model/MPN/item-specific checks ahead of title matching for Sony HVR camcorders.
+
+
+## 13 November 2026 — 15 additional Batch 09–13 evidence rows completed
+
+The current continuation added 15 LIVE evidence records across Batches 09–13, all read back successfully. Each batch checkpoint carries the detailed source, price, exact model/package and availability. Preserve cache-miss/HTTP-520 limitations where a search result supplied the direct product details but the page itself did not open; source URLs remain for owner recheck. No existing rows were deactivated or overwritten in this continuation.
+
+Latest counts: Batches 09–13 = 182 total, 177 active (89 New, 88 Used), five inactive. Batches 01–13 = 290 total, 282 active (152 New, 130 Used), eight inactive. Global LIVE = 4,835 total, 4,773 active, 62 inactive (2,310 active UK New GBP; 2,463 active UK Used GBP).
+
+Only true unresolved RED VERIFY lead: Sony MKS-R3210, exact 32-button routing panel, but no exact UK GBP price found. Do not use the £61.75 listing for 2x BKS-R3210. Sony HDC-3000 is not a standalone sellable camera; “HDC-3000 series” is a family label and that candidate is closed. Plan B Retro eBay listing titled HVR-V1E is actually HVR-Z1E in item specifics and is excluded. UK Used remains reference-only. TEST, Stripe, schema, master catalogue and valuation logic untouched.

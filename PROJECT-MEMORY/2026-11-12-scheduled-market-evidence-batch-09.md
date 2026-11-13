@@ -384,3 +384,8 @@ Batch 09 now has 16 active GBP rows: 6 UK New and 10 UK Used. Used remains refer
 Four further direct UK observations were added and read back: Visuals Sony HDC-F5500V £85,619.24 inc VAT / £71,349.37 ex VAT (exact HDC-F5500V-4K, available to order, not held in stock, system configuration not itemised); SmallRig Direct UK Store eBay RC100B Pro 5143 £242.90 new, three available; ColinsCameras eBay Nikon F55 body-only £28.60 used, £35 international postage shown despite UK seller location; Clifton Cameras Pentax HD PENTAX-FA 31mm F1.8 Limited black £999, awaiting stock 5–7 days.
 
 Refreshed source observations: Peter Rogers Pentax DA* 55mm F1.4 £559 in stock; Andertons Shure SM81 £381, one off-site warehouse unit; Harrison Nikon MB-N12 £329, one in stock. Batch 09 now has 20 active GBP rows (9 UK New, 11 UK Used). Used remains reference-only. Exact links and caveats are in the checkpoint. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — MB-N12 retailer comparison added
+
+Two independently opened UK retailer product pages confirm the exact MB-N12 / Standard Item at £349 new and in stock: Clifton Cameras (one available; exact VFC01001 / EAN 4960759910356) and London Camera Exchange (free delivery). LIVE evidence IDs e9100020-f077-4c35-b3d5-f1d74a2bdbec and 53a62053-3a9a-4c27-9d64-98c43ad1048e. Existing Harrison Cameras £329 remains active. Carmarthen £349 was not imported because its direct page says sold out. Batch 09 now 25 active (12 UK New, 13 UK Used). No master or valuation changes.

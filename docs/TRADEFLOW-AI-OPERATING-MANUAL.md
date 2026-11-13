@@ -6500,3 +6500,12 @@ Latest Batches 09–13: 182 total, 177 active (89 UK New, 88 UK Used), five inac
 ## 13 November 2026 — reject HVR title-only matches
 
 Do not import eBay UK item 117069480914 from Plan B Retro as HVR-V1E: item specifics identify HVR-Z1E despite the title. Do not import the Smart_With_Media £259.99 search result unless it can be confirmed as a current listing; it was absent from the seller's current store page. No rows imported and counts unchanged. Use item specifics and exact model identity rather than titles for HVR-family products.
+
+
+## 13 November 2026 — completion and remaining exact-price lead
+
+15 additional evidence rows were added to LIVE across Batches 09–13 and read back. The individual batch checkpoints and project memory contain source-level detail. Preserve explicit retrieval caveats where the search result supplied a complete direct listing but opening the page returned cache miss or HTTP 520; never represent those pages as successfully opened. No existing rows were deactivated or overwritten during this continuation.
+
+Latest Batches 09–13: 182 total, 177 active (89 UK New, 88 UK Used), five inactive. Batches 01–13: 290 total, 282 active (152 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,835 total, 4,773 active, 62 inactive.
+
+The only remaining genuine RED VERIFY price lead in 09–13 is Sony MKS-R3210. Exact model confirmed, but no exact UK GBP retailer offer found; £61.75 for 2x BKS-R3210 is not a match. HDC-3000 is closed as a non-product family label, and the Plan B Retro HVR-V1E title is excluded because its item specifics say HVR-Z1E. UK Used remains excluded from automatic valuation. No TEST, Stripe, schema, master catalogue or valuation changes.

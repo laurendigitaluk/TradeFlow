@@ -120,3 +120,8 @@ Detected two exact duplicate source captures in Batch 13 and deactivated the ear
 ## 12 November 2026 — duplicate rows deactivated
 
 Two duplicate captures were deactivated in LIVE and retained for audit: earlier Sony FE 12-24mm F2.8 GM Sony UK row 0c023277-93cd-47bb-8677-4f005693e738 (later same-source active row fa2cbd78-e707-481c-be3f-e46aa3cf18d5); earlier Sony ECM-B10 Wex row 9d7a7b65-8a2a-4a28-90b7-2a1c64e38564 (later same-source active row f9bb53b9-c1a1-4983-b0bd-77bdb4f6ccba). Other retailers remain distinct active offers. Batch 13 now 50 total, 48 active (27 UK New, 21 UK Used), two inactive duplicates.
+
+
+## 13 November 2026 — HVR-V1E additional used price reference
+
+Added Colins Cameras exact Sony HVR-V1E £260, Very Good, fully tested; charger, cables, NP-F960 battery and remote included. The product result shows Sold out; availability is out_of_stock. Evidence ID 20b25a7e-2959-4387-bfcd-cb3e9ca0c577. Direct page open returned cache miss after the search result supplied the item details; source URL and limitation retained for dashboard recheck. Existing Camera City £399 in-stock record remains. Batch 13 now 51 total, 49 active (27 New, 22 Used), two inactive. UK Used is reference-only.

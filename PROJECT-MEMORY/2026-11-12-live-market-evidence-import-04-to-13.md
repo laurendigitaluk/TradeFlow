@@ -386,3 +386,8 @@ Nikon COOLPIX S7000 now has an additional CameraWorld used Excellent observation
 ## 13 November 2026 — Batch 13 HVR-V1E source coverage
 
 Added Colins Cameras Sony HVR-V1E used Very Good £260, fully tested, supplied with NP-F960 battery, charger, cables and remote; direct listing is sold out. Evidence 20b25a7e-2959-4387-bfcd-cb3e9ca0c577. The direct page returned cache miss after the search result supplied exact details; source URL and limitation remain recorded. Batch 13 now 51 total, 49 active (27 New, 22 Used), two inactive. Batches 09–13 now 174 total, 169 active (84 New, 85 Used), five inactive. Batches 01–13 now 282 total, 274 active (147 New, 127 Used), eight inactive. Global LIVE 4,827 total, 4,765 active, 62 inactive. UK Used remains reference-only; TEST and Stripe untouched.
+
+
+## 13 November 2026 — Batch 10 source coverage expanded
+
+Added ProAV first-generation Sony FE 100-400mm F4.5-5.6 GM OSS at £2,149 inc VAT (£1,790.83 ex), new, one in stock, exact SEL100400GM.SYX / EAN 4548736058422. Evidence 40d60e8f-0f40-44ff-baa5-e29121b4a916. Do not merge with newer SEL100400MCW constant-F4.5 model. Batch 10 now 36 total, 34 active (18 New, 16 Used), two inactive. Batches 09–13 now 175 total, 170 active (85 New, 85 Used), five inactive. Batches 01–13 now 283 total, 275 active (148 New, 127 Used), eight inactive. Global LIVE 4,828 total, 4,766 active, 62 inactive. UK Used remains reference-only; TEST and Stripe untouched.

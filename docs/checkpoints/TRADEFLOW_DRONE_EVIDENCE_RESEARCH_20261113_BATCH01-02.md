@@ -80,3 +80,14 @@
 - 17 held: Freefly Alta X, Alta X Gen2, Alta X Gen2 NDAA, Astro, Astro Max standard, Astro Max NDAA/Blue standard, Astro Max NDAA/Blue with LR1 payload, Astro Max Mapping Essentials, Astro Max Mapping Essentials NDAA/Blue (no exact UK GBP sources); GEPRC CineLog30 V3 O4 Pro ELRS (receiver/price ambiguity), CineLog35 V2 Analog (receiver variants), DarkStar20 ELRS (unverified seller source); Holy Stone H4831, HS110D, HS180, HS210FS and HS210P (no sufficiently reliable current exact UK GBP retail evidence).
 - Dashboard status message: `Drones — 20-product research batch 04: 4 verified observations added to LIVE`. Reviewed UUIDs are saved in metadata to prevent reselection.
 - LIVE after Batch 04: 4,866 evidence rows total / 4,804 active / 62 inactive; 2,334 active UK New and 2,470 active UK Used. Drones remain 541 active products; 375 without active UK New and 365 without active UK Used.
+
+
+
+## Batch 03 follow-up — Freefly Alta 6 / Alta 8 UK Used evidence (13 November 2026)
+
+A later source pass found three exact UK Used references for two products that had been held in Batch 03:
+- Freefly Alta 6 — eBay completed sale £2,800 item price (excluding £52.25 Buyer Protection fee), sold 9 November 2026, plus a separate current UK business-seller listing at £5,000.
+- Freefly Alta 8 — current UK business-seller listing at £7,000.
+All three were read back from LIVE and are active `uk_used` references only; they do not affect automatic valuation. The Alta 6/Alta 8 Batch 03 hold notes are superseded for UK Used coverage only; no UK New source was added. Dashboard follow-up message: `Drone research follow-up — Freefly Alta 6 and Alta 8 UK Used evidence added to LIVE`.
+
+LIVE after this follow-up: 4,869 evidence rows total / 4,807 active / 62 inactive; 2,334 active UK New and 2,473 active UK Used. Drones remain 541 active products; 375 without active UK New and 363 without active UK Used.

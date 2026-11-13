@@ -3173,3 +3173,16 @@ The Potensic Dreamer 4K listing found on FLYDRONE showed £254.99 but was sold o
 Post-research LIVE Drone metrics remain 541 active visible products; 184 with no active evidence; 306 missing UK New; 351 missing UK Used; 68 with both types. No evidence writes occurred in Batch 21. TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded.
 
 Batch 22 candidate list is recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-21.md`; it is the next 20 zero-evidence masters from Potensic Wisp, PowerVision and Skydio. Recheck active evidence and exact package identity before any write.
+
+
+## 13 November 2026 — Drone second-pass research Batch 22
+
+Batch 22 reviewed 20 previously unreviewed active Drone masters across Potensic, PowerVision and Skydio. No source was accepted for import. LIVE read-back confirmed the reviewed products remain without active evidence.
+
+PowerVision leads were checked carefully: Menkind's PowerEgg page is an old listing and the current Menkind drone category no longer lists that product; PowerEgg X Wizard pages did not provide a current stock confirmation; SLRHut's in-stock PowerEgg X Explorer is not proven to match the catalogue's Standard Package; PriceSpy's PowerDolphin £1,449 result links to a retailer page that could not be retrieved directly, and the surfaced offer is the Wizard PDO10 variant rather than a confirmed Standard/Explorer package. No PowerRay, PowerEye or PowerEgg X 8K exact current UK offer qualified. Do not promote aggregator-only prices or assume bundle equivalence.
+
+Skydio results did not yield a qualifying UK New offer. A Skydio 2 used listing ended and was relisted rather than recording a completed sale; another Skydio 2+ search result was an accessory, not a drone. Skydio's official FAQ confirms consumer 2+ kits are discontinued while enterprise kits remain sales-enquiry-only. The PowerEgg X Wizard UK page was too old and did not establish stock; the Potensic Wisp search produced no qualifying UK offer.
+
+No UK Used completed-sale observation met the exact model/package, UK seller and reliable price-capture requirements. No records were written. LIVE Drone metrics remain 541 active visible products; 184 with no active evidence; 306 missing UK New; 351 missing UK Used; 68 with both types. TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments untouched. Pokémon cards remain excluded.
+
+Batch 23 candidate list is recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-22.md`, containing the next 20 zero-evidence Skydio masters. Recheck evidence and exact package identity before any write.

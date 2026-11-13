@@ -6714,3 +6714,22 @@ Current active + customer-visible 3D-printer snapshot: 199 products; 176 UK New 
 UK Used remains inspection/reference only and never affects automatic valuation; UK New remains the only automatic valuation evidence. Use UK GBP and UK sources, exact package matching, and disclose seller location, condition, fee treatment, sold/current status and uncertainty. Do not treat buyer-protection-inclusive totals as underlying item prices; disclose when Best Offer accepted amount is unknown. No schema, catalogue master, valuation, RLS, RPC, Edge Function, TEST, Stripe or deployment changes were made.
 
 Full checkpoint: `CHECKPOINTS/2026-11-13-live-3d-printer-uk-used-review-02.md`.
+
+
+## 13 November 2026 — 3D-printer UK Used evidence review 03
+
+A 20-product package-gap review produced five additional UK Used observations in TradeFlow LIVE, inserted into `public.shared_market_evidence` and read back successfully:
+
+- Bambu Lab H2D, AMS 2 Pro Combo — £1,250.00, active Gumtree UK listing, Airdrie, North Lanarkshire; seller reports 230 print hours and “As good as new”. AMS HT and SUNLU dryer are explicitly not included. Evidence `617dab7e-4b3f-4e2e-b2d5-cf112b4faba0`.
+- Bambu Lab H2D Pro, AMS 2 Pro + AMS HT — £1,379.00, Gumtree UK, Bristol City Centre; used twice, excellent cosmetic condition, one roll of PLA included free, collection only. Evidence `682c1d26-9e23-450b-b473-e7ca4fa348b1`.
+- Anycubic Photon Mono M7 Max, Standard Resin Printer — £400.00, active Gumtree UK listing, Dartford, Kent; seller reports good working order, use on a few projects and general wear. Evidence `e7a499c1-681f-4368-8df0-3ed87eb0c42a`.
+- Anycubic Photon Mono 4, Standard Resin Printer — £145.19, eBay UK sold 13 October 2026, Bournemouth. Displayed £150.73 included £5.54 Buyer Protection fee; stored amount excludes the fee. Evidence `e0a1c685-1be5-454f-955a-601175d378a7`.
+- Anycubic Photon Mono 4, Standard Resin Printer — £103.90, eBay UK sold 13 October 2026, Grays. Displayed £108.07 included £4.17 Buyer Protection fee; Best Offer was available, so accepted amount may differ. Evidence `a62b7a44-7b58-4bdf-9faf-761facc445b7`.
+
+Kobra S1 Max 8/16-colour packages and Photon P1 Max had no exact UK Used package evidence. Photon Mono 4 Ultra had no exact used listing. Photon Mono M7 Pro results were unrepaired or ended. Bambu A2L and H2C listings returned 410 when reopened. H2D laser bundles and H3C/P1S variants did not match the exact catalogue package. A H2C listing with two AMS 2 Pro units and many extras was not mapped to the single Vortek package.
+
+Current active + customer-visible 3D-printer snapshot: 199 products; 172 UK New only; 26 with both UK New and UK Used; 1 UK Used only; 0 with neither; 172 missing UK Used. This snapshot may include parallel worker imports.
+
+UK Used remains inspection/reference only and never affects automatic valuation; UK New remains the only automatic valuation evidence. Use UK GBP and UK sources, exact package matching, and disclose listing status, seller location, condition, print hours, extras and collection terms. Exclude Buyer Protection fees from underlying item price where separable and disclose Best Offer uncertainty. No catalogue master, schema, valuation, RLS, RPC, Edge Function, TEST, Stripe or deployment changes were made.
+
+Full checkpoint: `CHECKPOINTS/2026-11-13-live-3d-printer-uk-used-review-03.md`.

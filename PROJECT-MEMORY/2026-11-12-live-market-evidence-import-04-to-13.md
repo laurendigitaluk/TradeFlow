@@ -381,3 +381,8 @@ Added Wex Photo Video SmallRig RC100B Pro Version UK 5143 at £242.90, new, limi
 ## 13 November 2026 — Batch 11 used-market comparison expanded
 
 Nikon COOLPIX S7000 now has an additional CameraWorld used Excellent observation at £179.10, one unique item in stock, SKU C-911912; accessories and warranty are retained. Evidence ID 9d74d5d1-992b-4864-9b95-175bb9303081. The direct URL is recorded, with a note that the page open returned cache miss although the search result exposed the exact listing details. Batch 11 now 34 active (9 New, 25 Used). Batches 09–13 now 173 total, 168 active (84 New, 84 Used), five inactive. Batches 01–13 now 281 total, 273 active (147 New, 126 Used), eight inactive. Global LIVE 4,826 total, 4,764 active, 62 inactive. UK Used remains reference-only; TEST and Stripe untouched.
+
+
+## 13 November 2026 — Batch 13 HVR-V1E source coverage
+
+Added Colins Cameras Sony HVR-V1E used Very Good £260, fully tested, supplied with NP-F960 battery, charger, cables and remote; direct listing is sold out. Evidence 20b25a7e-2959-4387-bfcd-cb3e9ca0c577. The direct page returned cache miss after the search result supplied exact details; source URL and limitation remain recorded. Batch 13 now 51 total, 49 active (27 New, 22 Used), two inactive. Batches 09–13 now 174 total, 169 active (84 New, 85 Used), five inactive. Batches 01–13 now 282 total, 274 active (147 New, 127 Used), eight inactive. Global LIVE 4,827 total, 4,765 active, 62 inactive. UK Used remains reference-only; TEST and Stripe untouched.

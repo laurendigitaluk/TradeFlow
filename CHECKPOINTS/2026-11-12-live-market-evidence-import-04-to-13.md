@@ -463,3 +463,28 @@ Latest Batches 01–13: 267 total, 260 active (141 UK New, 119 UK Used), seven i
 Added Camix direct UK offer for Sony FE 85mm F1.4 GM II Lens Only at £1,325 (£1,104.17 ex VAT), new, in stock, one-year warranty and free UK delivery. Exact box contents and company details in Batch 04 checkpoint. LIVE row e1d4ebb0-ccb2-4a27-b4c7-06b3f9ab32af against existing Lens Only master. Cotswold £1,049 source URL redirected to homepage and was not imported.
 
 Latest Batches 01–13: 268 total, 261 active (142 UK New, 119 UK Used), seven inactive. Global LIVE shared_market_evidence: 4,813 total, 4,754 active, 59 inactive (one non-GBP/null). TEST and Stripe untouched.
+
+
+## 13 November 2026 — latest LIVE reconciliation after Batch 09 and Batch 11 additions
+
+Three direct UK retailer observations were inserted and read back: Batch 09 Nikon MB-N12 / Standard Item — Clifton Cameras £349 in stock (e9100020-f077-4c35-b3d5-f1d74a2bdbec) and London Camera Exchange £349 in stock (53a62053-3a9a-4c27-9d64-98c43ad1048e); Batch 11 Nikon NIKKOR Z 50mm f/1.4 — Wilkinson Cameras £459 in stock (44ddeb36-b25c-4d1f-941f-5ca673c88f90). Existing Nikon UK £449 remains unchanged after direct-page recheck; Carmarthen MB-N12 £349 is sold out and excluded.
+
+Latest LIVE batch-keyed read-back:
+| Batch | Total | Active | UK New | UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 01 | 5 | 5 | 3 | 2 | 0 |
+| 02 | 4 | 4 | 0 | 4 | 0 |
+| 03 | 15 | 14 | 7 | 7 | 1 |
+| 04 | 19 | 19 | 9 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 15 | 15 | 11 | 4 | 0 |
+| 07 | 15 | 14 | 10 | 4 | 1 |
+| 08 | 17 | 16 | 13 | 3 | 1 |
+| 09 | 25 | 25 | 12 | 13 | 0 |
+| 10 | 35 | 33 | 17 | 16 | 2 |
+| 11 | 33 | 33 | 9 | 24 | 0 |
+| 12 | 27 | 26 | 17 | 9 | 1 |
+| 13 | 50 | 48 | 27 | 21 | 2 |
+| **Total** | **278** | **270** | **145** | **125** | **8** |
+
+Global LIVE shared_market_evidence: 4,823 total, 4,761 active, 62 inactive; 2,303 active UK New GBP and 2,458 active UK Used GBP. UK Used remains reference-only and is excluded from automatic buying valuation. No schema, master catalogue, valuation logic, TEST or Stripe changes. This read-back supersedes earlier cumulative totals in this checkpoint.

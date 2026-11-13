@@ -3126,3 +3126,22 @@ A new isolated research handoff has been added for the owner's existing LM Studi
 - Batch 03: 15 total, 14 active (7 UK New, 7 UK Used), 1 inactive. Batches 01–13: 275 total, 267 active (142 UK New, 125 UK Used), 8 inactive. Global LIVE evidence table: 4,820 total, 4,758 active, 62 inactive.
 - Existing policy retained: historical UK GBP prices are retained with availability recorded; no bulk deactivation and no valuation-function changes. UK Used remains reference-only.
 - TEST, Stripe, valuation logic and schema untouched. Dashboard status message ID: `1c75fbac-5171-453b-8b1c-64cbb465d9e7`.
+
+
+## 13 November 2026 — Drone second-pass research Batch 19
+
+The second-pass Drone research continues as 20-product batches from the previously held active master catalogue. Batch 19 was reviewed against the current LIVE master-product IDs and package names; no catalogue master/package records were changed.
+
+Three verified UK-new GBP observations were inserted into LIVE and read back:
+- HOVERAir X1 PRO Max, Standard Package: AO UK £639.00 (SKU SP06H006) and Sync UK £680.71 (SKU SP06H006; gross price shown alongside £567.26 ex VAT).
+- Hubsan H107C+: Menkind UK £49.97 (product code 54561).
+
+Evidence IDs: `f918cb2d-d50c-4cba-9499-cb57f4654561` (AO), `981cd5f5-89ef-4ecb-9b50-5aa06e991fc7` (Sync), `d4c7d8e4-d8cc-46ba-a96d-dcfa9689bcdc` (Menkind). All three are active, GBP, condition New, direct product-page URLs and distinct stable `source_record_key` values.
+
+Eighteen of the 20 reviewed products received no import. Used-market candidates were not promoted unless a direct UK completed-sale record, exact model/package and reliable seller could be confirmed. In particular, do not treat a current relisted eBay page as the original completed-sale observation; do not conflate H501S colour/BNF/RTF variants; do not use Hubsan official EUR-market pages merely because a GBP selector appears; and do not treat iFlight Europe pages shipped from Austria as UK domestic sellers without recording that distinction and verifying UK destination tax/price treatment. Search-only leads, wrong package variants, active used listings and overseas sellers remain excluded.
+
+LIVE Drone category verification after Batch 19: 541 active customer-visible products; 184 products with no active evidence; 306 missing UK New; 351 missing UK Used; 68 have both evidence types. Active Drone evidence integrity failures: 0 (all checked rows have a source URL, stable source key, positive price and GBP currency). The reduction in missing UK New/no-evidence counts is exactly two products; missing UK Used is unchanged.
+
+Environment boundary: LIVE was updated and read back. TEST, Stripe, automatic valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments were not changed. UK Used evidence remains reference-only and must not influence automatic valuation.
+
+The next batch is Batch 20. Its initial 20-product selection is recorded in the Batch 19 checkpoint. Continue in batches of 20, exclude already reviewed product IDs from second-pass Batches 16–19, and keep Pokémon cards excluded.

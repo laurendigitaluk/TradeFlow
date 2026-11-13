@@ -389,3 +389,8 @@ Refreshed source observations: Peter Rogers Pentax DA* 55mm F1.4 £559 in stock;
 ## 13 November 2026 — MB-N12 retailer comparison added
 
 Two independently opened UK retailer product pages confirm the exact MB-N12 / Standard Item at £349 new and in stock: Clifton Cameras (one available; exact VFC01001 / EAN 4960759910356) and London Camera Exchange (free delivery). LIVE evidence IDs e9100020-f077-4c35-b3d5-f1d74a2bdbec and 53a62053-3a9a-4c27-9d64-98c43ad1048e. Existing Harrison Cameras £329 remains active. Carmarthen £349 was not imported because its direct page says sold out. Batch 09 now 25 active (12 UK New, 13 UK Used). No master or valuation changes.
+
+
+## 13 November 2026 — Batch 09 follow-up totals corrected
+
+Two new UK New direct retailer observations were added and read back: SmallRig RC100B Pro Version / Wex £242.90, limited stock (evidence 9c451b25-6d50-48fe-b433-b9a6d0f6b36b); HD PENTAX-FA 31mm f/1.8 Limited black / Park Cameras £1,099, listed but stock not confirmed (evidence 9cfa3efe-4363-4269-8062-a0a3e7527ead). Batch 09 now 27 active (14 UK New, 13 UK Used). This supersedes the previous 25-active snapshot. No master or valuation changes.

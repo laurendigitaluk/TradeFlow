@@ -450,3 +450,12 @@ Two further direct UK retailer offers for the exact Nikon MB-N12 Power Battery P
 - London Camera Exchange — £349.00, new, in stock for free delivery; exact Nikon MB-N12 Battery/Portrait Grip for Z8. Evidence ID 53a62053-3a9a-4c27-9d64-98c43ad1048e. [Direct source](https://www.lcegroup.co.uk/New/Nikon-MB-N12-BatteryPortrait-Grip-for-the-Z-8_141195.html)
 
 Existing Harrison Cameras £329 observation remains active. Carmarthen Cameras' direct page currently showed Sold out at £349 and was not imported. Batch 09 now has 25 active GBP rows (12 UK New, 13 UK Used). Used observations remain reference-only. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — further Batch 09 retailer observations
+
+Two additional direct UK retailer records were imported into LIVE and read back against existing exact masters:
+- SmallRig RC100B COB LED Video Light Pro Version UK 5143 — Wex Photo Video £242.90, new, limited stock / selling fast, product code 3329520. Exact in-box UK Pro version contents retained. Evidence ID 9c451b25-6d50-48fe-b433-b9a6d0f6b36b. [Direct source](https://www.wexphotovideo.com/smallrig-rc-100b-cob-led-video-light-pro-version-5143-3329520/). This is an independent retailer observation at the same price as the SmallRig Direct UK eBay offer.
+- HD PENTAX-FA 31mm f/1.8 Limited, black — Park Cameras £1,099.00, new, listed; product code 5241030E. Direct page shows price, Add to Basket and delivery information but requires product options and store selection before basket; stock is not confirmed. Evidence ID 9cfa3efe-4363-4269-8062-a0a3e7527ead. [Direct source](https://www.parkcameras.com/shop/hd-pentax-fa-31mm-f18-limited-lens-black_5241030e). Existing Clifton £999 awaiting-stock observation remains active and unchanged.
+
+Batch 09 now has 27 active GBP rows (14 UK New, 13 UK Used). This supersedes the earlier 25-row count in this checkpoint. UK Used remains reference-only. Park availability is recorded as listed, not in_stock. No master/schema/valuation changes; TEST and Stripe untouched.

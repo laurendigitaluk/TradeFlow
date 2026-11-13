@@ -6495,3 +6495,8 @@ Latest Batches 09–13: 181 total, 176 active (88 UK New, 88 UK Used), five inac
 Added a Visual Impact UK price reference for base Sony HDC-3200 SKU at £35,588.72 inc VAT (£29,657.27 ex), camera head only, available to order but not held in stock. Existing HDC-3200/DF £37,651.84 inc VAT includes the dual-filter option and must remain a separate configuration. Evidence ID 0741e38c-7347-475a-8fea-21b0b99809d1. Direct page open returned cache miss; search result contained exact price/SKU and the limitation is recorded. MKS-R3210 remains RED VERIFY until an exact UK GBP price is found; do not use the 2x BKS-R3210 listing as a substitute.
 
 Latest Batches 09–13: 182 total, 177 active (89 UK New, 88 UK Used), five inactive. Latest Batches 01–13: 290 total, 282 active (152 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,835 total, 4,773 active, 62 inactive. No schema, master catalogue, valuation logic, TEST or Stripe changes.
+
+
+## 13 November 2026 — reject HVR title-only matches
+
+Do not import eBay UK item 117069480914 from Plan B Retro as HVR-V1E: item specifics identify HVR-Z1E despite the title. Do not import the Smart_With_Media £259.99 search result unless it can be confirmed as a current listing; it was absent from the seller's current store page. No rows imported and counts unchanged. Use item specifics and exact model identity rather than titles for HVR-family products.

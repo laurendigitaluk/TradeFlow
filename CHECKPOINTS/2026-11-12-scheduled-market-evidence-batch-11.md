@@ -378,3 +378,11 @@ One further exact UK New GBP observation was imported and read back against the 
 - Wilkinson Cameras — £459.00, new, in stock and available in store; exact MPN JMA004DA / EAN 4960759915979, Nikon Z FX mount; box contents include lens, LC-62B cap, LF-N1 cap and HB-115 hood. Evidence ID 44ddeb36-b25c-4d1f-941f-5ca673c88f90. [Direct source](https://www.wilkinson.co.uk/nikon-nikkor-z-50mm-f-1-4-lens/)
 
 The search snippet displayed a conflicting lower price; the opened direct product page displayed £459 and was used. Nikon UK's direct page still displays £449 in stock, so the existing Nikon UK £449 observation was not changed. Batch 11 now has 33 active GBP rows (9 UK New, 24 UK Used). UK Used remains reference-only. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — Nikon COOLPIX S7000 used-market retailer follow-up
+
+One additional exact Nikon COOLPIX S7000 used UK dealer listing was imported into LIVE against existing master f76e717f-4bba-422f-92b3-09aa6cb3d4bb:
+- CameraWorld — £179.10, Used Excellent, one unique item in stock, SKU C-911912; supplied with battery, cable and strap; 12-month warranty and free UK delivery. Evidence ID 9d74d5d1-992b-4864-9b95-175bb9303081. [Direct source](https://www.cameraworld.co.uk/nikon-coolpix-s7000-compact-camera.html)
+
+The search result exposed the direct product listing details; opening the URL returned a cache miss. This limitation is retained in the evidence notes for dashboard click-through recheck. Existing Kamerastore £158 certified-used observation remains active. UK Used is reference-only. Batch 11 now has 34 active GBP records (9 UK New, 25 UK Used), superseding the earlier 33-row count. No master/schema/valuation changes; TEST and Stripe untouched.

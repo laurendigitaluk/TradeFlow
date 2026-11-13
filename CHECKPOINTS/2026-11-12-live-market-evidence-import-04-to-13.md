@@ -495,3 +495,10 @@ Global LIVE shared_market_evidence: 4,823 total, 4,761 active, 62 inactive; 2,30
 Two further exact UK New observations were imported and read back: SmallRig RC100B Pro Version / Wex Photo Video £242.90, limited stock; HD PENTAX-FA 31mm f/1.8 Limited black / Park Cameras £1,099, listed but stock not confirmed. Evidence IDs 9c451b25-6d50-48fe-b433-b9a6d0f6b36b and 9cfa3efe-4363-4269-8062-a0a3e7527ead. Do not present Park's status as in stock; the direct page requires store/product selection before basket. Existing Clifton £999 awaiting-stock source remains unchanged.
 
 Latest Batches 09–13: 172 total, 167 active (84 UK New, 83 UK Used), five inactive. Latest Batches 01–13: 280 total, 272 active (147 UK New, 125 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,825 total, 4,763 active, 62 inactive; 2,305 active UK New GBP and 2,458 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes the prior 13 Nov cumulative snapshot in this checkpoint.
+
+
+## 13 November 2026 — Batch 11 Nikon COOLPIX S7000 additional used source
+
+Added CameraWorld £179.10 used Excellent, one unique item in stock, SKU C-911912, with battery, cable and strap and 12-month warranty. Evidence ID 9d74d5d1-992b-4864-9b95-175bb9303081. The direct product URL is retained, although page open returned cache miss after the search result exposed the item details. UK Used remains reference-only.
+
+Latest Batches 09–13: 173 total, 168 active (84 UK New, 84 UK Used), five inactive. Latest Batches 01–13: 281 total, 273 active (147 UK New, 126 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,826 total, 4,764 active, 62 inactive; 2,305 active UK New GBP and 2,459 active UK Used GBP. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes the prior 13 Nov count snapshot.

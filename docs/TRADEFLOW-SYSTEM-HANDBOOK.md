@@ -3252,3 +3252,14 @@ Seventeen products were held. Avata 360 Fly More listing showed Best Offer accep
 Post-write LIVE metrics: 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 347 missing UK Used; 72 with both types; zero active evidence integrity failures. Gap breakdown: 182 neither, 165 UK New only (missing Used), 122 UK Used only (missing New), 72 both. Three products moved from New-only to both. No master/package records changed. UK Used evidence remains reference-only and does not affect automatic valuation.
 
 Batch 28 continues UK Used research on 20 further products with UK New but no UK Used. IDs are in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-27.md`. TEST, Stripe, valuation logic, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded.
+
+
+## 13 November 2026 — Drone second-pass research Batch 28 (UK Used gap)
+
+Batch 28 reviewed 20 products with UK New evidence but no UK Used evidence. No exact UK completed-sale observation met the source, seller, condition and package requirements, so no evidence was imported. LIVE read-back confirmed all 20 products still have UK New only and zero UK Used.
+
+eBay searches surfaced active/pre-owned HoverAir X1/X1 PRO/X1 PROMAX listings, but not completed sales for the exact product/package records. The Hubsan H111D eBay product page is currently sold out but is not a price-bearing completed transaction. Searches across Cash Converters and Cash Generator found no matching used stock for the selected Holy Stone, HoverAir or Hubsan models. No active asking price, sold-out catalogue page, overseas seller or unrelated accessory was promoted into UK Used evidence.
+
+Post-research LIVE metrics are unchanged: 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 347 missing UK Used; 72 with both types; zero active evidence integrity failures. Gap breakdown remains 182 neither, 165 UK New only, 122 UK Used only, 72 both. No writes occurred in Batch 28. Batch 29 continues UK Used research with 20 more New-only Hubsan products; IDs are recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-28.md`.
+
+TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded. UK Used remains reference-only and does not affect automatic valuation.

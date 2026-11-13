@@ -4479,3 +4479,33 @@ A label transposition in the dashboard status summaries reversed the UK New-only
 - After Batch 38: 182 neither, 164 UK New-only, 110 UK Used-only, 85 both.
 
 Current Batch 38 totals: 541 active visible; missing UK New 292 = 182 neither + 110 Used-only; missing UK Used 346 = 182 neither + 164 New-only; both 85; active evidence integrity failures 0. Individual batch import counts and evidence IDs are unchanged.
+
+
+## 13 November 2026 — UK Used market evidence is inspection-only; nearest-match retention rule
+
+**Decision:** UK Used observations are valuable customer-facing market references even when they are not eligible as automatic valuation inputs. Do not reject a potentially useful UK Used listing solely because the package is not an exact catalogue package, provided the model/package relationship can be identified and the difference is disclosed.
+
+### Valuation boundary — verified against LIVE
+
+The LIVE function `public.calculate_buying_item_valuation(p_tenant_id, p_buying_item_id)` was inspected on 13 November 2026. Both the tenant research path and shared evidence fallback explicitly filter to `evidence_type = 'uk_new'`. The returned valuation reference is `uk_new`. UK Used rows are therefore not to be used as a price base, percentage base, offer override or adjustment for automatic valuation. Do not change this boundary without an explicit product decision, code review, tests and checkpoint.
+
+### Customer evidence classification
+
+Retain and display qualifying UK Used evidence for customer inspection and click-through, with source URL, observed GBP price, condition, availability/status and observation date. Classify the relationship honestly:
+
+1. **Exact model + exact package:** direct package match.
+2. **Exact model + different package:** related-package reference; describe the package difference and do not label it exact.
+3. **Closest identifiable model/variant in the same product family:** related-model reference; state the precise model/variant difference and why it is the closest available match.
+4. **Historical/sold/expired listing:** retain as historical market evidence; make sold/expired status and observation date clear. It is not current availability.
+
+Do not map an unrelated model, accessory-only listing, unverified bundle, or geographically non-UK seller as a UK Used observation. eBay UK domain alone does not prove the seller is in the UK. Exclude separately itemised Buyer Protection fees and postage from the item price where identifiable; if the base price cannot be established, disclose the displayed total or hold it according to evidence quality.
+
+### Storage and presentation
+
+Use the existing `shared_market_evidence` record and `notes` field to explain match grade, package/model differences, seller location evidence, whether the price is an asking or completed-sale price, and any limitation. Do not add a new evidence type or schema field merely to classify match quality. Keep `uk_used` separate from `uk_new`. The UI should make clear that Used references are for inspection only and do not set or influence the automatic offer.
+
+### Research operating rule
+
+Prefer exact model/package matches, then the closest verifiable model/package match. Retain the latter as a clearly labelled related reference rather than discarding it. Multiple distinct observations per product are useful. Never present a related package/model as an exact match, and never allow a UK Used reference to affect automatic valuation.
+
+No valuation code, database schema, RLS, RPC, Edge Function, catalogue master, tenant/customer/transaction data or deployment was changed as part of this decision. Checkpoint: `CHECKPOINTS/2026-11-13-uk-used-evidence-inspection-only-policy.md`.

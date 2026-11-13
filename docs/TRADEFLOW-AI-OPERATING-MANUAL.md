@@ -4651,3 +4651,19 @@ Held:
 Coverage unchanged: 541 total; 173 neither; 143 UK New only; 118 UK Used only; 107 both; missing UK New 291; missing UK Used 316. Both additions deepen evidence for already-covered products.
 
 UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows or valuation logic changed.
+
+
+## 13 November 2026 — Retrospective UK Used nearest-match review 08
+
+Four candidate listings/market sources reviewed; one new exact UK Used observation inserted into LIVE and read back.
+
+- DJI Mini 3 Fly More Combo (DJI RC) — £370, Gumtree, Bishopbriggs, Glasgow. As good as new; flown about 25 minutes, boxed with all accessories. Listing specifies DJI RC controller with built-in screen; Fly More kit adds two batteries and charger for three total, spare propellers/thumb sticks and storage bag. Exact model/package match. Current asking price, not completed sale. Evidence `960c64e5-cec6-46d7-b4b6-9217daf46f4c`.
+
+Context only:
+- Drone Atlas reports four UK completed DJI Mini 3 drone-only sales in the 90 days to 4 November 2026, average £173.44 and typical range £156.49–£196.04. Aircraft-only data is not package-comparable, so it was not imported as a direct package observation.
+- Current eBay results mix RC-N1/RC/Drone-only and international seller variants; no further evidence row without seller-location/package verification.
+- Potensic ATOM 2 aggregate results mix standard and Fly More configurations; no duplicate aggregate observation added.
+
+Coverage remains 541 total; 173 neither; 143 UK New only; 118 UK Used only; 107 both; missing UK New 291; missing UK Used 316. This adds depth to a Mini 3 product already represented in Used evidence.
+
+UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows or valuation logic changed.

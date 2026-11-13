@@ -509,3 +509,10 @@ Latest Batches 09–13: 173 total, 168 active (84 UK New, 84 UK Used), five inac
 Added Colins Cameras exact Sony HVR-V1E used Very Good £260.00, fully tested, with NP-F960 battery, charger, cables and remote. Direct listing marks Sold out; record availability as out_of_stock. Evidence ID 20b25a7e-2959-4387-bfcd-cb3e9ca0c577. The search result exposed full item details but direct page open returned cache miss; limitation retained in evidence notes. Existing Camera City £399 in-stock listing remains active.
 
 Latest Batches 09–13: 174 total, 169 active (84 UK New, 85 UK Used), five inactive. Latest Batches 01–13: 282 total, 274 active (147 UK New, 127 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,827 total, 4,765 active, 62 inactive; 2,305 active UK New GBP and 2,460 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes prior 13 Nov cumulative counts.
+
+
+## 13 November 2026 — Batch 10 first-generation Sony FE 100-400mm source added
+
+Added ProAV exact first-generation Sony FE 100-400mm F4.5-5.6 GM OSS / SEL100400GM.SYX / EAN 4548736058422 at £2,149 inc VAT (£1,790.83 ex VAT), new, one in stock for immediate dispatch. Evidence ID 40d60e8f-0f40-44ff-baa5-e29121b4a916. It is distinct from newer constant-F4.5 SEL100400MCW. Existing Carmarthen Cameras £2,149 remains active.
+
+Latest Batches 09–13: 175 total, 170 active (85 UK New, 85 UK Used), five inactive. Latest Batches 01–13: 283 total, 275 active (148 UK New, 127 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,828 total, 4,766 active, 62 inactive; 2,306 active UK New GBP and 2,460 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes prior 13 Nov cumulative counts.

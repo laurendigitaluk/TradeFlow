@@ -530,3 +530,10 @@ Latest Batches 09–13: 176 total, 171 active (86 UK New, 85 UK Used), five inac
 Added Bristol Cameras exact Nikon F55 body-only at £24.00, used Good, in stock, with 2x CR2 batteries, body cap and 3-month guarantee. Evidence ID 39529bb2-e229-4a4d-a739-4a198222bf82. Search result exposed the exact direct listing; opening the URL returned HTTP 520, and the limitation is retained for owner click-through recheck. Existing ColinsCameras eBay £28.60 body-only source remains active.
 
 Latest Batches 09–13: 177 total, 172 active (86 UK New, 86 UK Used), five inactive. Latest Batches 01–13: 285 total, 277 active (149 UK New, 128 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,830 total, 4,768 active, 62 inactive; 2,307 active UK New GBP and 2,461 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes prior 13 Nov counts.
+
+
+## 13 November 2026 — Batch 11 Panasonic FZ1000 II used listings added
+
+Added two London Camera Exchange exact Panasonic Lumix DC-FZ1000 II used listings at £699.99: Bristol item 145185 Excellent, boxed, in store now, six-month warranty (evidence 48402a9e-16b9-4787-931b-592e0a4cb0ef); Bath item 139564 Good, in store now, six-month warranty (evidence dfa96b33-7559-47df-8696-bac36f1b3fec). The search results exposed exact item details, but direct page opens returned cache miss; that limitation is retained for owner recheck. Existing Kamerastore £709 item has a zoom-lever fault and remains clearly differentiated.
+
+Latest Batches 09–13: 179 total, 174 active (86 UK New, 88 UK Used), five inactive. Latest Batches 01–13: 287 total, 279 active (149 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,832 total, 4,770 active, 62 inactive; 2,307 active UK New GBP and 2,463 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes prior 13 Nov counts.

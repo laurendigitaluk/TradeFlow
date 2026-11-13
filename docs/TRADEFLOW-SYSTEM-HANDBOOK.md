@@ -5841,3 +5841,10 @@ Latest Batches 09–13: 172 total, 167 active (84 UK New, 83 UK Used), five inac
 Batch 11 added CameraWorld's exact Nikon COOLPIX S7000 used listing at £179.10, Excellent, one unique item in stock, SKU C-911912. The search result exposed the direct product details, but opening the page returned a cache miss; the source URL and limitation are retained in the database and checkpoint for click-through recheck. UK Used remains reference-only and does not enter automatic buying valuation.
 
 Latest Batches 09–13: 173 total, 168 active (84 UK New, 84 UK Used), five inactive. Latest Batches 01–13: 281 total, 273 active (147 UK New, 126 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,826 total, 4,764 active, 62 inactive. No schema/master/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — HVR-V1E used price reference
+
+Batch 13 added Colins Cameras exact Sony HVR-V1E used Very Good £260, fully tested, with battery, charger, cables and remote. The retailer page shows sold out; availability is explicitly recorded as out_of_stock. The search result exposed the direct listing detail, but opening the page returned cache miss. The source URL and limitation are retained for recheck. UK Used remains reference-only.
+
+Latest Batches 09–13: 174 total, 169 active (84 UK New, 85 UK Used), five inactive. Latest Batches 01–13: 282 total, 274 active (147 UK New, 127 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,827 total, 4,765 active, 62 inactive. No schema/master/valuation changes; TEST and Stripe untouched.

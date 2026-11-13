@@ -391,3 +391,8 @@ Added Colins Cameras Sony HVR-V1E used Very Good £260, fully tested, supplied w
 ## 13 November 2026 — Batch 10 source coverage expanded
 
 Added ProAV first-generation Sony FE 100-400mm F4.5-5.6 GM OSS at £2,149 inc VAT (£1,790.83 ex), new, one in stock, exact SEL100400GM.SYX / EAN 4548736058422. Evidence 40d60e8f-0f40-44ff-baa5-e29121b4a916. Do not merge with newer SEL100400MCW constant-F4.5 model. Batch 10 now 36 total, 34 active (18 New, 16 Used), two inactive. Batches 09–13 now 175 total, 170 active (85 New, 85 Used), five inactive. Batches 01–13 now 283 total, 275 active (148 New, 127 Used), eight inactive. Global LIVE 4,828 total, 4,766 active, 62 inactive. UK Used remains reference-only; TEST and Stripe untouched.
+
+
+## 13 November 2026 — Batch 12 additional CVP evidence
+
+Added CVP exact Sony HDCE-TX30 at £11,347.13 inc VAT (£9,455.94 ex VAT), new, available for backorder, normally 1–2 weeks, one-year warranty; evidence 0dc2b59c-fbc4-4eb8-9da5-cc1d2a5f7247. Direct source confirms exact product and independently matches Visual Impact's price. MKS-R3210 remains RED VERIFY because no exact UK GBP offer exists; the £61.75 eBay result is 2x BKS-R3210, not MKS-R3210. Batch 12 now 28 total, 27 active (18 New, 9 Used), one inactive. Batches 09–13 now 176 total, 171 active (86 New, 85 Used), five inactive. Batches 01–13 now 284 total, 276 active (149 New, 127 Used), eight inactive. Global LIVE 4,829 total, 4,767 active, 62 inactive. UK Used remains reference-only; TEST and Stripe untouched.

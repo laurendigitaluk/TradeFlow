@@ -344,3 +344,11 @@ Direct Visual Impact pages were reopened to resolve the remaining package-scope 
 Both observations are explicitly camera-head-only, not complete camera systems. This resolves the package-scope question for their existing Standard masters without changing master catalogue data.
 
 MKS-R3210 remains RED VERIFY: no exact UK GBP source found. Sony UK/Europe pages confirm the 32-button NS-BUS remote panel but no price; Pro-Media/Videolinea prices are EUR; eBay UK £61.75 is for 2 × BKS-R3210, a different model. Do not map that price to MKS-R3210. Batch 12 counts unchanged at 27 total, 26 active (17 UK New, 9 UK Used), one inactive. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — Sony HDCE-TX30 second UK retailer source
+
+One further exact UK New GBP observation was imported into LIVE against HDCE-TX30 / Standard master c0bd2f6c-4337-4304-b60e-22f2b27ad718:
+- CVP — £11,347.13 inc VAT (£9,455.94 ex VAT), new, available for backorder, normally delivered in 1–2 weeks subject to variation; one-year standard warranty. Evidence ID 0dc2b59c-fbc4-4eb8-9da5-cc1d2a5f7247. [Direct source](https://cvp.com/product/sony-hdce-tx30-adapter)
+
+The direct CVP page confirms exact model HDCE-TX30 and package contents. Its price and backorder status corroborate Visual Impact's direct page at the same GBP inc-VAT price. Batch 12 now 28 total / 27 active (18 UK New, 9 UK Used), one inactive. MKS-R3210 remains RED VERIFY: exact Sony model confirmed but no UK GBP retailer price; the £61.75 eBay result is 2x BKS-R3210 and excluded. No master/schema/valuation changes; TEST and Stripe untouched.

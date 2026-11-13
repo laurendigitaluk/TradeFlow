@@ -12,7 +12,7 @@
 > **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
 
 **Status:** Living operational document  
-**Version:** 5.8  
+**Version:** 5.9  
 **Date:** 13 November 2026  
 **Project:** TradeFlow
 
@@ -4379,3 +4379,24 @@ Other products were held. Hubsan Zino Pro sold page was Opened–Never Used and 
 Post-write LIVE metrics: 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 346 missing UK Used; 73 with both types; zero active evidence integrity failures. Gap breakdown: 182 neither, 164 UK New only (missing Used), 122 UK Used only (missing New), 73 both. One product moved from New-only to both. No catalogue master/package records changed. UK Used remains reference-only and does not affect automatic valuation.
 
 Batch 31 continues the UK Used gap with the next 20 New-only masters. IDs are recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-30.md`. TEST, Stripe, valuation logic, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded.
+
+
+## 13 November 2026 — Drone second-pass research Batch 31 (UK Used gap)
+
+Batch 31 reviewed 20 products with UK New evidence but no UK Used evidence. No exact UK Used observation qualified for import. Twenty product masters were read back and confirmed to remain New-only.
+
+Search findings and exclusions:
+- Potensic Dreamer 1: no exact UK completed sale surfaced.
+- Potensic F181DH: a Gumtree listing at £120 described the screen as never used and condition as as-good-as-new, so it is not used-condition evidence. The eBay F181DH result was New.
+- PowerVision PowerRay: the UK £800 used listing was ended by the seller because of a listing error, not a completed sale.
+- Walkera AIBAO: an ended listing showed USD pricing and did not establish UK seller location/GBP transaction. Current UK results were new stock.
+- Walkera F210: a UK used listing was active, not sold; a German completed sale was EUR and excluded. A US sold lot was USD and excluded.
+- Walkera Furious 320 and other Walkera family results included current pre-owned asking prices, spare parts or mismatched products, not exact completed sales.
+- Yuneec H520E commercial drone result was a non-RTK H520E, not the H520E-RTK master, and had been relisted after ending. An Austrian H520E-RTK sold listing was EUR and excluded.
+- Yuneec Typhoon H Plus sold page was US seller/USD and excluded. UK Typhoon H listings found were not H Plus or were still active.
+- PowerEgg X Wizard, PowerSeeker, Mantis Q and remaining selected models did not yield exact UK completed sales.
+No overseas prices, active asking prices, listing-error endings, parts/accessories or mismatched variants were imported.
+
+Post-research LIVE totals remain: 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 346 missing UK Used; 73 with both types; zero active evidence integrity failures. Batch 31 produced zero writes. Batch 32 continues UK Used research on 20 further New-only products, IDs in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-31.md`.
+
+TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded. UK Used remains reference-only and does not affect automatic valuation.

@@ -370,3 +370,11 @@ Three exact UK used offers were imported into LIVE and read back:
 Evidence row IDs: 9e2df28b-340d-4e09-ad83-660ff34a6bb8; e3c42ef7-aa7a-45f1-a937-5fd13399b5e1; c788d584-728c-4e73-8f92-63499e232b24. All are active UK Used GBP reference records; the fault/condition/accessory differences are preserved. No valuation effect from UK Used.
 
 Batch 11 now has 32 active GBP rows (8 UK New, 24 UK Used). Cumulative Batches 04–13: 240 GBP observations, 236 active (128 UK New, 108 UK Used), four inactive. No master product, tenant/customer, schema or valuation changes. TEST and Stripe untouched.
+
+
+## 13 November 2026 — Nikon NIKKOR Z 50mm f/1.4 additional UK retailer observation
+
+One further exact UK New GBP observation was imported and read back against the existing NIKKOR Z 50mm f/1.4 master beb389f1-c53e-4166-9cf6-2b07148df339:
+- Wilkinson Cameras — £459.00, new, in stock and available in store; exact MPN JMA004DA / EAN 4960759915979, Nikon Z FX mount; box contents include lens, LC-62B cap, LF-N1 cap and HB-115 hood. Evidence ID 44ddeb36-b25c-4d1f-941f-5ca673c88f90. [Direct source](https://www.wilkinson.co.uk/nikon-nikkor-z-50mm-f-1-4-lens/)
+
+The search snippet displayed a conflicting lower price; the opened direct product page displayed £459 and was used. Nikon UK's direct page still displays £449 in stock, so the existing Nikon UK £449 observation was not changed. Batch 11 now has 33 active GBP rows (9 UK New, 24 UK Used). UK Used remains reference-only. No master/schema/valuation changes; TEST and Stripe untouched.

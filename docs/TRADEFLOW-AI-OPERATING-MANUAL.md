@@ -12,7 +12,7 @@
 > **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
 
 **Status:** Living operational document  
-**Version:** 5.7  
+**Version:** 5.8  
 **Date:** 13 November 2026  
 **Project:** TradeFlow
 
@@ -4365,3 +4365,17 @@ Batch 29 reviewed 20 products with UK New evidence but no UK Used evidence, all 
 All 20 products remain UK New only. LIVE totals remain 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 347 missing UK Used; 72 with both types; zero active evidence integrity failures. Gap breakdown unchanged: 182 neither, 165 UK New only, 122 UK Used only, 72 both. No writes occurred in Batch 29.
 
 Batch 30 continues the UK Used gap with the next 20 New-only masters across Hubsan, iFlight, Parrot and Potensic. IDs are recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-29.md`. TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded. UK Used remains reference-only and does not affect automatic valuation.
+
+
+## 13 November 2026 — Drone second-pass research Batch 30 (UK Used gap)
+
+Batch 30 reviewed 20 products with UK New but no UK Used evidence. One UK Used-market observation was inserted into LIVE and read back:
+- Potensic ATOM Fly More Combo: eBay UK listing 386937409835, £179.99, condition Used, UK seller Potensic_Outlets (Birmingham), 99.8% positive with about 1.4K feedback. The fixed-price multi-quantity listing reports more than 10 available and 135 sold. Evidence ID: `f35fea70-3a0c-4d35-b1c2-3bc74b3abb71`.
+
+Important caveat: this is an active multi-quantity used listing with a documented sold count, not a single dated completed-sale snapshot. It is recorded as secondary UK Used market evidence, with the caveat retained in notes. Do not present it as an individually dated sale or as a buyer-protection-inclusive amount; the listing does not show a Buyer Protection fee.
+
+Other products were held. Hubsan Zino Pro sold page was Opened–Never Used and bundled extra accessories/case, not a clean Standard Package match; a second Zino Pro master was not mapped to the same sale. iFlight listings found were New, not Used. Parrot AR.Drone 2.0 Elite page was ended by seller because of listing error, not sold; AR.Drone Power listing was active. Potensic ATOM 2 Fly More Combo was the wrong Expansion Kit + Remote package and one sold result hid the accepted Best Offer price. ATOM 3, ATOM SE and D88 did not yield exact UK completed sales.
+
+Post-write LIVE metrics: 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 346 missing UK Used; 73 with both types; zero active evidence integrity failures. Gap breakdown: 182 neither, 164 UK New only (missing Used), 122 UK Used only (missing New), 73 both. One product moved from New-only to both. No catalogue master/package records changed. UK Used remains reference-only and does not affect automatic valuation.
+
+Batch 31 continues the UK Used gap with the next 20 New-only masters. IDs are recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-30.md`. TEST, Stripe, valuation logic, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded.

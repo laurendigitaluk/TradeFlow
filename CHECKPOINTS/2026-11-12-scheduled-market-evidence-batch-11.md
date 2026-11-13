@@ -395,3 +395,11 @@ Two additional exact Panasonic Lumix DC-FZ1000 II UK Used listings were imported
 - London Camera Exchange, Bath — £699.99, Good, in store now; six-month warranty; item 139564. Evidence ID dfa96b33-7559-47df-8696-bac36f1b3fec. [Direct source](https://www.lcegroup.co.uk/Used/Panasonic-Lumix-FZ1000-MKII_500223.html)
 
 Search results exposed exact item details, branch, price and stock; opening both direct URLs returned cache miss. This limitation is retained for dashboard click-through recheck. Existing Kamerastore £709 certified-used item with zoom-lever fault remains active and clearly distinguished. Batch 11 now 36 active GBP rows (9 UK New, 27 UK Used), superseding prior 34-row count. UK Used remains reference-only. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — Pentax 100mm Macro Camera Centre price reference
+
+One additional exact UK New GBP price observation was imported into LIVE against master b5057877-c336-4bc8-a13b-55ec7f4c3050:
+- Camera Centre UK — £699.00, new, exact black HD PENTAX-D FA 100mm f/2.8 ED AW Macro Lens, manufacturer part number 20320 / Camera Centre SKU YA1728:27003679. Evidence ID 6bd70951-d492-4512-b488-9ae6fe384bec. [Direct source](https://www.cameracentreuk.com/pentax-hd-pentax-d-fa-100mm-f2-8-ed-aw-macro-lens-black)
+
+The product page shows £699 and Add to Bag; the retailer's current Pentax Black Friday page (updated 2 days ago) marks the exact lens Out of stock. Availability is therefore recorded as out_of_stock, not in_stock. Existing Carmarthen Cameras £699.99 / 2 units in stock remains active. Batch 11 now 37 total / 37 active (10 UK New, 27 UK Used). UK Used remains reference-only. No master/schema/valuation changes; TEST and Stripe untouched.

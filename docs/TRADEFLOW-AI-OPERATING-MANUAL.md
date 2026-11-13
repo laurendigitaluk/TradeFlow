@@ -6509,3 +6509,12 @@ Do not import eBay UK item 117069480914 from Plan B Retro as HVR-V1E: item speci
 Latest Batches 09–13: 182 total, 177 active (89 UK New, 88 UK Used), five inactive. Batches 01–13: 290 total, 282 active (152 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,835 total, 4,773 active, 62 inactive.
 
 The only remaining genuine RED VERIFY price lead in 09–13 is Sony MKS-R3210. Exact model confirmed, but no exact UK GBP retailer offer found; £61.75 for 2x BKS-R3210 is not a match. HDC-3000 is closed as a non-product family label, and the Plan B Retro HVR-V1E title is excluded because its item specifics say HVR-Z1E. UK Used remains excluded from automatic valuation. No TEST, Stripe, schema, master catalogue or valuation changes.
+
+
+## 13 November 2026 — LIVE drone evidence research, 20-product batches 01–02
+
+The first two 20-product drone research batches have been completed against LIVE only. Batch 01 reviewed 20 products and inserted eight exact UK New GBP observations (six first-time product coverages and two additional/fresh retailer observations). Batch 02 reviewed 20 products and inserted nine observations across nine exact master products (eight UK New and one UK Used). Every inserted row was read back from LIVE `shared_market_evidence` and verified against its intended master product UUID. Each batch has a corresponding owner-visible AI Research dashboard status message and reviewed product UUIDs in metadata to prevent reselection.
+
+LIVE read-back after Batch 02: 4,859 evidence rows total / 4,797 active / 62 inactive; 2,330 active UK New GBP rows and 2,467 active UK Used GBP rows. Drones: 541 active master products; 378 still without active UK New evidence and 368 without active UK Used evidence. The UK Used Mavic 2 Zoom with Smart Controller observation is reference-only and does not affect automatic valuation.
+
+No catalogue product/package/category definitions, schema, RLS, TEST data, Stripe or valuation logic were changed. Pokémon Trading Cards remain excluded from this equipment-research workload. Exact source/package matching remains mandatory; do not import ambiguous receiver/VTX/controller or bundle variants. Keep out-of-stock/pre-order status accurate, preserve previous retailer observations, and do not fabricate used-sale evidence. See [Drone Evidence Research Checkpoint — Batches 01–02](checkpoints/TRADEFLOW_DRONE_EVIDENCE_RESEARCH_20261113_BATCH01-02.md) for products, sources, held items and continuation controls.

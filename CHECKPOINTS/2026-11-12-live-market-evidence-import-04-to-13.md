@@ -551,3 +551,10 @@ Latest Batches 09–13: 180 total, 175 active (87 UK New, 88 UK Used), five inac
 Added CVP exact Sony HDC-3100 System Camera for Fiber Operation, p/n HDC-3100, £20,631.14 ex VAT / £24,757.37 inc VAT, new, available for backorder (normally 1–2 weeks), 2 Years PrimeSupportPro warranty. Camera body only; lens and viewfinder not included. Evidence ID b2e3898d-3df4-4332-817c-e9537fc64cf3. Attached to exact HDC-3100 Studio/Broadcast master 5882070e-3add-4bfa-b477-9a516f676333. The older Visual Impact HDC3100 record remains on its separate Cinema Camera branch master; no merge or reassignment was made.
 
 Latest Batches 09–13: 181 total, 176 active (88 UK New, 88 UK Used), five inactive. Latest Batches 01–13: 289 total, 281 active (151 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,834 total, 4,772 active, 62 inactive; 2,309 active UK New GBP and 2,463 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes prior 13 Nov totals.
+
+
+## 13 November 2026 — Batch 12 HDC-3200 base configuration added
+
+Added Visual Impact exact Sony HDC-3200 base SKU (no /DF dual-filter option) at £35,588.72 inc VAT (£29,657.27 ex), new, available to order but not held in stock, camera head only. Evidence ID 0741e38c-7347-475a-8fea-21b0b99809d1. Keep separate from the existing HDC-3200/DF £37,651.84 inc VAT dual-filter observation; both are recorded against the exact HDC-3200 Studio/Broadcast master. Search result provided the direct product detail; page open returned cache miss and this is retained in notes. MKS-R3210 remains RED VERIFY; no exact UK GBP price, and 2x BKS-R3210 is not a valid substitute.
+
+Latest Batches 09–13: 182 total, 177 active (89 UK New, 88 UK Used), five inactive. Latest Batches 01–13: 290 total, 282 active (152 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,835 total, 4,773 active, 62 inactive; 2,310 active UK New GBP and 2,463 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes prior 13 Nov counts.

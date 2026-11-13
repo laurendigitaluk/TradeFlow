@@ -6064,3 +6064,35 @@ Available browser-local tools: profit/margin calculator; VAT calculator; factual
 The canvas designer is a manual text/colour layout tool, not AI image generation. TradeFlow AI Image Studio is shown as planned/unavailable until local AI hardware is upgraded and costs can be controlled. No OpenAI or other AI API, external image service, database object, RLS, RPC, Edge Function, Storage bucket, tenant data, Stripe or billing setting changed. TEST and Stripe remain untouched.
 
 Verification update (13 November 2026): the initial production deployment succeeded in GitHub Actions run #43502223975. A static review then corrected two edge cases: the social graphic now exports at its advertised 1080 × 1080 size, and the profit calculator reports break-even as impossible when the selling fee is 100%. The page references `free-tools.js?v=2`. These corrections were deployed successfully by GitHub Actions run #43515108158, including the Cloudflare Worker/static-assets step. The six tools continue to use the existing subscriber auth and tenant-context scripts and make no AI/API or Supabase data calls. A live browser session could not be completed from the verification environment because external DNS/network access was unavailable. Runtime checks for subscriber sign-in, tenant identity, calculations, PNG download, print layouts, mobile layout and sign-out remain open; do not describe these as browser-tested.
+
+
+## 13 November 2026 — LIVE market-evidence continuation: 3D printers and Drone Batch 39
+
+This checkpoint records seven active UK GBP observations inserted into `public.shared_market_evidence` in TradeFlow LIVE (`gxsrajtqzdjvmceqcpgv`) and read back successfully. Four are UK Used observations across three 3D-printer products; three are UK New observations in Drone second-pass Batch 39.
+
+### UK Used — 3D printers
+
+- Bambu Lab A1 Mini, Standard Printer — £124.58, eBay UK, sold 7 November 2026, seller in Rowley Regis. Evidence `dedf7fee-2ebe-4a5e-b22a-0b5899cfbcff`. Displayed amount includes the eBay Buyer Protection fee; accepted Best Offer may differ.
+- Flashforge Adventurer 5M, Standard Printer — £233.08, eBay UK active Buy It Now, seller in Chelmsford. Evidence `b3fc4f42-62b6-46cc-a276-bd9799dbe40d`. Asking price, not a completed sale.
+- Flashforge Adventurer 5M, Standard Printer — £103.92, eBay UK, sold 2 November 2026, seller in Coddington/Newark. Evidence `cdd2bc87-40a6-4477-8188-e091d169a27b`. Displayed amount includes the eBay Buyer Protection fee; accepted Best Offer may differ.
+- Elegoo Centauri Carbon 2, Standard Printer — £291.80, eBay UK active Buy It Now, seller in Honiton; seller reports 444 operating hours. Evidence `1845c944-9171-4591-b65c-a32904f6224e`. Listing did not establish the CANVAS combo, so it was matched only to Standard Printer.
+
+All four remain UK Used inspection/reference evidence only. Asking prices are not completed-sale prices. No UK Used record affects automatic valuation.
+
+### UK New — Drone second-pass Batch 39
+
+- DJI Mavic 3 Classic, Drone Only — £1,049.00, Clifton Cameras; listed Now Available/add to basket. Evidence `8f2b43a6-9e3f-4bc2-b074-89c1e6e751de`.
+- DJI Mavic 3 Classic, Standard Package (DJI RC-N1) — £1,119.00, Clifton Cameras; awaiting stock but orders accepted, usually 5–7 days. Controller and box contents verified. Evidence `3165710b-5d3f-41f5-bd17-cc09f2351bfb`.
+- DJI Mavic 3 Thermal, Standard Package — £4,839.00, Drone Safe Store; retailer page explicitly labels the product DISCONTINUED. This is a historical VAT-inclusive UK price, not currently purchasable stock. Evidence `6a55af88-32ef-4647-92dd-c0e83037797f`.
+
+Mavic 3 Enterprise and Mavic 3 Pro Fly More Combo (DJI RC Pro) already had UK New evidence from the preceding batch and were not duplicated. Mavic 3 Pro Cine listings were for the Cine Premium Combo, not the Standard Package candidate, so were held. Skydio confirms consumer Skydio 2+ Starter Kit sales are discontinued while Enterprise remains in production; no verified UK GBP Starter Kit price was found, so no numeric observation was invented. SCAN UK marks Mavic 2 Pro, Mavic 2 Zoom, original Mavic Mini, Yuneec Q500 4K and Typhoon H End of Life/no longer purchasable, but the reviewed pages supplied no suitable exact UK price. Holy Stone HS175D showed £130 on the manufacturer UK page but was Sold Out. Mini 2 sources were body/accessory pages or sold-out stock, not exact complete package prices.
+
+### LIVE coverage snapshot
+
+The active, customer-visible Drone scope includes both `Drones` and `Drone` main-category labels: 541 products; 173 with neither evidence type, 142 UK New only, 115 UK Used only and 111 with both. 288 are missing UK New and 315 are missing UK Used. Parallel research imports by other workers are reflected in this snapshot; do not attribute all movement from the previous checkpoint to this review.
+
+### Rules and change boundary
+
+UK New remains the only automatic valuation evidence. UK Used remains inspection-only. Use UK sources and GBP; prefer exact model/package matches and disclose seller location, condition, package differences, extras and whether the listing is current or sold. Confirmed discontinued variants must be labelled Discontinued in UK New evidence; retain a historical price only where a reliable UK listed price exists. Never invent a price or insert £0 to force a discontinued status. No catalogue master/package rows, schema, valuation logic, RLS, RPCs, Edge Functions, tenant/customer/transaction data, TEST, Stripe or deployments were changed.
+
+Full checkpoint: `CHECKPOINTS/2026-11-13-live-evidence-review-3d-printers-and-drone-batch-39.md`.

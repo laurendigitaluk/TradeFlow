@@ -5919,7 +5919,7 @@ The first two 20-product drone research batches have been completed against LIVE
 
 LIVE read-back after Batch 02: 4,859 evidence rows total / 4,797 active / 62 inactive; 2,330 active UK New GBP rows and 2,467 active UK Used GBP rows. Drones: 541 active master products; 378 still without active UK New evidence and 368 without active UK Used evidence. The UK Used Mavic 2 Zoom with Smart Controller observation is reference-only and does not affect automatic valuation.
 
-No catalogue product/package/category definitions, schema, RLS, TEST data, Stripe or valuation logic were changed. Pokémon Trading Cards remain excluded from this equipment-research workload. Exact source/package matching remains mandatory; do not import ambiguous receiver/VTX/controller or bundle variants. Keep out-of-stock/pre-order status accurate, preserve previous retailer observations, and do not fabricate used-sale evidence. See [Drone Evidence Research Checkpoint — Batches 01–02](checkpoints/TRADEFLOW_DRONE_EVIDENCE_RESEARCH_20261113_BATCH01-02.md) for products, sources, held items and continuation controls.
+No catalogue product/package/category definitions, schema, RLS, TEST data, Stripe or valuation logic were changed. Pokémon Trading Cards remain excluded from this equipment-research workload. Exact source/package matching remains mandatory; do not import ambiguous receiver/VTX/controller or bundle variants. Keep out-of-stock/pre-order status accurate, preserve previous retailer observations, and do not fabricate used-sale evidence. See [Drone Evidence Research Checkpoint — Batches 01–02](checkpoints/TRADEFLOW_DRONE_EVIDENCE_RESEARCH_20261113_BATCH01-05.md) for products, sources, held items and continuation controls.
 
 
 
@@ -5927,7 +5927,7 @@ No catalogue product/package/category definitions, schema, RLS, TEST data, Strip
 
 Batch 03 reviewed 20 additional active Drone master products and inserted three verified GBP observations across two exact products: two UK New Tinyhawk Lite RTF observations (Unmanned Tech £134.95 and HobbyRC £140.90, both out of stock) and one UK Used completed FIMI X8 SE 2020 sale (£47.40 item price, excluding the separately recorded £2.16 Buyer Protection fee). The FIMI used observation is reference-only and does not affect automatic valuation. Eighteen other products were held because UK source, price, package or hardware variant could not be confirmed safely. No catalogue products/packages, TEST, Stripe or valuation logic changed.
 
-LIVE read-back after Batch 03: 4,862 total evidence rows / 4,800 active / 62 inactive; 2,332 active UK New and 2,468 active UK Used. Drones: 541 active products; 377 without active UK New evidence and 367 without active UK Used evidence. Batch details and held products are in [Drone Evidence Research Checkpoint — Batches 01–03](checkpoints/TRADEFLOW_DRONE_EVIDENCE_RESEARCH_20261113_BATCH01-02.md).
+LIVE read-back after Batch 03: 4,862 total evidence rows / 4,800 active / 62 inactive; 2,332 active UK New and 2,468 active UK Used. Drones: 541 active products; 377 without active UK New evidence and 367 without active UK Used evidence. Batch details and held products are in [Drone Evidence Research Checkpoint — Batches 01–03](checkpoints/TRADEFLOW_DRONE_EVIDENCE_RESEARCH_20261113_BATCH01-05.md).
 
 
 
@@ -5935,7 +5935,7 @@ LIVE read-back after Batch 03: 4,862 total evidence rows / 4,800 active / 62 ina
 
 Batch 04 reviewed 20 additional active Drone master products and inserted four verified GBP observations across three exact products: GEPRC Vapor-X5 HD O4 Pro ELRS24 GPS — HobbyRC UK £359.95 New/out of stock and an eBay UK completed Used sale £297.40 excluding the £10.50 buyer-protection fee; GEPRC Vapor-X5 WTFPV ELRS 2.4G with GPS — eBay UK £227.91 New, five available; Holy Stone HS110G — eBay UK completed Used sale £26.35 excluding the £1.46 buyer-protection fee. Used observations remain reference-only and do not affect automatic valuation. Seventeen products were held due to no exact UK GBP source, unresolved receiver/configuration, or unreliable seller evidence. No catalogue definitions, TEST data, Stripe or valuation logic changed.
 
-LIVE read-back after Batch 04: 4,866 total evidence rows / 4,804 active / 62 inactive; 2,334 active UK New and 2,470 active UK Used. Drones: 541 active products; 375 without active UK New evidence and 365 without active UK Used evidence. See [Drone Evidence Research Checkpoint — Batches 01–04](checkpoints/TRADEFLOW_DRONE_EVIDENCE_RESEARCH_20261113_BATCH01-02.md).
+LIVE read-back after Batch 04: 4,866 total evidence rows / 4,804 active / 62 inactive; 2,334 active UK New and 2,470 active UK Used. Drones: 541 active products; 375 without active UK New evidence and 365 without active UK Used evidence. See [Drone Evidence Research Checkpoint — Batches 01–04](checkpoints/TRADEFLOW_DRONE_EVIDENCE_RESEARCH_20261113_BATCH01-05.md).
 
 
 
@@ -5943,4 +5943,12 @@ LIVE read-back after Batch 04: 4,866 total evidence rows / 4,804 active / 62 ina
 
 A follow-up source pass found three exact UK Used references for two products held during drone Batch 03: Freefly Alta 6 — a completed eBay sale at £2,800 item price (excluding £52.25 Buyer Protection fee), sold 9 November 2026, plus a separate current UK business-seller listing at £5,000; Freefly Alta 8 — a current UK business-seller listing at £7,000. All three records were read back from LIVE. These are UK Used reference-only observations and do not affect automatic valuation. No UK New source was added and no catalogue definitions changed.
 
-LIVE after this follow-up: 4,869 total evidence rows / 4,807 active / 62 inactive; 2,334 active UK New and 2,473 active UK Used. Drones: 541 active products; 375 without active UK New evidence and 363 without active UK Used evidence. See [Drone Evidence Research Checkpoint — Batches 01–04](checkpoints/TRADEFLOW_DRONE_EVIDENCE_RESEARCH_20261113_BATCH01-02.md).
+LIVE after this follow-up: 4,869 total evidence rows / 4,807 active / 62 inactive; 2,334 active UK New and 2,473 active UK Used. Drones: 541 active products; 375 without active UK New evidence and 363 without active UK Used evidence. See [Drone Evidence Research Checkpoint — Batches 01–04](checkpoints/TRADEFLOW_DRONE_EVIDENCE_RESEARCH_20261113_BATCH01-05.md).
+
+
+
+## 13 November 2026 — LIVE drone evidence research, Batch 05
+
+Batch 05 reviewed 20 additional active Drone master products and inserted nine UK GBP New observations across nine exact products: Holy Stone HS360E £179.99 and HS600D £399.99 (dated Amazon UK price snapshots via YPC, 6 October and 15 September 2026 respectively; availability not independently confirmed); Holy Stone HS900 £248 official GB/GBP store (out of stock); HOVERAir X1 Standard £299 and X1 PRO Standard £459 from Currys UK; Hubsan ACE Standard £469 and ACE 3 £1,299 from the official UK/GBP storefront category listings (stock not exposed); Hubsan ACE PRO Standard £529 and ACE PRO REFINED Standard £619 from exact official product pages (out of stock). Eleven products were held due to no reliable exact UK GBP source, seller verification concerns, package mismatch, or price conflict. No catalogue definitions, TEST data, Stripe or valuation logic changed.
+
+LIVE read-back after Batch 05: 4,878 total evidence rows / 4,816 active / 62 inactive; 2,343 active UK New and 2,473 active UK Used. Drones: 541 active products; 366 without active UK New evidence and 363 without active UK Used evidence. See [Drone Evidence Research Checkpoint — Batches 01–05](checkpoints/TRADEFLOW_DRONE_EVIDENCE_RESEARCH_20261113_BATCH01-05.md).

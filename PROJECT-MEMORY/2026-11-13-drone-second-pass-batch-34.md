@@ -12,3 +12,7 @@ Batch 34 began separate Used-only → UK New research. Reviewed 20 Used-only mas
 LIVE Drone totals: 541 active visible, 182 neither, 162 New-only, 122 Used-only, 75 both; missing UK New 302, missing UK Used 346; integrity failures zero. TEST/Stripe/valuation/schema/RLS/RPC/Edge Functions/deployments untouched. Pokémon excluded.
 
 Batch 35 targets next 20 Used-only products (DJI Mini series, FIMI X8 SE 2020, Freefly Alta 8, Holy Stone HS110G/HS175G/HS180/HS440G/HS600/HS720); exact IDs in checkpoint.
+
+
+## Count clarification
+Correction: group breakdown after this batch is 182 neither, 164 UK New-only, 120 UK Used-only, 75 both. The dashboard status message had transposed the New-only/Used-only labels; missing UK New 302 and missing UK Used 346 were correct.

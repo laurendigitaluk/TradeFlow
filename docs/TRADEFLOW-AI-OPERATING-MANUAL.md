@@ -4667,3 +4667,16 @@ Context only:
 Coverage remains 541 total; 173 neither; 143 UK New only; 118 UK Used only; 107 both; missing UK New 291; missing UK Used 316. This adds depth to a Mini 3 product already represented in Used evidence.
 
 UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows or valuation logic changed.
+
+
+## 13 November 2026 — Retrospective UK Used nearest-match review 09
+
+Three new UK Used GBP observations were inserted into LIVE and read back successfully. All are current asking prices, not completed-sale prices:
+
+- DJI Mini 4 Pro Fly More Combo (DJI RC 2) — £550, Gumtree, Hazel Grove, Manchester. Listing specifies three batteries, ND filters, original box and spare blades. Charging hub is not explicitly listed; accessory completeness must not be assumed. Evidence `274da652-b805-41f7-9221-5b0500895368`; source listing https://www.gumtree.com/p/drones/dji-mini-4-pro-fly-more-combo-nd-filters-complete-boxed-set/1804875585.
+- DJI Mini 4 Pro Fly More Combo (DJI RC 2) — £550, Gumtree, Mirfield, West Yorkshire. Listing specifies three batteries, charging hub, cable, spare propellers, ND filters, lens cover, landing mat, case and original box. Seller reports about 27 minutes total flight and battery cycles 2/2/1. Evidence `e694de4e-1992-4afc-bc73-23310c8503ee`; source listing https://www.gumtree.com/p/drones/dji-mini-4-pro-fly-more-combo-drone/1804534168.
+- Potensic ATOM 2 PTD 1 Fly More Combo — £186.58, eBay UK, seller located London. Listing title identifies Fly More Combo, but retrieved details do not itemise all contents; customer click-through should confirm batteries, hub and accessories. Postage separate. Evidence `ff504ae1-3d7f-4fe8-9ab6-de625a209685`; source listing https://www.ebay.co.uk/itm/188934208983.
+
+Review candidates also included already imported or unsuitable/insufficiently verified results; no duplicates were added. Drone category coverage remains 541 products: 173 neither, 143 UK New only, 118 UK Used only, 107 both; missing UK New 291; missing UK Used 316. These three observations add depth to two products already represented in Used evidence, so coverage counts do not change.
+
+UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows, valuation logic, schema, RLS or functions changed.

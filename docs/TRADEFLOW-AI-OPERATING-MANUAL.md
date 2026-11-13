@@ -6426,3 +6426,9 @@ Batch 03: 13 total, 12 active (7 UK New, 5 UK Used), one inactive. Cumulative Ba
 
 LIVE valuation function inspection confirmed that `calculate_buying_item_valuation` selects the latest active UK New GBP evidence row and does not apply an availability filter. The catalogue RPC also displays active UK New and UK Used evidence separately without excluding out-of-stock statuses. This is consistent with the owner's established rule to retain genuine UK GBP prices even when sold out, ended or unavailable, with availability and observation date recorded. Do not deactivate a valid UK New price solely because its availability is out of stock; `is_active` means the price observation is retained, not that the item is purchasable today. UK Used is excluded from automatic buying valuation by the UK New evidence-type filter. Do not change valuation logic or bulk-deactivate historical price observations without explicit owner direction.
 undefined
+
+## 13 November 2026 — direct UK source additions and availability discipline
+
+Added two Batch 09 records after opening direct retailer pages: Wex Photo Video SmallRig RC100B Pro Version UK 5143 £242.90 (limited stock) and Park Cameras HD PENTAX-FA 31mm f/1.8 Limited black £1,099 (listed, not stock-confirmed). The Park page requires product-option and store selection before basket; do not label it in_stock. This follows the established rule to preserve the source's actual availability wording and not infer stock from a price or Add to Basket control.
+
+Latest Batches 09–13: 172 total, 167 active (84 UK New, 83 UK Used), five inactive. Latest Batches 01–13: 280 total, 272 active (147 UK New, 125 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,825 total, 4,763 active, 62 inactive. UK Used remains reference-only and excluded from automatic valuation. No schema, master catalogue, valuation logic, TEST or Stripe changes.

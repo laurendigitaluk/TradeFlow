@@ -12,7 +12,7 @@
 > **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
 
 **Status:** Living operational document  
-**Version:** 5.2  
+**Version:** 5.3  
 **Date:** 13 November 2026  
 **Project:** TradeFlow
 
@@ -4302,3 +4302,20 @@ Nineteen other masters were held. Skydio pages showed USD/US fulfilment or sales
 Post-write LIVE Drone metrics: 541 active visible products; 183 with no active evidence; 305 missing UK New; 351 missing UK Used; 68 with both types; 0 active evidence integrity failures. One zero-evidence product gained UK New evidence; missing UK Used is unchanged. TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments untouched. Pokémon cards remain excluded.
 
 Batch 25 candidate list is recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-24.md`. It is the next 20 zero-evidence masters across Walkera and Yuneec. Recheck active evidence and exact package before any write.
+
+
+## 13 November 2026 — Drone second-pass research Batch 25 and gap transition
+
+Batch 25 reviewed 20 previously unreviewed zero-evidence masters. One qualifying UK-new observation was inserted into LIVE and read back:
+- Walkera Runner 250 PRO RTF: RCHobby-Avenues UK, £275.31 GBP, in stock. The listing identifies the exact Runner 250 PRO and includes DEVO 7 transmitter, battery, charger, camera and OSD. Evidence ID: `93970e17-671d-434f-a6f4-975480148e11`.
+
+Nineteen other Batch 25 products were held. QR X350 Pro offers were package-ambiguous (BNF/RTF/Gopro variants) or lacked a verified UK seller; Rodeo 110/150 Goggle 4 bundles were out of stock, wrong package or USD/US dispatch; Runner 250 standard was out of stock; T210 official pricing was USD; other Walkera and Yuneec products had no qualifying current UK offer. Q500+ used sales were not mapped to Q500 4K, and active listings were not used as completed-sale evidence. No UK Used observation qualified.
+
+Important transition: the zero-evidence queue has now been exhausted for this second-pass review. LIVE read-back shows 182 products with neither UK New nor UK Used evidence; the query for unreviewed zero-evidence masters after Batches 16–25 returns none. Remaining evidence gaps are:
+- 169 products with UK New evidence but missing UK Used.
+- 122 products with UK Used evidence but missing UK New.
+- 68 products with both types.
+
+Current LIVE Drone totals: 541 active customer-visible products; 182 with no active evidence; 304 missing UK New; 351 missing UK Used; 68 with both evidence types. The next phase is not another zero-evidence sweep: Batch 26 starts the UK Used gap, selecting 20 products with exactly one UK New observation and no UK Used. Seek direct UK completed sales only; preserve model/package and seller quality rules. Batch 26 candidate IDs are recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-25.md`.
+
+TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded.

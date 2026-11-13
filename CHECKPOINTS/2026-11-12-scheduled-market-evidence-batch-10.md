@@ -477,3 +477,11 @@ One further exact UK New observation was imported into LIVE against the first-ge
 - ProAV — £2,149.00 inc VAT (£1,790.83 ex VAT), new, one in stock for immediate dispatch; MPN SEL100400GM.SYX / EAN 4548736058422; free UK delivery over £75. Evidence ID 40d60e8f-0f40-44ff-baa5-e29121b4a916. [Direct source](https://proav.co.uk/sony-100-400mm-f4-5-5-6-lens)
 
 This is the first-generation constant-aperture F4.5–5.6 SEL100400GM, not the newer constant-F4.5 SEL100400MCW. Existing Carmarthen Cameras £2,149 remains active. Batch 10 now has 36 total / 34 active (18 UK New, 16 UK Used), two inactive. UK Used remains reference-only. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 13 November 2026 — Sony HDC-3100 CVP second UK source
+
+One additional exact UK New GBP source was imported into LIVE against the exact HDC-3100 Studio/Broadcast Camera master 5882070e-3add-4bfa-b477-9a516f676333:
+- CVP — £20,631.14 ex VAT / £24,757.37 inc VAT, new, available for backorder, normally delivered in 1–2 weeks subject to variation; 2 Years PrimeSupportPro warranty included. Exact p/n HDC-3100. Camera body only; lens and viewfinder not included. Evidence ID b2e3898d-3df4-4332-817c-e9537fc64cf3. [Direct source](https://cvp.com/product/sony-hdc-3100-system-camera-for-fiber-4k-hd)
+
+The earlier Visual Impact HDC3100 evidence remains on its separate Cinema Camera branch master. No merge or reassignment was made; this CVP source is attached to the exact Studio/Broadcast master. Batch 10 now 37 total / 35 active (19 UK New, 16 UK Used), two inactive. UK Used remains reference-only. No master/schema/valuation changes; TEST and Stripe untouched.

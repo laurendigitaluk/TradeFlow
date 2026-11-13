@@ -488,3 +488,10 @@ Latest LIVE batch-keyed read-back:
 | **Total** | **278** | **270** | **145** | **125** | **8** |
 
 Global LIVE shared_market_evidence: 4,823 total, 4,761 active, 62 inactive; 2,303 active UK New GBP and 2,458 active UK Used GBP. UK Used remains reference-only and is excluded from automatic buying valuation. No schema, master catalogue, valuation logic, TEST or Stripe changes. This read-back supersedes earlier cumulative totals in this checkpoint.
+
+
+## 13 November 2026 — Batch 09 additional source follow-up and current totals
+
+Two further exact UK New observations were imported and read back: SmallRig RC100B Pro Version / Wex Photo Video £242.90, limited stock; HD PENTAX-FA 31mm f/1.8 Limited black / Park Cameras £1,099, listed but stock not confirmed. Evidence IDs 9c451b25-6d50-48fe-b433-b9a6d0f6b36b and 9cfa3efe-4363-4269-8062-a0a3e7527ead. Do not present Park's status as in stock; the direct page requires store/product selection before basket. Existing Clifton £999 awaiting-stock source remains unchanged.
+
+Latest Batches 09–13: 172 total, 167 active (84 UK New, 83 UK Used), five inactive. Latest Batches 01–13: 280 total, 272 active (147 UK New, 125 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,825 total, 4,763 active, 62 inactive; 2,305 active UK New GBP and 2,458 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes the prior 13 Nov cumulative snapshot in this checkpoint.

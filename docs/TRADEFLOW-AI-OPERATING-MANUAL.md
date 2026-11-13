@@ -6460,3 +6460,10 @@ Latest Batches 09–13: 175 total, 170 active (85 UK New, 85 UK Used), five inac
 Added a CVP UK source for Sony HDCE-TX30 at £11,347.13 inc VAT (£9,455.94 ex VAT), new, available for backorder with typical 1–2 week delivery and one-year warranty. This confirms the same exact model and price as Visual Impact. Keep Sony MKS-R3210 RED VERIFY: Sony confirms the exact 32-button routing panel, but no UK GBP retailer offer was verified. The £61.75 eBay listing is 2x BKS-R3210, a different model and quantity, so it must not be used as a proxy.
 
 Latest Batches 09–13: 176 total, 171 active (86 UK New, 85 UK Used), five inactive. Latest Batches 01–13: 284 total, 276 active (149 UK New, 127 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,829 total, 4,767 active, 62 inactive. UK Used remains excluded from automatic valuation. No schema, master catalogue, valuation logic, TEST or Stripe changes.
+
+
+## 13 November 2026 — Nikon F55 used source and direct-page qualification
+
+Added Bristol Cameras exact Nikon F55 body-only £24, Used Good, in stock, with two CR2 batteries, body cap and three-month guarantee. Search result exposed the direct product listing, but opening the URL returned HTTP 520. The URL and limitation are retained for owner recheck. Do not imply the page itself was successfully opened. UK Used remains excluded from automatic buying valuation.
+
+Latest Batches 09–13: 177 total, 172 active (86 UK New, 86 UK Used), five inactive. Latest Batches 01–13: 285 total, 277 active (149 UK New, 128 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,830 total, 4,768 active, 62 inactive. No schema, master catalogue, valuation logic, TEST or Stripe changes.

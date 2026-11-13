@@ -3162,3 +3162,14 @@ Key exclusions:
 Post-research LIVE metrics were unchanged: 541 active visible Drone products; 184 with no active evidence; 306 missing UK New; 351 missing UK Used; 68 with both evidence types. No evidence write occurred in Batch 20. TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments were untouched. Pokémon cards remain excluded.
 
 Batch 21 candidate list is recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-20.md`. It consists of the next 20 zero-evidence Potensic masters, selected after excluding all second-pass Batches 16–20. Recheck evidence and exact package identity before writing.
+
+
+## 13 November 2026 — Drone second-pass research Batch 21
+
+Batch 21 reviewed 20 previously unreviewed active Potensic master products. No exact current UK source met the evidence standard, so no UK New or UK Used observation was imported. LIVE read-back confirms all 20 reviewed products still have zero active evidence.
+
+The Potensic Dreamer 4K listing found on FLYDRONE showed £254.99 but was sold out, had no product reviews and did not establish a sufficiently verifiable UK seller identity; do not import it solely because the page says UK stock. The Potensic ATOM SE Fly More Kit 2 page on E-Catalog identifies the correct three-battery package but marks it outdated/out of stock; the manufacturer page is in USD and ships from the Czech Republic. Potensic D68's eBay listing was from a seller located in Dundalk, Ireland, not the UK. The remaining exact-model searches did not produce reliable current UK offers or direct UK completed-sale captures. Search-result product pages/reviews are not completed transactions. Do not substitute modern ATOM models or other package configurations.
+
+Post-research LIVE Drone metrics remain 541 active visible products; 184 with no active evidence; 306 missing UK New; 351 missing UK Used; 68 with both types. No evidence writes occurred in Batch 21. TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded.
+
+Batch 22 candidate list is recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-21.md`; it is the next 20 zero-evidence masters from Potensic Wisp, PowerVision and Skydio. Recheck active evidence and exact package identity before any write.

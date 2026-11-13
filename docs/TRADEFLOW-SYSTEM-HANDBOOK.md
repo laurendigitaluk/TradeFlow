@@ -5936,3 +5936,11 @@ LIVE read-back after Batch 03: 4,862 total evidence rows / 4,800 active / 62 ina
 Batch 04 reviewed 20 additional active Drone master products and inserted four verified GBP observations across three exact products: GEPRC Vapor-X5 HD O4 Pro ELRS24 GPS — HobbyRC UK £359.95 New/out of stock and an eBay UK completed Used sale £297.40 excluding the £10.50 buyer-protection fee; GEPRC Vapor-X5 WTFPV ELRS 2.4G with GPS — eBay UK £227.91 New, five available; Holy Stone HS110G — eBay UK completed Used sale £26.35 excluding the £1.46 buyer-protection fee. Used observations remain reference-only and do not affect automatic valuation. Seventeen products were held due to no exact UK GBP source, unresolved receiver/configuration, or unreliable seller evidence. No catalogue definitions, TEST data, Stripe or valuation logic changed.
 
 LIVE read-back after Batch 04: 4,866 total evidence rows / 4,804 active / 62 inactive; 2,334 active UK New and 2,470 active UK Used. Drones: 541 active products; 375 without active UK New evidence and 365 without active UK Used evidence. See [Drone Evidence Research Checkpoint — Batches 01–04](checkpoints/TRADEFLOW_DRONE_EVIDENCE_RESEARCH_20261113_BATCH01-02.md).
+
+
+
+## 13 November 2026 — Freefly Alta 6 / Alta 8 used-market follow-up
+
+A follow-up source pass found three exact UK Used references for two products held during drone Batch 03: Freefly Alta 6 — a completed eBay sale at £2,800 item price (excluding £52.25 Buyer Protection fee), sold 9 November 2026, plus a separate current UK business-seller listing at £5,000; Freefly Alta 8 — a current UK business-seller listing at £7,000. All three records were read back from LIVE. These are UK Used reference-only observations and do not affect automatic valuation. No UK New source was added and no catalogue definitions changed.
+
+LIVE after this follow-up: 4,869 total evidence rows / 4,807 active / 62 inactive; 2,334 active UK New and 2,473 active UK Used. Drones: 541 active products; 375 without active UK New evidence and 363 without active UK Used evidence. See [Drone Evidence Research Checkpoint — Batches 01–04](checkpoints/TRADEFLOW_DRONE_EVIDENCE_RESEARCH_20261113_BATCH01-02.md).

@@ -502,3 +502,10 @@ Latest Batches 09–13: 172 total, 167 active (84 UK New, 83 UK Used), five inac
 Added CameraWorld £179.10 used Excellent, one unique item in stock, SKU C-911912, with battery, cable and strap and 12-month warranty. Evidence ID 9d74d5d1-992b-4864-9b95-175bb9303081. The direct product URL is retained, although page open returned cache miss after the search result exposed the item details. UK Used remains reference-only.
 
 Latest Batches 09–13: 173 total, 168 active (84 UK New, 84 UK Used), five inactive. Latest Batches 01–13: 281 total, 273 active (147 UK New, 126 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,826 total, 4,764 active, 62 inactive; 2,305 active UK New GBP and 2,459 active UK Used GBP. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes the prior 13 Nov count snapshot.
+
+
+## 13 November 2026 — Batch 13 HVR-V1E sold-out UK reference added
+
+Added Colins Cameras exact Sony HVR-V1E used Very Good £260.00, fully tested, with NP-F960 battery, charger, cables and remote. Direct listing marks Sold out; record availability as out_of_stock. Evidence ID 20b25a7e-2959-4387-bfcd-cb3e9ca0c577. The search result exposed full item details but direct page open returned cache miss; limitation retained in evidence notes. Existing Camera City £399 in-stock listing remains active.
+
+Latest Batches 09–13: 174 total, 169 active (84 UK New, 85 UK Used), five inactive. Latest Batches 01–13: 282 total, 274 active (147 UK New, 127 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,827 total, 4,765 active, 62 inactive; 2,305 active UK New GBP and 2,460 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes prior 13 Nov cumulative counts.

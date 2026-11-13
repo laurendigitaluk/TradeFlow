@@ -71,3 +71,12 @@
 - 18 products held: BetaFPV Air65 (Racing/Freestyle variant not resolved), Air75 (ELRS/TBS variant not resolved), FIMI A3, FIMI X6, FIMI X8 Pro, FIMI X8 SE 2022, Mi Drone 1080P, Mitu Mini Drone, X8 Mini, X8 Mini V2, X8 Pro 2025, X8 SE, X8 SE 2022 V2, X8 Tele, X8T V384 (no exact UK GBP source), X8T V640 (conflicting current/cached price snapshots; live price/availability recheck required), Freefly Alta 6 (manufacturer discontinued; old sold-out new price not used as an active valuation reference), and Freefly Alta 8 (eBay listing's item specifics say Remote Control and do not confirm the standard drone package).
 - Dashboard status message: `Drones — 20-product research batch 03: 3 verified observations added to LIVE`. Reviewed UUIDs are saved in metadata to prevent duplicate selection.
 - LIVE after Batch 03: 4,862 evidence rows total / 4,800 active / 62 inactive; 2,332 active UK New and 2,468 active UK Used. Drones remain 541 active products; 377 without active UK New and 367 without active UK Used.
+
+
+
+## Batch 04 — 20 products reviewed (13 November 2026)
+
+- 4 verified GBP observations inserted and read back across 3 exact LIVE master products: GEPRC Vapor-X5 HD O4 Pro ELRS24 GPS — HobbyRC UK £359.95 New/out of stock; eBay UK completed Used sale £297.40 item price (excluding £10.50 Buyer Protection fee), sold 30 September 2026; GEPRC Vapor-X5 WTFPV ELRS 2.4G with GPS — eBay UK £227.91 New, five available, MPN GP107470, seller located Ivybridge, England; Holy Stone HS110G — eBay UK completed Used sale £26.35 item price (excluding £1.46 Buyer Protection fee), sold 29 September 2026.
+- 17 held: Freefly Alta X, Alta X Gen2, Alta X Gen2 NDAA, Astro, Astro Max standard, Astro Max NDAA/Blue standard, Astro Max NDAA/Blue with LR1 payload, Astro Max Mapping Essentials, Astro Max Mapping Essentials NDAA/Blue (no exact UK GBP sources); GEPRC CineLog30 V3 O4 Pro ELRS (receiver/price ambiguity), CineLog35 V2 Analog (receiver variants), DarkStar20 ELRS (unverified seller source); Holy Stone H4831, HS110D, HS180, HS210FS and HS210P (no sufficiently reliable current exact UK GBP retail evidence).
+- Dashboard status message: `Drones — 20-product research batch 04: 4 verified observations added to LIVE`. Reviewed UUIDs are saved in metadata to prevent reselection.
+- LIVE after Batch 04: 4,866 evidence rows total / 4,804 active / 62 inactive; 2,334 active UK New and 2,470 active UK Used. Drones remain 541 active products; 375 without active UK New and 365 without active UK Used.

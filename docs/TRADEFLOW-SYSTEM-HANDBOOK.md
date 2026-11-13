@@ -3374,3 +3374,15 @@ Batch 35 continues the Used-only → UK New gap. Its next 20 products are select
 **Batch 38:** 20 products reviewed; two UK New observations added. DJI Mavic 3 Pro Fly More Combo (DJI RC Pro) £2,844 (Drone-Sales UK, new, one in stock, official manufacturer stock/full UK warranty/free UK delivery); DJI Mavic 3 Enterprise Standard Package £3,079 (Drone-Sales UK, new, one in stock, official stock/full UK warranty/free delivery). Evidence IDs: `49fbe91e-21c3-4339-a5f7-288d72d2ac51`, `6fccb1ab-cb3f-4b72-8dfb-1249f1ce4276`. 18 held; no guessed controller/bundle variants, stale retailer references or discontinued models. Checkpoint: `CHECKPOINTS/2026-11-13-drone-second-pass-batch-38.md`.
 
 LIVE Drone metrics after Batch 38: 541 active visible products; 182 with neither evidence type; 112 UK New-only; 122 UK Used-only; 85 with both; missing UK New 292; missing UK Used 346; zero active evidence integrity failures. TEST, Stripe, valuation logic, master catalogue records/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments were untouched. UK Used remains reference-only and does not affect automatic valuation. Pokémon cards remain excluded. The next Used-only → UK New batch is Batch 39; its 20 product IDs are in the Batch 38 checkpoint.
+
+
+## Count clarification — Drone batches 34–38 (13 November 2026)
+
+A label transposition in the dashboard status summaries reversed the UK New-only and UK Used-only group labels. The underlying missing-type totals and evidence writes were correct. Authoritative breakdowns, derived from LIVE active-visible product totals:
+- After Batch 34: 182 neither, 164 UK New-only, 120 UK Used-only, 75 both.
+- After Batch 35: 182 neither, 164 UK New-only, 117 UK Used-only, 78 both.
+- After Batch 36: 182 neither, 164 UK New-only, 115 UK Used-only, 80 both.
+- After Batch 37: 182 neither, 164 UK New-only, 112 UK Used-only, 83 both.
+- After Batch 38: 182 neither, 164 UK New-only, 110 UK Used-only, 85 both.
+
+Current Batch 38 totals: 541 active visible; missing UK New 292 = 182 neither + 110 Used-only; missing UK Used 346 = 182 neither + 164 New-only; both 85; active evidence integrity failures 0. Individual batch import counts and evidence IDs are unchanged.

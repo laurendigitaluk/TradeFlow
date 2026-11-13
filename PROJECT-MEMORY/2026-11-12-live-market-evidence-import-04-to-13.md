@@ -401,3 +401,8 @@ Added CVP exact Sony HDCE-TX30 at £11,347.13 inc VAT (£9,455.94 ex VAT), new, 
 ## 13 November 2026 — Batch 09 Nikon F55 source coverage expanded
 
 Added Bristol Cameras £24 Nikon F55 body-only, Used Good, in stock, 2x CR2 batteries and body cap, 3-month guarantee. Evidence 39529bb2-e229-4a4d-a739-4a198222bf82. The search result exposed the direct item details and UK stock, but direct page open returned HTTP 520; source URL and limitation remain recorded. Batch 09 now 28 active (14 New, 14 Used). Batches 09–13 now 177 total, 172 active (86 New, 86 Used), five inactive. Batches 01–13 now 285 total, 277 active (149 New, 128 Used), eight inactive. Global LIVE 4,830 total, 4,768 active, 62 inactive. UK Used remains reference-only; TEST and Stripe untouched.
+
+
+## 13 November 2026 — Batch 11 Panasonic used-market evidence expanded
+
+Added two LCE Panasonic Lumix DC-FZ1000 II records at £699.99: Bristol item 145185 Excellent boxed, Bath item 139564 Good; both in store now with six-month warranty. Evidence IDs 48402a9e-16b9-4787-931b-592e0a4cb0ef and dfa96b33-7559-47df-8696-bac36f1b3fec. The direct page opens returned cache miss after search results supplied full listing details; preserve the limitation. Existing Kamerastore £709 zoom-lever fault observation remains distinct. Batch 11 now 36 active (9 New, 27 Used). Batches 09–13 now 179 total, 174 active (86 New, 88 Used), five inactive. Batches 01–13 now 287 total, 279 active (149 New, 130 Used), eight inactive. Global LIVE 4,832 total, 4,770 active, 62 inactive. UK Used remains reference-only; TEST and Stripe untouched.

@@ -6488,3 +6488,10 @@ Latest Batches 09–13: 180 total, 175 active (87 UK New, 88 UK Used), five inac
 Added CVP's direct UK offer for Sony HDC-3100 System Camera for Fiber Operation, p/n HDC-3100, £24,757.37 inc VAT, new, backorder 1–2 weeks, with 2 Years PrimeSupportPro warranty. Camera body only; lens and viewfinder excluded. Evidence ID b2e3898d-3df4-4332-817c-e9537fc64cf3. It was mapped to the exact Studio/Broadcast HDC-3100 master. An existing HDC3100 record under a separate Cinema Camera branch was left untouched; do not merge or reassign automatically.
 
 Latest Batches 09–13: 181 total, 176 active (88 UK New, 88 UK Used), five inactive. Latest Batches 01–13: 289 total, 281 active (151 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,834 total, 4,772 active, 62 inactive. No schema, master catalogue, valuation logic, TEST or Stripe changes.
+
+
+## 13 November 2026 — preserve HDC-3200 SKU differences
+
+Added a Visual Impact UK price reference for base Sony HDC-3200 SKU at £35,588.72 inc VAT (£29,657.27 ex), camera head only, available to order but not held in stock. Existing HDC-3200/DF £37,651.84 inc VAT includes the dual-filter option and must remain a separate configuration. Evidence ID 0741e38c-7347-475a-8fea-21b0b99809d1. Direct page open returned cache miss; search result contained exact price/SKU and the limitation is recorded. MKS-R3210 remains RED VERIFY until an exact UK GBP price is found; do not use the 2x BKS-R3210 listing as a substitute.
+
+Latest Batches 09–13: 182 total, 177 active (89 UK New, 88 UK Used), five inactive. Latest Batches 01–13: 290 total, 282 active (152 UK New, 130 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,835 total, 4,773 active, 62 inactive. No schema, master catalogue, valuation logic, TEST or Stripe changes.

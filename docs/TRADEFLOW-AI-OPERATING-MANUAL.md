@@ -4529,3 +4529,21 @@ The PowerVision PowerRay Wizard listing supplied by the owner was matched to the
 Current LIVE drone coverage after this review: 541 total; 175 neither; 147 UK New only; 116 UK Used only; 103 both; missing UK New 291; missing UK Used 322.
 
 All UK Used observations remain inspection-only. Automatic valuation continues to use UK New only. No valuation logic, schema, RLS, RPC, Edge Function, catalogue master/package, tenant/customer/transaction data or deployment was changed. This is retrospective pass 01; continue through remaining held candidates.
+
+
+## 13 November 2026 — Retrospective UK Used nearest-match review 02
+
+Second retrospective pass reviewed six further held candidates. Three new UK Used inspection observations were inserted into LIVE and read back; one existing Matrice 350 RTK observation was refreshed in place.
+
+New observations:
+- Holy Stone HS110D — £52.24, eBay UK, seller Thornton Heath. Exact model; listing condition is "Opened – never used", not previously used. Ready-to-Fly package detail beyond title is not itemised. Retained as an inspection reference with condition clearly labelled. Evidence `8c837d32-cc7a-4767-8816-bfb78da0e181`.
+- HOVERAir X1 PRO Max — £564.75, eBay UK, seller London. Exact model, but listing is a larger bundle with carry case, extra batteries, charging dock, ND filters and 256GB SD card; no base drone-only price separated. Full asking price retained without adjustment and package differences disclosed. Evidence `bc1c3627-53d6-4f91-aa8a-ae2e138a55c7`.
+- Potensic ATOM SE Fly More Kit 2 — £129.72, eBay UK, seller Dartford. Exact model; sold listing described two batteries, while the catalogue Fly More Kit 2 expects three batteries and fast charging hub. Sold 5 July 2026. Displayed £134.67 included a separately itemised £4.95 Buyer Protection fee; base item price £129.72 recorded. Historical sold reference. Evidence `7784a82a-df37-4650-b3e9-5707787a867b`.
+
+Existing DJI Matrice 350 RTK UK Used evidence refreshed in place: same eBay item, Gravesend, Kent, now £7,567 Used and active/current (previously £7,000 historical). Exact model, but Standard Package contents remain unverified. Evidence ID remains `59860300-2266-499b-a4d7-921892faf379`.
+
+Held rather than imported: GEPRC DarkStar20 £188.67 because seller UK location was not exposed (separate Ivybridge listing is brand new); Holy Stone HS900 £169.92 because seller location/package was not confirmed; other HOVERAir results without confirmed UK location/model/configuration.
+
+Current LIVE Drone coverage: 541 total; 173 neither; 146 UK New only; 118 UK Used only; 104 both; 291 missing UK New; 319 missing UK Used.
+
+UK Used remains inspection-only and does not feed automatic valuation. UK New-only valuation logic unchanged. No catalogue master/package rows, schema, RLS, RPC, Edge Functions, TEST, Stripe, tenant/customer/transaction data or deployments changed.

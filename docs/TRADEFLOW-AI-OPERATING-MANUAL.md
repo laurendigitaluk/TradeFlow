@@ -12,7 +12,7 @@
 > **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
 
 **Status:** Living operational document  
-**Version:** 5.9  
+**Version:** 6.0  
 **Date:** 13 November 2026  
 **Project:** TradeFlow
 
@@ -4398,5 +4398,23 @@ Search findings and exclusions:
 No overseas prices, active asking prices, listing-error endings, parts/accessories or mismatched variants were imported.
 
 Post-research LIVE totals remain: 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 346 missing UK Used; 73 with both types; zero active evidence integrity failures. Batch 31 produced zero writes. Batch 32 continues UK Used research on 20 further New-only products, IDs in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-31.md`.
+
+TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded. UK Used remains reference-only and does not affect automatic valuation.
+
+
+## 13 November 2026 — Drone second-pass research Batch 32 (UK Used gap)
+
+Batch 32 reviewed 20 products with UK New but no UK Used evidence. No qualifying UK Used record was imported. All 20 products were read back and confirmed to remain New-only.
+
+Key leads and exclusions:
+- BetaFPV Meteor75 Pro HD FPV Kit: eBay item 147575428311 initially appeared in search as sold, but opening the page showed an active auction with £53.07, 6 bids, 5 days remaining and Used condition. It is a current asking price, not a completed sale.
+- BetaFPV Cetus FPV Kit: eBay item 366600959761 was marked New Other, not Used; excluded.
+- DJI Flip Fly More Combo with RC 2: eBay item 336727834148 appeared as sold in the search index, but opening the page showed an active Buy It Now listing at £394.18, Used, with seller in Loughborough. The sold/search snapshot is stale/relisted; excluded.
+- MPB's DJI Flip Fly More Combo used stock and Camera Price Buster used-price pages are current inventory/reference prices, not completed transaction records.
+- DJI Air 3S used-price comparison pages showed current/historic retailer references, not a qualifying completed UK sale.
+- Other searched products (CaddxFPV Protos 1.6, DJI Matrice 30, EMAX Tinyhawk Lite RTF, FIMI Mini 3/X8 Tele Max, Holy Stone HS210T, Hubsan H502E, Potensic ATOM/ATOM 2 variants, PowerVision PowerEgg X Explorer, Yuneec Typhoon H3 and Autel EVO Lite Premium) produced no exact qualifying UK completed sale in this pass.
+No active asking prices, stale search snapshots, new-other items, retailer stock prices or variant mismatches were imported.
+
+LIVE metrics remain: 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 346 missing UK Used; 73 with both types; zero active evidence integrity failures. Batch 32 made no database writes. Batch 33 contains the remaining 12 New-only Drone masters in the current LIVE selection; see `CHECKPOINTS/2026-11-13-drone-second-pass-batch-32.md`.
 
 TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded. UK Used remains reference-only and does not affect automatic valuation.

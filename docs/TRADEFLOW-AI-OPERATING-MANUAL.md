@@ -6432,3 +6432,10 @@ undefined
 Added two Batch 09 records after opening direct retailer pages: Wex Photo Video SmallRig RC100B Pro Version UK 5143 £242.90 (limited stock) and Park Cameras HD PENTAX-FA 31mm f/1.8 Limited black £1,099 (listed, not stock-confirmed). The Park page requires product-option and store selection before basket; do not label it in_stock. This follows the established rule to preserve the source's actual availability wording and not infer stock from a price or Add to Basket control.
 
 Latest Batches 09–13: 172 total, 167 active (84 UK New, 83 UK Used), five inactive. Latest Batches 01–13: 280 total, 272 active (147 UK New, 125 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,825 total, 4,763 active, 62 inactive. UK Used remains reference-only and excluded from automatic valuation. No schema, master catalogue, valuation logic, TEST or Stripe changes.
+
+
+## 13 November 2026 — source-page retrieval limitation retained
+
+Added the CameraWorld Nikon COOLPIX S7000 used Excellent listing at £179.10, one unique item in stock, to Batch 11 after the direct search result supplied the item, condition, price, SKU C-911912 and included accessories. The page itself returned a cache miss when opened, so the database note and checkpoint explicitly preserve this limitation and direct URL for owner click-through recheck. Do not silently present the page as opened/fully re-verified. UK Used remains excluded from automatic valuation.
+
+Latest Batches 09–13: 173 total, 168 active (84 UK New, 84 UK Used), five inactive. Latest Batches 01–13: 281 total, 273 active (147 UK New, 126 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,826 total, 4,764 active, 62 inactive. No schema, master catalogue, valuation logic, TEST or Stripe changes.

@@ -4708,3 +4708,18 @@ Four new UK Used GBP observations were inserted into LIVE and verified:
 Coverage remains 541 active customer-visible drone products: 173 neither, 143 UK New only, 118 UK Used only, 107 both; missing UK New 291; missing UK Used 316. Counts are unchanged because these observations deepen evidence for Parrot models already represented in Used research.
 
 UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows, valuation logic, schema, RLS or functions changed.
+
+
+## 13 November 2026 — Retrospective UK Used nearest-match review 12
+
+Three new UK Used GBP observations were inserted into LIVE and read back successfully. All are current Gumtree asking prices:
+
+- DJI Mini 2 SE Fly More Combo — £280, Luton, Bedfordshire. Opened/never used, unactivated and still in original packaging; drone, remote, three batteries, charging hub, spare propellers and shoulder bag. Seller claims two-year warranty; customer should confirm transferability and activation terms. Evidence `c6a57587-c759-4aae-b4d0-dd8d23971f07`; listing https://www.gumtree.com/p/drones/dji-mini-2-se-drone-fly-more-combo-opened-never-used-unactivated/1804576837.
+- DJI Mavic 2 Pro Fly More Combo — £410, Camden, London. Three batteries (one has a small dent, seller says it works), rapid multi-channel charger, car charger, carry bag, controller, ND filters, spare props, cables and prop guards. Seller says aircraft has no crash history, works and is unbound. Evidence `8f78a96d-706f-4a4f-a1ad-1a0c8ce1ce55`; listing https://www.gumtree.com/p/drones/dji-mavic-2-pro-fly-more-combo-3-batteries-rapid-charger-nd-filters/1803089257.
+- Original DJI Avata Pro-View Combo (not Avata 2) — £600, Colindale, London. Goggles 2, Motion Controller, FPV Remote Controller 2, one battery, charger, cables, spares, case and original Wex invoice. Extra FPV Remote Controller 2 disclosed as additional bundle content. Evidence `1bf660b7-bfdc-4527-9b08-d46dc1140fe5`; listing https://www.gumtree.com/p/drones/dji-avata-pro-view-combo-fpv-remote-controller-2-carry-case-invoice/1515555286.
+
+Review also checked a used Potensic ATOM 3 listing in South Shields, but did not import it because the listing did not establish which controller/package variant it represented; the catalogue separates ATOM 3 standard and PTD 2 variants. A Hubsan ACE 2 ex-display listing was not imported because its FPV feed/gimbal issue and UK seller location were not adequately resolved. An older Cetus X forum post was not treated as current availability.
+
+Coverage remains 541 active customer-visible drone products: 173 neither, 143 UK New only, 118 UK Used only, 107 both; missing UK New 291; missing UK Used 316. These additions deepen existing Mini 2 SE, Mavic 2 Pro and Avata Used records; no coverage-count change.
+
+UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows, valuation logic, schema, RLS or functions changed.

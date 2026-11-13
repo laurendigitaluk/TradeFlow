@@ -6135,3 +6135,19 @@ Current active + customer-visible 3D-printer snapshot: 199 products; 172 UK New 
 UK Used remains inspection/reference only and never affects automatic valuation; UK New remains the only automatic valuation evidence. Use UK GBP and UK sources, exact package matching, and disclose listing status, seller location, condition, print hours, extras and collection terms. Exclude Buyer Protection fees from underlying item price where separable and disclose Best Offer uncertainty. No catalogue master, schema, valuation, RLS, RPC, Edge Function, TEST, Stripe or deployment changes were made.
 
 Full checkpoint: `CHECKPOINTS/2026-11-13-live-3d-printer-uk-used-review-03.md`.
+
+
+## 13 November 2026 — Creality K2-family UK Used evidence review
+
+A 20-product/package candidate review produced two additional exact UK Used observations in TradeFlow LIVE, inserted into `public.shared_market_evidence` and read back successfully:
+
+- Creality K2 SE, CFS Combo — £229.42, active eBay UK Buy It Now, Shepperton. Exact model/package confirmed; seller reports 5 days 12 hours 15 minutes print time and fully working. No original box, tools, manual or single spool holder; CFS and printer ship separately. Evidence `4c76897c-70d2-4f2c-b24e-190089db76af`.
+- Creality K2 Plus, CFS Combo — £740.00, active eBay UK Buy It Now, Manchester; two available. Exact package confirmed; seller says under one hour of print time. Evidence `46422f75-dded-425f-8f72-5ac0099979a3`.
+
+K2 Pro listings ended 25 and 30 October with zero bids and were not treated as completed sales. The K2 Combo Gumtree listing included hardened nozzles and a DXC2 extruder upgrade without separate item values, so it was held as a non-standard bundle. A K2 CFS single-unit search result did not provide a directly verified item page. New or Opened–never-used offers were not substituted for Used evidence.
+
+Current active + customer-visible 3D-printer snapshot: 199 products; 170 UK New only; 28 with both UK New and UK Used; 1 UK Used only; 0 with neither; 170 missing UK Used. This snapshot may include parallel worker imports.
+
+UK Used remains inspection/reference only and never affects automatic valuation; UK New remains the only automatic valuation evidence. Use UK GBP and UK sources, exact package match, and disclose location, condition, print hours, missing accessories, package contents and current/sold status. Asking prices are not completed-sale prices. No catalogue master, schema, valuation, RLS, RPC, Edge Function, TEST, Stripe or deployment changes were made.
+
+Full checkpoint: `CHECKPOINTS/2026-11-13-live-creality-k2-uk-used-review-01.md`.

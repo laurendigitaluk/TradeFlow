@@ -4636,3 +4636,18 @@ MPB UK current DJI Mini 5 Pro Fly More Combo RC-N3 stock from £579 was checked 
 Coverage remains 541 total; 173 neither; 143 UK New only; 118 UK Used only; 107 both; missing UK New 291; missing UK Used 316.
 
 UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows or valuation logic changed.
+
+
+## 13 November 2026 — Retrospective UK Used nearest-match review 07
+
+Three further candidate listings reviewed; two new UK Used observations inserted into LIVE and read back.
+
+- DJI Mini 3 Standard Package (DJI RC) — £300, Gumtree, Hemel Hempstead, Hertfordshire. Exact Mini 3 model. Listing describes an RC controller (exact subtype not stated), two batteries, hard case, charging station/accessories, spare blades, charging cables and unopened K&F ND filters. Mapped to closest Standard Package (DJI RC) master; controller subtype unverified and seller says only one battery originally came with drone, extras purchased separately. Customer inspection required. Current asking price, collection only. Evidence `ab94e471-350b-4120-a8a0-dacbcce48b33`.
+- Potensic ATOM 2 PTD 1 Fly More Combo — £275, Gumtree, Jordanhill, Glasgow. Good condition. Listing explicitly identifies full Fly More kit with three batteries, case, controller, battery dock, cables and spares; very little flying time, software and batteries kept updated. Strong exact model/package match. Current asking price. Evidence `3c0f02cd-9429-46fc-9a0a-854f76a30f84`.
+
+Held:
+- Hubsan Zino Pro Comrie listing: search results conflict on price (£175 older result vs £200 local result) and no stable individual listing URL was exposed. Await direct listing/price confirmation.
+
+Coverage unchanged: 541 total; 173 neither; 143 UK New only; 118 UK Used only; 107 both; missing UK New 291; missing UK Used 316. Both additions deepen evidence for already-covered products.
+
+UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows or valuation logic changed.

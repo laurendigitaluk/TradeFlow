@@ -6518,3 +6518,11 @@ The first two 20-product drone research batches have been completed against LIVE
 LIVE read-back after Batch 02: 4,859 evidence rows total / 4,797 active / 62 inactive; 2,330 active UK New GBP rows and 2,467 active UK Used GBP rows. Drones: 541 active master products; 378 still without active UK New evidence and 368 without active UK Used evidence. The UK Used Mavic 2 Zoom with Smart Controller observation is reference-only and does not affect automatic valuation.
 
 No catalogue product/package/category definitions, schema, RLS, TEST data, Stripe or valuation logic were changed. Pokémon Trading Cards remain excluded from this equipment-research workload. Exact source/package matching remains mandatory; do not import ambiguous receiver/VTX/controller or bundle variants. Keep out-of-stock/pre-order status accurate, preserve previous retailer observations, and do not fabricate used-sale evidence. See [Drone Evidence Research Checkpoint — Batches 01–02](checkpoints/TRADEFLOW_DRONE_EVIDENCE_RESEARCH_20261113_BATCH01-02.md) for products, sources, held items and continuation controls.
+
+
+
+## 13 November 2026 — LIVE drone evidence research, Batch 03
+
+Batch 03 reviewed 20 additional active Drone master products and inserted three verified GBP observations across two exact products: two UK New Tinyhawk Lite RTF observations (Unmanned Tech £134.95 and HobbyRC £140.90, both out of stock) and one UK Used completed FIMI X8 SE 2020 sale (£47.40 item price, excluding the separately recorded £2.16 Buyer Protection fee). The FIMI used observation is reference-only and does not affect automatic valuation. Eighteen other products were held because UK source, price, package or hardware variant could not be confirmed safely. No catalogue products/packages, TEST, Stripe or valuation logic changed.
+
+LIVE read-back after Batch 03: 4,862 total evidence rows / 4,800 active / 62 inactive; 2,332 active UK New and 2,468 active UK Used. Drones: 541 active products; 377 without active UK New evidence and 367 without active UK Used evidence. Batch details and held products are in [Drone Evidence Research Checkpoint — Batches 01–03](checkpoints/TRADEFLOW_DRONE_EVIDENCE_RESEARCH_20261113_BATCH01-02.md).

@@ -12,7 +12,7 @@
 > **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
 
 **Status:** Living operational document  
-**Version:** 6.1  
+**Version:** 6.2  
 **Date:** 13 November 2026  
 **Project:** TradeFlow
 
@@ -4439,3 +4439,18 @@ Key findings:
 Post-research LIVE metrics remain: 541 active visible Drone products; 182 with no active evidence; 304 missing UK New; 346 missing UK Used; 73 with both types; zero active evidence integrity failures. All 12 selected New-only products were reviewed. A fresh LIVE query excluding second-pass Batches 16–33 returned **zero remaining New-only products**. This closes the UK Used-gap research queue for products already holding UK New evidence. It does not mean all 346 missing UK Used products are resolved: 182 have no evidence at all, and 122 are Used-only. The next pass should address the Used-only products that lack UK New evidence, while the zero-evidence products remain their own separate group.
 
 TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. Pokémon cards remain excluded. UK Used remains reference-only and does not affect automatic valuation.
+
+
+## 13 November 2026 — Drone second-pass research Batch 34 (UK New gap)
+
+The New-only → UK Used queue closed after Batch 33. Batch 34 begins the separate Used-only → UK New queue, reviewing 20 products with UK Used evidence but no UK New evidence.
+
+Four UK New price observations were inserted into LIVE and read back:
+- DJI Mavic 3 Pro Cine Premium Combo (DJI RC Pro): Carmarthen Camera Centre £3,699.00, in stock (one unit ready to ship); ProAV £3,598.80 including VAT, backorder (the page states backorder delivery when in stock, usually within three working days). Evidence IDs `f7059e55-a887-4acb-847e-1ad32f510c10` and `578d5835-06c4-4398-9fd3-27d55888a212`.
+- DJI Mavic 3 Multispectral Standard Package: Ertech Distribution £3,399.14, SKU CP.EN.00000445.04, in stock with London collection or 24–48 hour shipping; ProAV £3,926.00 including VAT, same SKU, backorder (delivery when in stock, typically within one week). Evidence IDs `09a3ae6a-7b4c-407f-ad0e-2cd7ca1ab9c1` and `e3b9a7b2-a6e3-4395-9cfd-61b694a5eaae`.
+
+Eighteen products were held because no exact current UK new retailer offer/package match was established. DJI Air 3S RC 2 master was not mapped to RC-N3 pricing. DJI Mavic 3 Enterprise RC Pro Enterprise controller product was not mapped to generic Mavic 3 Enterprise listing or controller-only pages. Mavic 3 Pro variants were distinguished by controller and combo. Out-of-stock DJI Mavic 3 Pro RC listing was not imported. Autel legacy models, BetaFPV Pavo Femto, DJI Mavic 2 models, and other Mavic variants had no verified exact UK new listing in this pass. Used stock listings were not repurposed as New.
+
+Post-write LIVE metrics: 541 active visible Drone products; 182 with no active evidence; 302 missing UK New; 346 missing UK Used; 75 with both types; zero active evidence integrity failures. Of the 20 reviewed products, 2 now have both types and 18 remain Used-only. TEST, Stripe, valuation logic, catalogue masters/packages, tenant/customer/order/payment data, schema, RLS, RPCs, Edge Functions and deployments remain untouched. UK Used remains reference-only and does not affect automatic valuation. Pokémon cards remain excluded.
+
+Batch 35 continues the Used-only → UK New gap. Its next 20 products are selected from the LIVE database and recorded in `CHECKPOINTS/2026-11-13-drone-second-pass-batch-35.md`.

@@ -12,3 +12,6 @@ c35c2005-42b0-4038-86a7-f781f12cd396; 544a8f05-2f3a-4b19-8803-f1a90664d337; 81bf
 17 held: no exact UK new stock, legacy/discontinued models or package mismatch. All four observations read back by ID, product, price, GBP, New condition, availability and unique source key.
 
 LIVE totals after batch: 541 active visible; 182 neither; 119 New-only; 122 Used-only; 78 both; missing New 299; missing Used 346. Integrity failures 0. TEST, Stripe, valuation, catalogue masters, tenant/customer/transaction data and deployments untouched. Pokémon excluded.
+
+## Count clarification
+Correction: group breakdown after this batch is 182 neither, 164 UK New-only, 117 UK Used-only, 78 both. The dashboard status message had transposed the New-only/Used-only labels; missing UK New 299 and missing UK Used 346 were correct.

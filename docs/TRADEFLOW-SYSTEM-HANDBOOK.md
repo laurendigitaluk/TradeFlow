@@ -3454,3 +3454,17 @@ Held rather than imported: GEPRC DarkStar20 £188.67 because seller UK location 
 Current LIVE Drone coverage: 541 total; 173 neither; 146 UK New only; 118 UK Used only; 104 both; 291 missing UK New; 319 missing UK Used.
 
 UK Used remains inspection-only and does not feed automatic valuation. UK New-only valuation logic unchanged. No catalogue master/package rows, schema, RLS, RPC, Edge Functions, TEST, Stripe, tenant/customer/transaction data or deployments changed.
+
+
+## 13 November 2026 — Discontinued product / UK New evidence rule
+
+When the manufacturer has confirmed that a product is no longer manufactured, mark its UK New market evidence availability/status explicitly as **Discontinued**. Do not describe it as current new stock merely because an old UK retailer page still displays a price.
+
+- Preserve a verifiable UK GBP listed price as historical/discontinued new-price evidence where useful.
+- In the existing evidence `availability` and `notes` fields, state "Discontinued", source/date checked, whether any remaining retailer stock is confirmed, and whether the price is historical/clearance only.
+- If the manufacturer's discontinuation is confirmed but an old price remains visible, that price must not be presented as a current available new offer. Do not assume remaining stock is purchasable.
+- If a product is unavailable but manufacturer discontinuation is not confirmed, use the accurate availability status (e.g. out of stock/unavailable) and do not infer discontinued.
+- Do not delete the catalogue product or change its active/customer-visible status solely because manufacturing stopped; catalogue lifecycle/removal is a separate decision.
+- This status is distinct from the UK Used inspection-only policy. UK Used remains customer inspection/click-through only; UK New remains the only automatic valuation reference, subject to accurate availability/status and existing valuation rules.
+
+Use this rule consistently in future research and when revisiting previously recorded UK New observations. No schema change or valuation-code change is authorised by this rule.

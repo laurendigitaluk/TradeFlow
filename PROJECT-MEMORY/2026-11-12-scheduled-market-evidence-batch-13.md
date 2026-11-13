@@ -125,3 +125,8 @@ Two duplicate captures were deactivated in LIVE and retained for audit: earlier 
 ## 13 November 2026 — HVR-V1E additional used price reference
 
 Added Colins Cameras exact Sony HVR-V1E £260, Very Good, fully tested; charger, cables, NP-F960 battery and remote included. The product result shows Sold out; availability is out_of_stock. Evidence ID 20b25a7e-2959-4387-bfcd-cb3e9ca0c577. Direct page open returned cache miss after the search result supplied the item details; source URL and limitation retained for dashboard recheck. Existing Camera City £399 in-stock record remains. Batch 13 now 51 total, 49 active (27 New, 22 Used), two inactive. UK Used is reference-only.
+
+
+## 13 November 2026 — rejected HVR-V1E candidate
+
+Excluded eBay UK item 117069480914 (Plan B Retro): title says HVR-V1E but item specifics identify HVR-Z1E. Do not import or match by title only. Smart_With_Media £259.99 result was not found as a current listing in the seller's store and remains unverified. No new rows; counts unchanged.

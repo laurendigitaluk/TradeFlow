@@ -3587,3 +3587,17 @@ Three new UK Used GBP observations were inserted into LIVE and read back success
 Review candidates also included already imported or unsuitable/insufficiently verified results; no duplicates were added. Drone category coverage remains 541 products: 173 neither, 143 UK New only, 118 UK Used only, 107 both; missing UK New 291; missing UK Used 316. These three observations add depth to two products already represented in Used evidence, so coverage counts do not change.
 
 UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows, valuation logic, schema, RLS or functions changed.
+
+
+## 13 November 2026 — Retrospective UK Used nearest-match review 10
+
+Two new UK Used GBP observations were inserted into LIVE. Both are current asking prices, not completed-sale prices, and both map to the DJI Mini 4 Pro Fly More Combo (DJI RC 2):
+
+- £580, Gumtree, Clapham, London. Listing specifies DJI RC 2, three batteries (maximum 10 charge cycles each), unopened propellers, seven ND filters, screen protector, mounting accessory, cables and original box. Seller describes the kit as complete as shown in photographs; charging hub is not explicitly itemised. Evidence `af8ad043-3a2d-4edc-a527-a040ff82b3f0`; source listing https://www.gumtree.com/p/drones/dji-mini-4-pro-drone-fly-more-combo-as-good-as-new/1804262462.
+- £600 ONO, Gumtree, Cambridge, Cambridgeshire. Listing specifies DJI RC 2, three batteries, charging hub, Fly More accessories, carrying case and 16-piece filter set. Other extras shown in photographs should be checked by the customer. Evidence `5f7f151f-b17f-480f-a2da-b5bd6d4e52c1`; source listing https://www.gumtree.com/p/drones/dji-mini-4-pro-fly-more-combo-with-rc-2-16-filters-accessories-%C2%A3600-ono/1804234705.
+
+Other sources reviewed for context: MPB has multiple individually graded Mini 4 Pro Fly More RC 2 examples, currently shown from £629; the price comparison page shows a separate Park Cameras example at £539. These aggregate/variable stock pages were not imported as individual evidence rows. A separate original Potensic ATOM listing was excluded because it is not ATOM 2. Cetus X historic/community and international results were not imported without a current verifiable UK individual listing.
+
+Coverage remains 541 active customer-visible drone products: 173 neither, 143 UK New only, 118 UK Used only, 107 both; missing UK New 291; missing UK Used 316. Both additions deepen Used evidence on a product already covered, so coverage counts do not change.
+
+UK Used remains inspection-only; automatic valuation remains UK New-only. No catalogue master/package rows, valuation logic, schema, RLS or functions changed.

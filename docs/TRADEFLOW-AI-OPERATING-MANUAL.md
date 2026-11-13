@@ -4509,3 +4509,23 @@ Use the existing `shared_market_evidence` record and `notes` field to explain ma
 Prefer exact model/package matches, then the closest verifiable model/package match. Retain the latter as a clearly labelled related reference rather than discarding it. Multiple distinct observations per product are useful. Never present a related package/model as an exact match, and never allow a UK Used reference to affect automatic valuation.
 
 No valuation code, database schema, RLS, RPC, Edge Function, catalogue master, tenant/customer/transaction data or deployment was changed as part of this decision. Checkpoint: `CHECKPOINTS/2026-11-13-uk-used-evidence-inspection-only-policy.md`.
+
+
+## 13 November 2026 — Retrospective UK Used nearest-match review 01
+
+Revisited previously held package/model-variation candidates under the inspection-only policy. Seven new UK Used observations were added to LIVE and read back. One PowerVision PowerRay Wizard sold listing was matched to the existing exact Wizard Package master/evidence group; no duplicate was inserted.
+
+New observations:
+- Hubsan H501S X4 Air White BNF — £129.06 eBay, Manchester; exact model/colour, Standard Edition GPS listing with two batteries; BNF contents not fully itemised. Related-package reference. Evidence `4e61eeb1-6ccf-49cd-9f09-6a155a2728c9`.
+- FIMI X8 SE 2020 Standard Package — £125 Gumtree, Warrington; exact 2020 model, not X8 SE 2022. Two batteries/accessories; seller disclosed controller overheating/signal-loss history and cooling modification. Historical listing. Evidence `3dd0833c-53e9-4997-87d6-dadb8fa0dacd`.
+- Walkera F210 Standard Package — £615.58 eBay, Dumbarton; exact F210 model family but a larger lot with two transmitters, batteries and spares; not confirmed F210 3D/Goggle 4. Related-bundle reference. Evidence `6331739e-b5f9-475b-a97c-c9e929f69a1f`.
+- DJI Mini 5 Pro Standard Package — £641 eBay, London; exact model, listing title says Standard Controller but controller model and full contents are not itemised. Historical/search-indexed related-package reference. Evidence `b2fa07e4-391d-48c4-a263-a494d58d07e4`.
+- DJI Matrice 350 RTK Standard Package — £7,000 eBay, Gravesend; exact model, package contents unverified; last updated 25 December 2025, historical only. Evidence `59860300-2266-499b-a4d7-921892faf379`.
+- Potensic ATOM Fly More Combo — £150 Gumtree, Pocklington; exact model and strong package match (three batteries, controller, cables, 64GB card and carry case). Evidence `058426b2-7df0-4c66-a7b4-2178d582ad3c`.
+- Hubsan Zino 2 Standard Package — £155.58 eBay Buy It Now, Reading; exact model, seller mentions two batteries and bag but full package contents unverified; historical/search-indexed reference. Evidence `317351d2-9426-4f90-9024-2eb164d9abc2`.
+
+The PowerVision PowerRay Wizard listing supplied by the owner was matched to the existing PowerRay Wizard Package master, not Standard or Explorer. Existing Wizard evidence includes a sold UK listing with £345 base item price (£358.60 displayed inclusive of £13.60 Buyer Protection) and a second Wizard observation. The screenshot's item number and seller location could not be independently confirmed; no duplicate was added.
+
+Current LIVE drone coverage after this review: 541 total; 175 neither; 147 UK New only; 116 UK Used only; 103 both; missing UK New 291; missing UK Used 322.
+
+All UK Used observations remain inspection-only. Automatic valuation continues to use UK New only. No valuation logic, schema, RLS, RPC, Edge Function, catalogue master/package, tenant/customer/transaction data or deployment was changed. This is retrospective pass 01; continue through remaining held candidates.

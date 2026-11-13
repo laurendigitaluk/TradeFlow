@@ -523,3 +523,10 @@ Latest Batches 09–13: 175 total, 170 active (85 UK New, 85 UK Used), five inac
 Added CVP direct UK source for Sony HDCE-TX30 IP Camera Extension Adapter at £11,347.13 inc VAT (£9,455.94 ex VAT), new, available for backorder, normally 1–2 weeks subject to variation, one-year standard warranty. Evidence ID 0dc2b59c-fbc4-4eb8-9da5-cc1d2a5f7247. This independently corroborates Visual Impact's direct UK listing at the same price. MKS-R3210 remains unimported: exact model confirmed by Sony, but no exact UK GBP retail price found; the £61.75 eBay result is 2x BKS-R3210 and excluded.
 
 Latest Batches 09–13: 176 total, 171 active (86 UK New, 85 UK Used), five inactive. Latest Batches 01–13: 284 total, 276 active (149 UK New, 127 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,829 total, 4,767 active, 62 inactive; 2,307 active UK New GBP and 2,460 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes prior 13 Nov cumulative counts.
+
+
+## 13 November 2026 — Batch 09 Nikon F55 UK used source added
+
+Added Bristol Cameras exact Nikon F55 body-only at £24.00, used Good, in stock, with 2x CR2 batteries, body cap and 3-month guarantee. Evidence ID 39529bb2-e229-4a4d-a739-4a198222bf82. Search result exposed the exact direct listing; opening the URL returned HTTP 520, and the limitation is retained for owner click-through recheck. Existing ColinsCameras eBay £28.60 body-only source remains active.
+
+Latest Batches 09–13: 177 total, 172 active (86 UK New, 86 UK Used), five inactive. Latest Batches 01–13: 285 total, 277 active (149 UK New, 128 UK Used), eight inactive. Global LIVE shared_market_evidence: 4,830 total, 4,768 active, 62 inactive; 2,307 active UK New GBP and 2,461 active UK Used GBP. UK Used remains reference-only. No schema, master catalogue, valuation logic, TEST or Stripe changes. This supersedes prior 13 Nov counts.

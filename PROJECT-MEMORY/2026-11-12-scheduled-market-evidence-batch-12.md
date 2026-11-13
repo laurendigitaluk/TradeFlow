@@ -87,3 +87,8 @@ Batch 12 counts unchanged: 27 total, 26 active (17 new, 9 used), one inactive pr
 Reopened direct Visual Impact pages and clarified existing active evidence in place: UHC-8300 £396,117.94 inc VAT is camera head only; UHCU-8300 CCU is separate, lens/viewfinder not included. HDC-3200/DF £37,651.84 inc VAT is camera head with dual-filter option; HDCU-3500/3100 CCU or HDCE extension adaptor are separate, lens/viewfinder not included. Evidence IDs 1b7ae87f-0944-44d2-ab66-128d462fe934 and 337cdfd8-3967-413b-b61c-7d64c4381df5; full sources/notes in Batch 12 checkpoint. No duplicate rows or master changes.
 
 MKS-R3210 remains without exact UK GBP evidence; Sony official pages have no price, European dealer prices are EUR, and eBay UK £61.75 is BKS-R3210 (different model). Batch 12 counts unchanged: 27 total, 26 active (17 new, 9 used), one inactive. No TEST/Stripe changes.
+
+
+## 13 November 2026 — HDCE-TX30 second source and MKS-R3210 disposition
+
+Added CVP exact Sony HDCE-TX30 at £11,347.13 inc VAT (£9,455.94 ex), new, available for backorder with 1–2 week typical delivery and one-year warranty. Evidence 0dc2b59c-fbc4-4eb8-9da5-cc1d2a5f7247. This corroborates Visual Impact's direct price/status. MKS-R3210 remains RED VERIFY: exact 32-button routing panel is confirmed, but no UK GBP retail price; 2x BKS-R3210 at £61.75 is the wrong model/quantity and excluded. Batch 12 now 28 total, 27 active (18 New, 9 Used), one inactive.

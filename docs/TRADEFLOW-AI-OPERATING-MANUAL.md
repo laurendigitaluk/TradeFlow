@@ -6896,3 +6896,19 @@ Counts are a snapshot and may change with parallel workers.
 - No catalogue master data, valuation logic, schema, RLS, RPCs, Edge Functions, TEST data, LIVE Stripe or deployments changed.
 - Supabase structured project-memory message: `aa8a49a5-0785-480c-86eb-55cdca783e4b`.
 - Full candidate dispositions: `CHECKPOINTS/2026-11-14-live-market-evidence-uk-used-review-09.md`.
+
+
+## 14 November 2026 — LIVE market-evidence Review 10 (Billingham / Blackmagic)
+
+Reviewed the next 25 active, customer-visible product/package records with no active UK Used evidence, after the Review 09 manufacturer boundary (BetaFPV), excluding Pokémon. Three UK Used observations and two UK New observations were inserted into LIVE `public.shared_market_evidence` and all five were read back by evidence ID. Three UK Used imports cover Billingham 72 (£80, Harrison Cameras), TEN-16 (£79.99, London Camera Exchange) and Hadley One (£250, Park Cameras). Two UK New imports cover Eventer MKII (£599, Castle Cameras) and Hadley Small Pro (£220, CameraWorld UK). Exact URLs, source keys, conditions, status, seller/location, fees/delivery, bundle contents and caveats are recorded in the rows and Review 10 checkpoint.
+
+Evidence IDs:
+- UK Used: `029b8cf7-ac00-477d-9882-e3b9a067f676`, `f916f67e-157a-47b0-9649-eb3770e7a095`, `24742bd0-f059-41cb-ae3a-c583ef464b1c`.
+- UK New: `70a92b96-3414-4fb5-9756-54a6beaae2b4`, `d019cb67-8a62-4d0f-bdfa-dcb7dbc74a9a`.
+- Supabase structured project-memory message: `6b532334-0bb5-487f-8043-528b5324883c`.
+
+The remaining 22 candidates were held: no exact Used listing; out-of-stock pages; wrong model/generation (e.g. 225 vs 225 MKII, 335 Classic vs 335 MKII, 445 vs 445 MKII); Best Offer sold listing with accepted price undisclosed (Billingham 550); historical price-comparison data without original listing; generation ambiguity (Hadley Pro Original); unitemised bundle or mount variant; or the source URL was already recorded under the exact PYXIS 6K EF master product. No duplicate URL/key was inserted. No product was verified discontinued, and no Discontinued label or unsupported price was added.
+
+Corrected LIVE coverage snapshot, active + customer-visible, excluding Pokémon: 28,370 products; 1,865 with UK New; 1,746 with UK Used; 611 with both; 1,254 UK New only; 1,135 UK Used only; 25,370 with neither; 26,624 missing active UK Used; 26,505 missing active UK New. This calculation coalesces null evidence flags to false so products with no evidence are included in neither/missing counts. Some earlier snapshots (Reviews 07–09) used a null-sensitive missing-count expression and understated missing products; use this corrected calculation going forward. Parallel worker imports can change the snapshot.
+
+UK New alone affects automatic valuation; UK Used remains inspection/reference only. No catalogue master/package rows, valuation logic, schema, RLS, RPCs, Edge Functions, TEST data, LIVE Stripe or deployments changed. Full 25-candidate dispositions and source URLs: `CHECKPOINTS/2026-11-14-live-market-evidence-uk-used-review-10.md`.

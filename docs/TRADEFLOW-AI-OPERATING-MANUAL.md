@@ -6912,3 +6912,12 @@ The remaining 22 candidates were held: no exact Used listing; out-of-stock pages
 Corrected LIVE coverage snapshot, active + customer-visible, excluding Pokémon: 28,370 products; 1,865 with UK New; 1,746 with UK Used; 611 with both; 1,254 UK New only; 1,135 UK Used only; 25,370 with neither; 26,624 missing active UK Used; 26,505 missing active UK New. This calculation coalesces null evidence flags to false so products with no evidence are included in neither/missing counts. Some earlier snapshots (Reviews 07–09) used a null-sensitive missing-count expression and understated missing products; use this corrected calculation going forward. Parallel worker imports can change the snapshot.
 
 UK New alone affects automatic valuation; UK Used remains inspection/reference only. No catalogue master/package rows, valuation logic, schema, RLS, RPCs, Edge Functions, TEST data, LIVE Stripe or deployments changed. Full 25-candidate dispositions and source URLs: `CHECKPOINTS/2026-11-14-live-market-evidence-uk-used-review-10.md`.
+
+
+## Review 10 correction — CameraWorld Hadley Small Pro source recheck (14 November 2026)
+
+A direct source-page recheck showed the initial CameraWorld search snippet was stale. The Hadley Small Pro Sage FibreNyte SKU 505048 is currently advertised at £244.00 (10% off £271), but is awaiting stock with an expected date around 28 November 2026; priority-queue orders are accepted, but it is not currently in stock. A second Sage FibreNyte/Black option is awaiting stock around 27 November; five other variants are out of stock. The page states free UK delivery over £150 and a 2-year guarantee.
+
+The existing row `d019cb67-8a62-4d0f-bdfa-dcb7dbc74a9a` was corrected in LIVE Supabase to the canonical URL `https://www.cameraworld.co.uk/billingham-hadley-small-pro-camera-bag.html`, £244.00, and the backorder status. It was set `is_active=false` so it remains an out-of-stock UK New reference and is not treated as a current in-stock automatic-valuation benchmark. The row was read back after correction. No duplicate row was created.
+
+Corrected active LIVE coverage (active + customer-visible, excluding Pokémon; null evidence flags coalesced false): 28,370 products; 1,864 with UK New; 1,746 with UK Used; 611 with both; 1,253 New only; 1,135 Used only; 25,371 neither; 26,624 missing active UK Used; 26,506 missing active UK New. This supersedes the initial Review 10 coverage snapshot. UK New alone affects automatic valuation; UK Used remains reference-only.

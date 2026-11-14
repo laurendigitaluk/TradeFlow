@@ -10,7 +10,7 @@
 
 - 25 candidate product/packages researched.
 - 3 UK Used observations imported, covering 3 distinct product/package records.
-- 2 UK New observations imported for two records that had no active UK New evidence.
+- 2 UK New records stored for two records that had no active UK New evidence: one active/in-stock Eventer MKII row and one inactive/out-of-stock Hadley Small Pro backorder reference.
 - 22 candidates remain without active UK Used evidence.
 - 5 rows total inserted and individually read back by evidence ID.
 - 0 duplicate source URLs or source keys inserted.
@@ -68,14 +68,15 @@ UK New is the only evidence type that affects automatic valuation. Both new rows
 - Removable insert with padded 14-inch laptop slip; other package contents not itemised.
 - Five-year UK warranty; current asking price, not a completed sale; no sale date shown.
 
-### 5. Billingham Hadley Small Pro Camera Bag — £220.00
+### 5. Billingham Hadley Small Pro Camera Bag — £244.00 (inactive out-of-stock reference)
 
 - Evidence ID: `d019cb67-8a62-4d0f-bdfa-dcb7dbc74a9a`
 - Source key: `cameraworld:505048`
-- Source: [CameraWorld UK listing](https://www.cameraworld.co.uk/billingham-hadley-small-pro-camera-bag-1.html)
-- Exact Hadley Small Pro. Recorded Sage FibreNyte SKU 505048; same page also showed Black FibreNyte SKU 505002 and Khaki FibreNyte SKU 505034 at £220, all in stock.
-- Free UK delivery on orders over £150; five-year manufacturer warranty.
-- Current asking price, not a completed sale; no sale date shown.
+- Source: [CameraWorld UK listing](https://www.cameraworld.co.uk/billingham-hadley-small-pro-camera-bag.html)
+- Exact Hadley Small Pro, Sage FibreNyte SKU 505048.
+- Direct page rechecked 14 November 2026: £244.00 (10% off £271); awaiting stock, expected approximately 28 November 2026; priority-queue orders accepted but no stock currently on hand. Another Sage FibreNyte/Black option SKU C-100837 is awaiting stock for approximately 27 November; five other options are out of stock.
+- Free UK delivery on orders over £150; page states a 2-year guarantee.
+- Current advertised backorder price, not a completed sale; no sale date shown. Row is `is_active=false` so it is retained as an out-of-stock reference and excluded from active UK New valuation evidence.
 
 ## Held candidate dispositions (22)
 
@@ -118,14 +119,14 @@ Active + customer-visible catalogue, excluding Pokémon. Null evidence flags wer
 | Coverage | Products |
 |---|---:|
 | Total products | 28,370 |
-| With active UK New | 1,865 |
+| With active UK New | 1,864 |
 | With active UK Used | 1,746 |
 | Both New and Used | 611 |
-| UK New only | 1,254 |
+| UK New only | 1,253 |
 | UK Used only | 1,135 |
-| Neither | 25,370 |
+| Neither | 25,371 |
 | Missing active UK Used | 26,624 |
-| Missing active UK New | 26,505 |
+| Missing active UK New | 26,506 |
 
 Some earlier Review 07–09 snapshots used a null-sensitive missing-count expression and understated missing products. Use this corrected calculation going forward. Parallel research can change counts.
 
@@ -140,3 +141,8 @@ Some earlier Review 07–09 snapshots used a null-sensitive missing-count expres
 
 - Supabase structured project-memory message: `6b532334-0bb5-487f-8043-528b5324883c`, thread `tradeflow-research`.
 - Updated on production: `docs/TRADEFLOW-SYSTEM-HANDBOOK.md` and `docs/TRADEFLOW-AI-OPERATING-MANUAL.md`.
+
+
+## Correction — CameraWorld Hadley Small Pro source page recheck (14 November 2026)
+
+The initial search-result snippet was stale. Direct page inspection showed SKU 505048 at £244.00, awaiting stock (expected approximately 28 November 2026), with priority-queue orders accepted but no current stock. The evidence row was corrected to the canonical URL, £244 price and backorder status, and set `is_active=false`. The page states a 2-year guarantee. This record is an inactive UK New price reference, not an active in-stock automatic-valuation benchmark. It was read back after correction. Correct active coverage is 1,864 UK New, 1,746 UK Used, 611 both, 1,253 New only, 1,135 Used only, 25,371 neither, 26,624 missing active UK Used and 26,506 missing active UK New.

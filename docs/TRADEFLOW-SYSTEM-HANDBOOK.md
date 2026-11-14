@@ -6167,3 +6167,19 @@ Current LIVE 3D scope snapshot: 199 active/customer-visible products; 198 with U
 UK Used remains reference/inspection only and never affects automatic valuation; UK New remains the only automatic valuation evidence. UK GBP and UK sources only; exact model/package match; disclose condition, location, print hours, extras, listing status and asking-versus-sold uncertainty. No schema, valuation, RLS, RPC, Edge Function, TEST, Stripe or deployment changes.
 
 Supabase structured project-memory message: `1469764a-808e-4f68-bcad-d097e03614d6`.
+
+
+## 14 November 2026 — 3D-printer UK Used evidence continuation
+
+Two additional UK Used observations were inserted into LIVE `public.shared_market_evidence` and read back successfully:
+
+- Bambu Lab P1S — AMS Combo: £210.00 GBP, Gumtree UK active today, Middlesbrough, North Yorkshire. Seller says great working order, used only a few times, as good as new. AMS included; extras include spare parts, new nozzles, tools, filament rolls and silica gel desiccant, not standard combo contents and not separately valued. Asking price, offers enabled. Evidence `6c59ff0d-584a-41d4-b0b9-c6ebd945f753`.
+- ELEGOO Saturn 3 — Standard Resin Printer: £160.00 GBP, Gumtree UK listing, Margate, Kent. Seller says works perfectly; minor crack at top of Z-axis reportedly does not affect operation. Power lead only; resin and basic tools not included. Asking price; listing posted 71 days before review. Evidence `0f6c6c19-e0fe-43f4-8e22-00f99823003e`.
+
+Other candidates were held: Bambu P1S Standard, Bambu A1 and Flashforge Creator 5 detail pages returned HTTP 410; several other listings lacked an exact active/customer-visible master product/package match or were bundles not represented in the master catalogue. Brand-new/unused listings were not classified as Used.
+
+Current LIVE 3D scope snapshot: 199 active/customer-visible products; 198 with UK New; 31 with UK Used; 168 UK New only; 1 UK Used only; 0 neither; 168 missing UK Used. Snapshot may include parallel worker activity.
+
+UK Used remains inspection/reference only and never affects automatic valuation; UK New remains the only automatic valuation evidence. UK GBP and UK sources only; exact product/package matching; disclose condition, location, print hours, extras, missing accessories, asking-versus-sold status and caveats. No catalogue master rows, valuation logic, schema, RLS, RPCs, Edge Functions, TEST, LIVE Stripe or deployments changed.
+
+Supabase structured project-memory message: `cdd9e032-81f6-4dcf-bc09-2b6dbd3388ee`.

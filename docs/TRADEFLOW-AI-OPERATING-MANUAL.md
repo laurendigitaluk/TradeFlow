@@ -6815,3 +6815,25 @@ Rules retained: UK New alone affects automatic valuation; UK Used remains refere
 
 Supabase structured project-memory message: `d8cb7e54-1dcd-4ff0-874a-903a872b524f`.
 Full candidate dispositions and source notes: `CHECKPOINTS/2026-11-14-live-market-evidence-uk-used-review-07.md`.
+
+
+## 14 November 2026 — LIVE UK Used market-evidence research Review 08
+
+Reviewed the next 25 active, customer-visible catalogue product/package records with active UK New and no active UK Used evidence, excluding Pokémon and excluding the immediately previous Review 06/07 candidate sets. Three UK Used observations were imported and read back, covering two product/package records; 23 candidates were held. No UK New observation was needed because the selected candidates already had UK New evidence.
+
+Imports:
+- Audio-Technica AT2020 — AT2020 Condenser Microphone: £50.00 GBP, Gumtree UK active asking listing, East Finchley, London; exact XLR version, as good as new, boxed with pouch, stand clamp and thread adapter. Seller Joe, 5/5 from 3 ratings, email verified; AnyVan delivery quote requires postcode or seller can meet in London West End. Evidence `a042b88c-9c7f-46ee-bd22-8c3a93481050`; source key `gumtree:1509376545`.
+- Audio-Technica AT2020 — AT2020 Condenser Microphone: £60.00 GBP, Reverb UK active asking listing, Farnham, Surrey; Very Good, black wired AT2020, used in bedroom studio, no accessories itemised, free UK shipping. Seller Jairo's Gear Depot, joined 2025, 8 reviews; listed 16 days before review and price reduced from £65. Evidence `cada3ff9-6f29-4569-b6b8-e2cdacdd5a46`; source key `reverb:102478601`.
+- AVerMedia AM310 — AVerMedia AM310 USB Microphone: £9.99 GBP item price, eBay UK listing ended 26 October 2026 at 21:27 BST with zero bids; displayed £10.66 included £0.67 Buyer Protection. Bodmin, Cornwall; seller cornishchaos, 99.4% positive, 215 items sold, joined November 2025. Exact AM310 MPN/USB match; no accessories specified, no returns, postage not shown. Stored only as historical asking-price reference, not a completed sale or current offer. Evidence `851506c1-5686-46c0-ba63-4f38b14b1ffd`; source key `ebay:860062992857`.
+
+Read-back verified all three evidence IDs, master product/package, UK Used type, source names, full non-null clickable URLs, GBP prices, condition, channel, status, notes, active status and source keys.
+
+Held 23: Aputure STORM 700x had rental listings only; Arca Swiss used result was a different Monoball model and the Z1+ Fliplock listing was New/not the exact package; Atomos A-Eye 4K-12X, A-Eye HD-20X and StudioSonic AIR had no exact UK Used listings; Audient EVO 4 eBay listing had conflicting EVO4 title/EVO8 MPN and had ended; Autel bundles were not exact UK Used listings (results were New, overseas, accessories or a different package); AVerMedia AM350 and Live Gamer ULTRA 2.1 had New retail results only; Bambu H2D 40W Laser package lacked confirmation of the laser module. Bambu H2D Engineering Bundle's exact H2D + AMS 2 Pro + AMS HT listing was already captured under a related H2D Pro master package (evidence `682c1d26-9e23-450b-b473-e7ca4fa348b1`, source key `gumtree:1804119344`); no duplicate row was inserted and no master data was changed.
+
+Current LIVE coverage excluding Pokémon: 28,370 active/customer-visible products; 1,863 with UK New; 1,741 with UK Used; 606 with both; 1,257 New only; 1,135 Used only; 25,372 neither; 26,629 missing UK Used. Snapshot may change with parallel workers.
+
+Rules retained: UK New alone affects automatic valuation; UK Used remains reference/inspection only. UK GBP and UK sources only; exact manufacturer/model/package match; separate item price from fees; disclose seller, location, condition, listing/sale date, bundle contents, shipping and caveats. Ended/zero-bid listings may only be stored as historical asking-price references, never completed sales. Do not treat rental listings as Used sale evidence or infer package contents. Discontinued status must be verified; never invent a current New price.
+
+Supabase structured project-memory message: `b028ff53-25ed-43d8-abf4-a3b4b817ebb0`.
+Full candidate dispositions: `CHECKPOINTS/2026-11-14-live-market-evidence-uk-used-review-08.md`.
+No catalogue master data, valuation logic, schema, RLS, RPCs, Edge Functions, TEST data, LIVE Stripe or deployments changed.

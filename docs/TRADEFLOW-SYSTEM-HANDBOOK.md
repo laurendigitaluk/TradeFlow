@@ -6200,3 +6200,20 @@ Rules retained: UK Used is inspection/reference only and never affects automatic
 
 Supabase structured project-memory message: `96622c16-5fa2-4ec4-8db3-02ea03bfcb83`.
 Full 25-candidate disposition and listing notes: `CHECKPOINTS/2026-11-14-live-3d-printer-uk-used-review-06.md`.
+
+
+## 14 November 2026 — LIVE UK Used market-evidence research Review 07
+
+Reviewed the next 25 active, customer-visible catalogue product/package records with no active UK Used evidence across the LIVE catalogue; Pokémon excluded. One defensible observation was imported and read back; 24 candidates were held. No UK New insert was needed because the selected products already had UK New evidence.
+
+Imported:
+- Ansmann NP-FW50 — Ansmann Sony NP-FW50 Camera Battery: £15.00 GBP, CameraWorld UK, SKU B002022399. Exact manufacturer/model/package. Retailer describes secondhand, Excellent+ and full working order, but page explicitly says Out of Stock. £15 is a displayed retailer page price, not a completed sale; no sale date shown. Single battery, no bundle contents specified. Stock location not disclosed; CameraWorld lists click-and-collect at London and Stevenage. Used returns 14 days; six-month guarantee applies only over £50. Retained only as historical/out-of-stock reference, not available stock. Source: https://www.cameraworld.co.uk/used-ansmann-np-fw50-battery-447.html. Evidence ID `55771227-11ef-42a5-8cfd-04b22655db12`; source key `cameraworld:B002022399`.
+
+Held 24: 8BitDo Pro 3 Switch 2 Purple listing was ended by seller and generic/grey; AKASO Brave 4 bundle listings did not confirm SD card, Brave 4 Elite/Pro were not exact Used variants, Brave 7/7 LE listings did not establish the requested motorcycle/super bundle contents, and no exact Brave 8 Lite, Keychain 2/3 or V50 X/V50 X Cube listings were verified. amaran 150c had no exact Used listing; amaran 300c Gumtree listing conflicted between FREE/New metadata and a Used-like description, while eBay sold page returned 404. Angelbird 1TB listing omitted MK2 and specified CFexpress 2.0, so it was not substituted for the MK2 model; no exact 2TB listing. Sony/Neewer compatible batteries were not substituted for Ansmann-branded NP-F970/NP-FM500H/NP-FZ100. Anycubic hotends had only new replacement-part listings; Kobra 3 Max V2 4-colour and Kobra 4 ACE 2 Pro listings did not confirm the exact complete model/package.
+
+Current active + customer-visible LIVE scope excluding Pokémon: 28,370 products; 1,863 with UK New; 1,739 with UK Used; 604 with both; 1,259 UK New only; 1,135 UK Used only; 25,372 with neither; 26,631 missing UK Used. This is a snapshot and may change with parallel imports. Reviewed batch: 25 candidates, 1 now has UK Used, 24 still missing.
+
+Rules retained: UK New alone affects automatic valuation; UK Used remains reference/inspection only. UK GBP and UK sources; exact manufacturer/model/package match; disclose fees, location, seller, condition, bundle contents, listing status and uncertainty. Out-of-stock pages may only be retained as historical/out-of-stock references, not current available stock or completed sales. Do not infer bundle contents or substitute compatible-brand products. Label Discontinued only when verified; never invent current New prices. No catalogue master data, valuation logic, schema, RLS, RPCs, Edge Functions, TEST, LIVE Stripe or deployments changed.
+
+Supabase structured project-memory message: `d8cb7e54-1dcd-4ff0-874a-903a872b524f`.
+Full candidate dispositions and source notes: `CHECKPOINTS/2026-11-14-live-market-evidence-uk-used-review-07.md`.

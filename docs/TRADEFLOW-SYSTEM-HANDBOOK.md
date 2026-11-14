@@ -6239,3 +6239,62 @@ Rules retained: UK New alone affects automatic valuation; UK Used remains refere
 Supabase structured project-memory message: `b028ff53-25ed-43d8-abf4-a3b4b817ebb0`.
 Full candidate dispositions: `CHECKPOINTS/2026-11-14-live-market-evidence-uk-used-review-08.md`.
 No catalogue master data, valuation logic, schema, RLS, RPCs, Edge Functions, TEST data, LIVE Stripe or deployments changed.
+
+
+## 14 November 2026 — LIVE UK Used market-evidence Review 09
+
+Two further UK Used observations were inserted into TRADEFLOW LIVE `public.shared_market_evidence` and individually read back.
+
+### Imported observations
+
+- **Benro B4 Triple Action Ball Head — £81.00 GBP.** Wex Photo Video, product code 3371962 / MPN BRB4; active in-stock used listing. Very Good (9-). Includes brown box and PU70 Arca quick-release plate; original box and manual absent. The PU70 is an extra, not a different head model. Wex Certified inspection/testing, 12-month warranty, 30-day returns, free standard DPD delivery in 2–3 days. Wex location shown as Norwich, Norfolk; warehouse dispatch location not separately identified. Asking price, not a completed sale. Source: https://www.wexphotovideo.com/benro-b4-pu70-magnesium-ball-head-used-3371962/ . Evidence `ce1e6a08-3f51-47d2-ad55-3eac2aaf9752`; key `wex:3371962`.
+- **Benro GH5CMINI Gimbal Head — £279.99 GBP.** London Camera Exchange, item 213980; active used stock at Derby branch. Exact match confirmed by GH5C Mini listing title and official Benro SKU GH5CMINI. Five-star Excellent condition; carbon gimbal head, 1 kg, 30 kg payload, 3/8-16 base, bubble level and Arca-Swiss compatibility. No case/plate/accessories itemised, so none inferred. Six-month warranty on main hardware; next-working-day DPD offered and free above £100. LCE advises confirming stock; used items are not reserved until order confirmation. Asking price, not a completed sale. Source: https://www.lcegroup.co.uk/Used/Benro-Benro-GH5C-Mini-Carbon-Fibre-Gimbal-Head_498972.html . Official model reference: https://uk.benroeu.com/gh5cmini-gimbal-head-carbon-fibre/ . Evidence `87e01205-7c4d-4229-9b33-b7e200ae9323`; key `lce:498972`.
+
+Both rows were checked before insertion for global source URL/source-key duplicates, inserted with non-null clickable `source_url`, and read back by evidence ID with master product/package, UK Used type, GBP price, condition, availability, notes and source key confirmed.
+
+### Candidate review
+
+25 active, customer-visible product/package records with no active UK Used evidence were researched after the prior Review 08 alphabetical boundary (Bambu Lab), excluding Pokémon. All 25 already had UK New evidence; no UK New insert was required. Two observations were imported for two products; 23 were held.
+
+Held candidates:
+- **Bebob:** V150microC — listing was V150MICRO without C/USB-C PD3 confirmation; V98 — only V98MICRO result, not exact V98.
+- **Benro:** A373FBS8PRO — matching eBay item was US-located/USD and another CVP item was S6PRO, not S8PRO; A573TBS6PRO and C373FBS8PRO — no exact UK Used listing; GH2N — GH2 result was a different model and GH2N price tracker had no direct listing; HD1A — New only; HD2A — price aggregator historical values without original listing URL; MCT28AFS2PRO — MCT28AF listing did not confirm S2PRO head; Polaris Astro Module — no exact Used listing; Polaris Timelapse 2-Axis — New retailer results only; S6PRO — MPB page out of stock/no current price. B4 and GH5CMINI imported.
+- **BetaFPV:** Air65 — only Air65 II Used listing (different generation); Air75 — only a complete FPV bundle with transmitter, goggles, batteries and spares, so the £269.25 + £7 bundle price cannot be allocated to the standalone drone; Air75 II — New accessory/frame or New starter-kit results only; Aquila16 and Aquila16 FPV Kit — New overseas listings only; Aquila20 HD — no exact UK Used listing; Cetus — Cetus Pro result was a different model; Cetus X and Cetus X HD — no exact UK Used listing; Meteor65 Pro II O4 — New overseas listings/accessories only; Meteor65 Pro O4 — no exact UK Used listing.
+
+Useful held listing references:
+- Bebob V150MICRO: https://www.ebay.co.uk/itm/236703420254
+- Bebob V98MICRO: https://www.ebay.co.uk/itm/127746605873
+- Benro A373FBS8PRO (US seller): https://www.ebay.co.uk/itm/115024179101
+- Benro HD1A (New): https://www.cameraworld.co.uk/benro-hd1a-3-way-head.html
+- Benro GH2N historical tracker only: https://www.camerapricebuster.co.uk/Benro/Benro-Heads/Benro-GH2N-Gimbal-Head
+- Benro HD2A historical tracker only: https://www.camerapricebuster.co.uk/Benro/Benro-Heads/Benro-HD2A-3-Way-Head
+- Benro MCT28AF without confirmed S2PRO: https://www.ebay.co.uk/itm/365694253484
+- BetaFPV Air75 over-complete bundle: https://www.ebay.co.uk/itm/198607616518
+- BetaFPV Cetus Pro (wrong model): https://www.ebay.co.uk/itm/137540813225
+- BetaFPV Aquila16 New overseas: https://www.ebay.co.uk/itm/389385296789
+- BetaFPV Meteor65 Pro II O4 New overseas: https://www.ebay.co.uk/itm/298506604085
+- BetaFPV Air65 II sold listing (wrong generation): https://www.ebay.co.uk/itm/206498703346
+
+### LIVE coverage snapshot
+
+Active + customer-visible master products excluding Pokémon:
+- 28,370 total
+- 1,863 with active UK New
+- 1,743 with active UK Used
+- 608 with both
+- 1,255 UK New only
+- 1,135 UK Used only
+- 2 with neither
+- 1,257 missing UK Used
+
+Counts are a snapshot and may change with parallel workers.
+
+### Operating rules and change boundary
+
+- UK New alone affects automatic valuation; UK Used remains reference/inspection only.
+- UK GBP and UK sources only; exact manufacturer/model/package matching. Separate item price from fees; disclose seller, location, condition, listing/sale date, status, accessories/bundle contents, delivery and caveats.
+- Do not infer model suffixes, generations or bundle contents. Do not import rental listings, New/overseas listings, accessory-only items or aggregator-only historical prices as exact UK Used listings.
+- Ended listings are historical asking-price references only, never completed sales. Verify discontinued status before labelling Discontinued; never invent a current New price.
+- No catalogue master data, valuation logic, schema, RLS, RPCs, Edge Functions, TEST data, LIVE Stripe or deployments changed.
+- Supabase structured project-memory message: `aa8a49a5-0785-480c-86eb-55cdca783e4b`.
+- Full candidate dispositions: `CHECKPOINTS/2026-11-14-live-market-evidence-uk-used-review-09.md`.
